@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>n8n Benchmarking V2 — Visualizations</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d1117; color: #e6edf3; font-family: 'Segoe UI', system-ui, sans-serif; padding: 40px; }
+  h1 { text-align: center; font-size: 2.2em; margin-bottom: 10px; color: #ff6b35; }
+  h2 { text-align: center; font-size: 1.1em; margin-bottom: 40px; color: #8b949e; font-weight: 400; }
+  h3 { font-size: 1.4em; margin: 40px 0 20px; color: #ff6b35; text-align: center; }
+  .chart-row { display: flex; gap: 30px; margin-bottom: 40px; justify-content: center; flex-wrap: wrap; }
+  .chart-box { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 24px; width: 580px; }
+  .chart-box canvas { max-height: 350px; }
+  .hero-chart { width: 100%; max-width: 1200px; margin: 0 auto 40px; }
+  .stat-row { display: flex; gap: 20px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
+  .stat-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 24px 32px; text-align: center; min-width: 200px; }
+  .stat-card .number { font-size: 3em; font-weight: 800; color: #ff6b35; }
+  .stat-card .label { font-size: 0.9em; color: #8b949e; margin-top: 4px; }
+  .stat-card .sublabel { font-size: 0.75em; color: #484f58; margin-top: 2px; }
+  .improvement { color: #3fb950; }
+  .zero { color: #3fb950; font-weight: 700; }
+  table { width: 100%; max-width: 1000px; margin: 0 auto 40px; border-collapse: collapse; }
+  th, td { padding: 10px 16px; text-align: center; border-bottom: 1px solid #21262d; }
+  th { color: #ff6b35; font-weight: 600; border-bottom: 2px solid #30363d; }
+  td { color: #e6edf3; }
+  .section-divider { border: none; border-top: 1px solid #30363d; margin: 60px auto; max-width: 800px; }
+</style>
+</head>
+<body>
+
+<h1>n8n Benchmarking V2: The Scaling Playbook</h1>
+<h2>Same Hardware. Smart Configuration. Massive Results.</h2>
+
+<!-- Hero Stats -->
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="number">6.2×</div>
+    <div class="label">RPS Improvement</div>
+    <div class="sublabel">PGTune on c5.large</div>
+  </div>
+  <div class="stat-card">
+    <div class="number">17×</div>
+    <div class="label">Total Improvement</div>
+    <div class="sublabel">Untuned Single → Tuned Queue</div>
+  </div>
+  <div class="stat-card">
+    <div class="number zero">0%</div>
+    <div class="label">Failure Rate</div>
+    <div class="sublabel">Tuned @ 200 VUs</div>
+  </div>
+  <div class="stat-card">
+    <div class="number" style="color:#3fb950">$0</div>
+    <div class="label">Cost of Tuning</div>
+    <div class="sublabel">Configuration only</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- Chart 1: The Big Picture - Scaling Ladder -->
+<h3>The Scaling Ladder — Single Webhook RPS</h3>
+<div class="chart-box hero-chart">
+  <canvas id="scalingLadder"></canvas>
+</div>
+
+<!-- Chart 2: Before/After c5.large -->
+<h3>C5.Large — Before & After PGTune (Food Truck)</h3>
+<div class="chart-row">
+  <div class="chart-box">
+    <canvas id="c5largeSingle"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="c5largeMulti"></canvas>
+  </div>
+</div>
+
+<!-- Chart 3: Response Times -->
+<h3>Response Times Under Load (200 VUs)</h3>
+<div class="chart-row">
+  <div class="chart-box">
+    <canvas id="responseTimes"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="failureRates"></canvas>
+  </div>
+</div>
+
+<!-- Chart 4: c5.4xlarge Progression -->
+<h3>C5.4xLarge — The Full Journey</h3>
+<div class="chart-row">
+  <div class="chart-box">
+    <canvas id="c5xlSingle"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="c5xlMulti"></canvas>
+  </div>
+</div>
+
+<!-- Chart 5: Binary Data -->
+<h3>Binary Data — The Architecture Ceiling</h3>
+<div class="chart-box hero-chart">
+  <canvas id="binaryData"></canvas>
+</div>
+
+<hr class="section-divider">
+
+<h3>Improvement Summary</h3>
+<table>
+  <tr><th>Configuration</th><th>Single Webhook</th><th>Multiple Webhooks</th><th>Binary Data</th></tr>
+  <tr><td>C5.Large: Untuned → Tuned</td><td class="improvement">6.2× (15→93)</td><td class="improvement">6.0× (24→92)</td><td>0.9× (3.0→2.6)</td></tr>
+  <tr><td>C5.4xL: Untuned Single → Tuned Queue</td><td class="improvement">17.0× (16→273)</td><td class="improvement">11.7× (23→270)</td><td class="improvement">1.9× (4.5→8.9)</td></tr>
+</table>
+
+<script>
+const VUs = ['3', '10', '30', '50', '100', '200'];
+const orange = '#ff6b35';
+const orangeLight = 'rgba(255,107,53,0.15)';
+const green = '#3fb950';
+const greenLight = 'rgba(63,185,80,0.15)';
+const red = '#f85149';
+const redLight = 'rgba(248,81,73,0.15)';
+const blue = '#58a6ff';
+const blueLight = 'rgba(88,166,255,0.15)';
+const purple = '#bc8cff';
+const purpleLight = 'rgba(188,140,255,0.15)';
+const gray = '#484f58';
+
+const defaults = {
+  responsive: true,
+  plugins: {
+    legend: { labels: { color: '#e6edf3', font: { size: 13 } } },
+    tooltip: { backgroundColor: '#161b22', borderColor: '#30363d', borderWidth: 1 }
+  },
+  scales: {
+    x: { ticks: { color: '#8b949e' }, grid: { color: '#21262d' } },
+    y: { ticks: { color: '#8b949e' }, grid: { color: '#21262d' }, beginAtZero: true }
+  }
+};
+
+// Scaling Ladder
+new Chart(document.getElementById('scalingLadder'), {
+  type: 'bar',
+  data: {
+    labels: ['Untuned Single\n(c5.large)', 'Tuned Single\n(c5.large)', 'Untuned Queue\n(c5.4xlarge)', 'Tuned Queue\n(c5.4xlarge)'],
+    datasets: [{
+      label: 'Peak RPS @ 200 VUs',
+      data: [16, 93, 165, 273],
+      backgroundColor: [red, orange, blue, green],
+      borderRadius: 6
+    }]
+  },
+  options: {
+    ...defaults,
+    indexAxis: 'y',
+    plugins: {
+      ...defaults.plugins,
+      legend: { display: false },
+      tooltip: defaults.plugins.tooltip
+    },
+    scales: {
+      x: { ...defaults.scales.x, title: { display: true, text: 'Requests per Second', color: '#8b949e' } },
+      y: { ...defaults.scales.y, ticks: { color: '#e6edf3', font: { size: 13 } } }
+    }
+  }
+});
+
+// C5 Large - Single Webhook
+new Chart(document.getElementById('c5largeSingle'), {
+  type: 'line',
+  data: {
+    labels: VUs,
+    datasets: [
+      { label: 'Untuned (V1)', data: [14.87, 14.94, 15.06, 15.18, 15.45, 15.97], borderColor: red, backgroundColor: redLight, fill: true, tension: 0.3 },
+      { label: 'Tuned (V2)', data: [92.21, 95.37, 92.50, 93.38, 95.16, 93.46], borderColor: green, backgroundColor: greenLight, fill: true, tension: 0.3 }
+    ]
+  },
+  options: { ...defaults, plugins: { ...defaults.plugins, title: { display: true, text: 'Single Webhook — RPS', color: '#e6edf3' } }, scales: { ...defaults.scales, x: { ...defaults.scales.x, title: { display: true, text: 'Virtual Users', color: '#8b949e' } }, y: { ...defaults.scales.y, title: { display: true, text: 'Requests/sec', color: '#8b949e' } } } }
+});
+
+// C5 Large - Multi Webhook
+new Chart(document.getElementById('c5largeMulti'), {
+  type: 'line',
+  data: {
+    labels: VUs,
+    datasets: [
+      { label: 'Untuned (V1)', data: [14.99, 15.23, 15.09, 14.72, 16.74, 24.24], borderColor: red, backgroundColor: redLight, fill: true, tension: 0.3 },
+      { label: 'Tuned (V2)', data: [95.43, 92.46, 91.98, 92.24, 92.21, 91.48], borderColor: green, backgroundColor: greenLight, fill: true, tension: 0.3 }
+    ]
+  },
+  options: { ...defaults, plugins: { ...defaults.plugins, title: { display: true, text: 'Multiple Webhooks — RPS', color: '#e6edf3' } }, scales: { ...defaults.scales, x: { ...defaults.scales.x, title: { display: true, text: 'Virtual Users', color: '#8b949e' } }, y: { ...defaults.scales.y, title: { display: true, text: 'Requests/sec', color: '#8b949e' } } } }
+});
+
+// Response Times @ 200 VUs
+new Chart(document.getElementById('responseTimes'), {
+  type: 'bar',
+  data: {
+    labels: ['Single WH\n(c5.large)', 'Multi WH\n(c5.large)', 'Single WH\n(c5.4xl Queue)', 'Multi WH\n(c5.4xl Queue)'],
+    datasets: [
+      { label: 'Untuned', data: [12.06, 34.40, 1.22, 5.88], backgroundColor: red, borderRadius: 4 },
+      { label: 'Tuned', data: [2.10, 10.34, 0.73, 3.35], backgroundColor: green, borderRadius: 4 }
+    ]
+  },
+  options: { ...defaults, plugins: { ...defaults.plugins, title: { display: true, text: 'Avg Response Time @ 200 VUs (seconds)', color: '#e6edf3' } }, scales: { ...defaults.scales, y: { ...defaults.scales.y, title: { display: true, text: 'Seconds', color: '#8b949e' } } } }
+});
+
+// Failure Rates
+new Chart(document.getElementById('failureRates'), {
+  type: 'bar',
+  data: {
+    labels: ['Single WH\n(c5.large)', 'Multi WH\n(c5.large)', 'Single WH\n(c5.4xl)', 'Multi WH\n(c5.4xl)'],
+    datasets: [
+      { label: 'Untuned', data: [0.16, 9.21, 0.32, 7.15], backgroundColor: red, borderRadius: 4 },
+      { label: 'Tuned', data: [0, 0, 0, 0], backgroundColor: green, borderRadius: 4 }
+    ]
+  },
+  options: { ...defaults, plugins: { ...defaults.plugins, title: { display: true, text: 'Failure Rate @ 200 VUs (%)', color: '#e6edf3' } }, scales: { ...defaults.scales, y: { ...defaults.scales.y, title: { display: true, text: '% Failed', color: '#8b949e' } } } }
+});
+
+// C5 4xLarge - Single Webhook progression
+new Chart(document.getElementById('c5xlSingle'), {
+  type: 'line',
+  data: {
+    labels: VUs,
+    datasets: [
+      { label: 'Untuned Single', data: [15.07, 15.19, 15.22, 15.43, 15.64, 16.19], borderColor: red, backgroundColor: redLight, fill: false, tension: 0.3 },
+      { label: 'Untuned Queue', data: [164.73, 165.23, 164.48, 161.43, 161.11, 162.94], borderColor: blue, backgroundColor: blueLight, fill: false, tension: 0.3 },
+      { label: 'Tuned Queue', data: [259.06, 278.84, 275.83, 272.40, 270.53, 273.41], borderColor: green, backgroundColor: greenLight, fill: false, tension: 0.3 }
+    ]
+  },
+  options: { ...defaults, plugins: { ...defaults.plugins, title: { display: true, text: 'Single Webhook — RPS', color: '#e6edf3' } }, scales: { ...defaults.scales, x: { ...defaults.scales.x, title: { display: true, text: 'Virtual Users', color: '#8b949e' } }, y: { ...defaults.scales.y, title: { display: true, text: 'Requests/sec', color: '#8b949e' } } } }
+});
+
+// C5 4xLarge - Multi Webhook progression
+new Chart(document.getElementById('c5xlMulti'), {
+  type: 'line',
+  data: {
+    labels: VUs,
+    datasets: [
+      { label: 'Untuned Single', data: [15.16, 15.21, 15.54, 15.14, 17.21, 23.06], borderColor: red, backgroundColor: redLight, fill: false, tension: 0.3 },
+      { label: 'Untuned Queue', data: [165.44, 164.62, 161.53, 163.86, 162.14, 162.00], borderColor: blue, backgroundColor: blueLight, fill: false, tension: 0.3 },
+      { label: 'Tuned Queue', data: [280.16, 271.61, 273.09, 268.36, 269.35, 267.09], borderColor: green, backgroundColor: greenLight, fill: false, tension: 0.3 }
+    ]
+  },
+  options: { ...defaults, plugins: { ...defaults.plugins, title: { display: true, text: 'Multiple Webhooks — RPS', color: '#e6edf3' } }, scales: { ...defaults.scales, x: { ...defaults.scales.x, title: { display: true, text: 'Virtual Users', color: '#8b949e' } }, y: { ...defaults.scales.y, title: { display: true, text: 'Requests/sec', color: '#8b949e' } } } }
+});
+
+// Binary Data
+new Chart(document.getElementById('binaryData'), {
+  type: 'line',
+  data: {
+    labels: VUs,
+    datasets: [
+      { label: 'c5.large Untuned', data: [3.13, 3.06, 2.94, 2.96, 2.87, 3.02], borderColor: red, fill: false, tension: 0.3, borderDash: [5,5] },
+      { label: 'c5.large Tuned', data: [2.59, 2.66, 2.58, 2.53, 2.20, null], borderColor: orange, fill: false, tension: 0.3, borderDash: [5,5] },
+      { label: 'c5.4xl Untuned Single', data: [4.55, 4.64, 4.52, 4.56, 4.66, 4.47], borderColor: gray, fill: false, tension: 0.3 },
+      { label: 'c5.4xl Untuned Queue', data: [4.94, 5.10, 5.18, 5.12, 5.16, 5.20], borderColor: blue, fill: false, tension: 0.3 },
+      { label: 'c5.4xl Tuned Queue', data: [6.23, 8.91, 8.05, 8.05, 7.38, 7.26], borderColor: green, fill: false, tension: 0.3 }
+    ]
+  },
+  options: { ...defaults, plugins: { ...defaults.plugins, title: { display: true, text: 'Binary Data — RPS (The Architecture Ceiling)', color: '#e6edf3' } }, scales: { ...defaults.scales, x: { ...defaults.scales.x, title: { display: true, text: 'Virtual Users', color: '#8b949e' } }, y: { ...defaults.scales.y, title: { display: true, text: 'Requests/sec', color: '#8b949e' }, max: 12 } } }
+});
+</script>
+</body>
+</html>
