@@ -181,12 +181,17 @@ async function playScene0() {
     options: opts0
   });
 
-  // Phase 1: Untuned only (~5s)
+  // Phase 1: Untuned only (~5s) — red line draws across all 6 VU levels
   document.getElementById('status0').innerHTML = '<span class="status-dot pulse"></span> Running untuned baseline...';
+  // Pre-fill labels and null slots for tuned
+  charts[0].data.labels = [...VULabels];
+  charts[0].data.datasets[0].data = [null,null,null,null,null,null];
+  charts[0].data.datasets[1].data = [null,null,null,null,null,null];
+  charts[0].update('none');
+  
   for (let i = 0; i < 6; i++) {
     if (!animating) return;
-    charts[0].data.labels.push(VULabels[i]);
-    charts[0].data.datasets[0].data.push(data.c5l_untuned[i]);
+    charts[0].data.datasets[0].data[i] = data.c5l_untuned[i];
     charts[0].update();
     updateCounter(VUs[i], data.c5l_untuned[i].toFixed(0));
     await sleep(700);
@@ -196,11 +201,11 @@ async function playScene0() {
   document.getElementById('status0').innerHTML = '<span class="status-dot pulse" style="background:#ff6b35"></span> Applying PGTune configuration... $0 cost';
   await sleep(2000);
   
-  // Phase 2: Tuned draws on top (~5s)
+  // Phase 2: Tuned draws on top (~5s) — green line appears point by point above the red
   document.getElementById('status0').innerHTML = '<span class="status-dot pulse" style="background:#3fb950"></span> Running tuned benchmark...';
   for (let i = 0; i < 6; i++) {
     if (!animating) return;
-    charts[0].data.datasets[1].data.push(data.c5l_tuned[i]);
+    charts[0].data.datasets[1].data[i] = data.c5l_tuned[i];
     charts[0].update();
     updateCounter(VUs[i], data.c5l_tuned[i].toFixed(0));
     await sleep(700);
