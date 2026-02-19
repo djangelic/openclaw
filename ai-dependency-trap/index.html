@@ -5,7 +5,7 @@
   <div style="position:relative;z-index:2;max-width:800px;padding:2rem">
     <h1 style="font-size:2.8rem;font-weight:800;margin-bottom:0.5rem;line-height:1.2;color:#fff">The AI Dependency Trap</h1>
     <p style="font-size:1.3rem;color:#f26622;font-weight:600;margin-bottom:1rem">Why I Left ChatGPT (And What OpenClaw Taught Me About Control)</p>
-    <p style="font-size:0.9rem;color:#8b949e;margin:0">Angel Menendez · February 19, 2026</p>
+    <p style="font-size:0.9rem;color:#8b949e;margin:0">Angel Menendez &middot; February 19, 2026</p>
   </div>
 </div>
 
@@ -13,33 +13,33 @@
 
 <!-- PART 1: I Was Trapped -->
 <div style="margin-bottom:4rem">
-  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">I Was Trapped and Didn't Know It</h2>
+  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">I Was Trapped and Didn't Know It</h2>
   <div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap">
     <div style="flex:1;min-width:280px">
-      <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">I used ChatGPT for months — it wrote my scripts, held my context, and felt comfortable. The scripts were fluffy. I didn't notice, because I had nothing to compare them to.</p>
-      <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">When I switched to Claude, the quality difference was immediate. Tighter writing, better structure, fewer filler phrases. Like swapping a well-meaning intern for a senior editor.</p>
-      <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">The migration was painless — not because ChatGPT made it easy, but because I'd already built my tools as MCP servers running through n8n. My calendar access, note-taking workflows, event automation — none of it lived inside ChatGPT. The AI changed. The plumbing didn't.</p>
+      <p style="margin-bottom:1rem;line-height:1.7">I used ChatGPT for months &mdash; it wrote my scripts, held my context, and felt comfortable. The scripts were fluffy. I didn't notice, because I had nothing to compare them to.</p>
+      <p style="margin-bottom:1rem;line-height:1.7">When I switched to Claude, the quality difference was immediate. Tighter writing, better structure, fewer filler phrases. Like swapping a well-meaning intern for a senior editor.</p>
+      <p style="margin-bottom:1rem;line-height:1.7">The migration was painless &mdash; not because ChatGPT made it easy, but because I'd already built my tools as MCP servers running through n8n. My calendar access, note-taking workflows, event automation &mdash; none of it lived inside ChatGPT. The AI changed. The plumbing didn't.</p>
     </div>
     <div style="flex:0 0 40%;max-width:360px;min-width:250px">
       <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-02.png" alt="Messy draft vs clean document — ChatGPT vs Claude quality comparison" style="max-width:100%;height:auto;display:block;border-radius:8px">
     </div>
   </div>
   <div style="background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem;margin:1.5rem 0">
-    <h3 style="color:#f26622;font-size:1.1rem;margin-bottom:0.75rem">⚠️ On MCP Authentication</h3>
+    <h3 style="color:#f26622;font-size:1.1rem;margin-bottom:0.75rem">&#9888;&#65039; On MCP Authentication</h3>
     <p style="margin-bottom:0;color:#c9d1d9;line-height:1.7">ChatGPT's MCP implementation only supports OAuth. The n8n MCP Trigger node supports header auth or no auth. Running MCP with no authentication is essentially a verbose, self-describing webhook with zero protection. Go with header auth.</p>
   </div>
 </div>
 
 <!-- PART 2: WordPress Lesson -->
 <div style="margin-bottom:4rem">
-  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">The WordPress Lesson</h2>
+  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">The WordPress Lesson</h2>
   <div style="margin:1.5rem 0">
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-03.png" alt="Key and lock representing WordPress portability" style="max-width:100%;height:auto;display:block;border-radius:8px">
   </div>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">I've run a web design firm for over 25 years — 200+ clients, almost all on WordPress. WordPress didn't win because it was the best CMS. It won because you could leave.</p>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Export your site. Move hosts. Overnight if you had to. That single capability created an entire ecosystem. Hosts competed on quality instead of lock-in. Clients trusted the investment because they'd never be held hostage.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">I've run a web design firm for over 25 years &mdash; 200+ clients, almost all on WordPress. WordPress didn't win because it was the best CMS. It won because you could leave.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">Export your site. Move hosts. Overnight if you had to. That single capability created an entire ecosystem. Hosts competed on quality instead of lock-in. Clients trusted the investment because they'd never be held hostage.</p>
   <div style="background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem;margin:1.5rem 0">
-    <h3 style="color:#f26622;font-size:1.1rem;margin-bottom:0.75rem">The Portability Principle — Own the Exit</h3>
+    <h3 style="color:#f26622;font-size:1.1rem;margin-bottom:0.75rem">The Portability Principle &mdash; Own the Exit</h3>
     <p style="margin-bottom:0.5rem;color:#c9d1d9;line-height:1.7">The ability to walk away is what keeps vendors honest and keeps power with the client.</p>
     <ul style="padding-left:1.2rem;margin-top:0.5rem;color:#c9d1d9;line-height:1.7">
       <li style="margin-bottom:0.3rem">Swap the model, keep the plumbing</li>
@@ -47,24 +47,25 @@
       <li style="margin-bottom:0.3rem">Standard protocols = freedom</li>
     </ul>
   </div>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">AI tooling is at exactly the same inflection point right now. If your tools are MCP servers you own, your AI is replaceable. If your tools are ChatGPT plugins, Claude Projects, or Gemini extensions — you're the one locked in.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">AI tooling is at exactly the same inflection point right now. If your tools are MCP servers you own, your AI is replaceable. If your tools are ChatGPT plugins, Claude Projects, or Gemini extensions &mdash; you're the one locked in.</p>
 </div>
 
 <!-- PART 3: MCP Standard -->
 <div style="margin-bottom:4rem">
-  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">MCP — The Portability Standard</h2>
+  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">MCP &mdash; The Portability Standard</h2>
   <div style="margin:1.5rem 0">
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-04.png" alt="Circuit brain representing the MCP standard" style="max-width:100%;height:auto;display:block;border-radius:8px">
   </div>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">MCP, or Model Context Protocol, is a powerful standard designed to help any AI model use external tools seamlessly. Our implementation, n8n, offers this through two mechanisms:</p>
+  <p style="margin-bottom:1rem;line-height:1.7">MCP &mdash; Model Context Protocol &mdash; is an open standard that lets any AI model call external tools through a single, universal interface. Instead of building custom integrations for every AI provider, you build once and connect anywhere.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">In n8n, MCP works through two complementary mechanisms:</p>
   <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
     <div style="flex:1;min-width:280px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
       <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">MCP Server</h3>
-      <p style="color:#c9d1d9;margin:0;line-height:1.7">Primarily for enterprise use cases, allowing you to create and test complex workflows.</p>
+      <p style="color:#c9d1d9;margin:0;line-height:1.7">The enterprise workhorse. MCP Server lets you build and test complex, multi-step workflows that run consistently every time. This matters because automation offers guarantees that AI alone cannot &mdash; and when you pair AI's reasoning with deterministic workflows, you get the best of both worlds.</p>
     </div>
     <div style="flex:1;min-width:280px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
       <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">MCP Trigger</h3>
-      <p style="color:#c9d1d9;margin:0;line-height:1.7">Unlocks novel applications by letting you activate specific tools directly. While Server handles robust backend operations, Trigger is where real innovation happens for individual users.</p>
+      <p style="color:#c9d1d9;margin:0;line-height:1.7">The everyday superpower. MCP Trigger lets your AI activate specific tools on demand &mdash; check a calendar, create a note, query a database &mdash; with zero friction. While Server handles the heavy backend logic, Trigger is where the magic happens for individual users. Together, they make AI feel less like a chatbot and more like a capable assistant.</p>
     </div>
   </div>
 
@@ -72,19 +73,19 @@
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-05.png" alt="Network map showing MCP tools and connections" style="max-width:100%;height:auto;display:block;border-radius:8px">
   </div>
 
-  <h2 style="font-size:1.8rem;font-weight:700;margin:2rem 0 1.5rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">My MCP Tools</h2>
+  <h2 style="font-size:1.8rem;font-weight:700;margin:2rem 0 1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">My MCP Tools</h2>
   <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
     <div style="flex:1;min-width:280px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">📅 Calendar Access</h3>
+      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">&#128197; Calendar Access</h3>
       <p style="color:#c9d1d9;margin:0;line-height:1.7">The AI can check my work calendar (busy/not busy), manage details and read/write events for my personal calendar, and access my divorce calendar in read-only mode.</p>
     </div>
     <div style="flex:1;min-width:280px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">📝 Notes System</h3>
+      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">&#128221; Notes System</h3>
       <p style="color:#c9d1d9;margin:0;line-height:1.7">Direct access to my journal via Obsidian. AI can review recent events or save new notes, automatically tagging content.</p>
     </div>
   </div>
 
-  <h2 style="font-size:1.8rem;font-weight:700;margin:2rem 0 1.5rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">Portable Use Cases</h2>
+  <h2 style="font-size:1.8rem;font-weight:700;margin:2rem 0 1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">Portable Use Cases</h2>
   <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
       <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">Custody Negotiation with Live Calendar Visualization</h3>
@@ -99,70 +100,74 @@
       <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">Record via Apple Watch, iOS shortcut prompts for context, audio transcribed locally, summarized by local model, sent via webhook to n8n for Obsidian storage.</p>
     </div>
   </div>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">When I transitioned from ChatGPT to Claude to OpenClaw, none of these tools required changes. Re-pointed the model, back to work in minutes.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">When I transitioned from ChatGPT to Claude to OpenClaw, none of these tools required changes. Re-pointed the model, back to work in minutes.</p>
 </div>
 
 <!-- PART 4: OpenClaw -->
 <div style="margin-bottom:4rem">
-  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">What OpenClaw Made Obvious</h2>
+  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">What OpenClaw Made Obvious</h2>
   <div style="margin:1.5rem 0">
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-06.png" alt="Robot at desk representing OpenClaw assistant" style="max-width:100%;height:auto;display:block;border-radius:8px">
   </div>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">OpenClaw is an open-source framework that turns an AI model into a persistent assistant — running on your machine, scheduling its own tasks, managing memory across sessions. It feels less like chatting with a model and more like having an employee who happens to be software.</p>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">OpenClaw is model-agnostic. The framework doesn't care if it's running Claude, GPT, Gemini, or local. The tools, memory, scheduling — all infrastructure you own. The model is just the brain you plug in.</p>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7"><strong style="color:#fff">I change one line of config. My tools stay. My workflows stay. My data stays.</strong></p>
+  <p style="margin-bottom:1rem;line-height:1.7">OpenClaw is an open-source framework that turns an AI model into a persistent assistant &mdash; running on your machine, scheduling its own tasks, managing memory across sessions. It feels less like chatting with a model and more like having an employee who happens to be software.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">OpenClaw is model-agnostic. The framework doesn't care if it's running Claude, GPT, Gemini, or local. The tools, memory, scheduling &mdash; all infrastructure you own. The model is just the brain you plug in.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">Want to see how to integrate MCP in n8n? Check out this raw video of me integrating it with Cortana, my OpenClaw assistant:</p>
+  <div style="position:relative;padding-bottom:56.25%;height:0">
+    <iframe src="https://www.loom.com/embed/8f1d6bcfc23d434ea2b5c5c2faabaa88" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+  </div>
+  <p style="margin-bottom:1rem;line-height:1.7"><strong>I change one line of config. My tools stay. My workflows stay. My data stays.</strong></p>
 </div>
 
 <!-- PART 5: Phone -->
 <div style="margin-bottom:4rem">
-  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">It's Happening On Your Phone Too</h2>
+  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">It's Happening On Your Phone Too</h2>
   <div style="margin:1.5rem 0">
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-07.png" alt="Circuit board representing iOS and phone hardware" style="max-width:100%;height:auto;display:block;border-radius:8px">
   </div>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Apple's Shortcuts app is basically n8n for your phone. Local model works for small tasks but chokes on large text.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">Apple's Shortcuts app is basically n8n for your phone. Local model works for small tasks but chokes on large text.</p>
   <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">📱 Phone</h3>
-      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">iOS Shortcuts → webhooks → n8n</p>
+      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">&#128241; Phone</h3>
+      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">iOS Shortcuts &rarr; webhooks &rarr; n8n</p>
     </div>
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">🖥️ Desktop</h3>
-      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">OpenClaw → MCP servers → n8n</p>
+      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">&#128421;&#65039; Desktop</h3>
+      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">OpenClaw &rarr; MCP servers &rarr; n8n</p>
     </div>
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">🖧 Server</h3>
-      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">Scheduled workflows → APIs → n8n</p>
+      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">&#128423; Server</h3>
+      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">Scheduled workflows &rarr; APIs &rarr; n8n</p>
     </div>
   </div>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7"><strong style="color:#fff">n8n is the constant.</strong> That's not theoretical. That's my Tuesday.</p>
+  <p style="margin-bottom:1rem;line-height:1.7"><strong>n8n is the constant.</strong> That's not theoretical. That's my Tuesday.</p>
 </div>
 
 <!-- PART 6: Real Promise -->
 <div style="margin-bottom:4rem">
-  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">The Real Promise Isn't AGI</h2>
+  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">The Real Promise Isn't AGI</h2>
   <div style="margin:1.5rem 0">
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-08.png" alt="Flowing data particles representing local inference" style="max-width:100%;height:auto;display:block;border-radius:8px">
   </div>
   <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">⚡ Local Token Pricing</h3>
+      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">&#9889; Local Token Pricing</h3>
       <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">Electricity, not API bills.</p>
     </div>
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">🔒 Full Privacy</h3>
+      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">&#128274; Full Privacy</h3>
       <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">Data never leaves your machine.</p>
     </div>
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">🏠 True Ownership</h3>
+      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">&#127968; True Ownership</h3>
       <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">Your hardware, your workflows, your drives.</p>
     </div>
   </div>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">We don't need AGI. We can't even control the models we have now. What we need are local models we control.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">We don't need AGI. We can't even control the models we have now. What we need are local models we control.</p>
 </div>
 
 <!-- PART 7: What To Do Today -->
 <div style="margin-bottom:4rem">
-  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">What You Should Do Today</h2>
+  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">What You Should Do Today</h2>
   <div style="background:#161b22;border-left:4px solid #f26622;border-radius:0 8px 8px 0;padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem">
     <div style="background:#f26622;color:#fff;font-weight:800;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem">1</div>
     <div style="color:#c9d1d9;line-height:1.7"><strong style="color:#fff">Stop building inside platform-specific ecosystems.</strong></div>
@@ -192,13 +197,13 @@
     <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Developers across OpenCode (107k+ GitHub stars), Roo Code, Cline, and dozens of other tools woke up to broken workflows overnight. No advance notice. No migration path. Just a server-side switch and a terse error message. The Hacker News thread is full of devs calling it "the AI equivalent of choosing Oracle over Postgres."</p>
   </div>
 
-  <h3 style="font-size:1.4rem;font-weight:700;margin-bottom:1rem;color:#fff">What This Means If You Use OpenClaw</h3>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">The good news: <strong style="color:#fff">OpenClaw users with API keys are completely unaffected.</strong> The ban targets subscription OAuth tokens being used outside Anthropic's own apps. If you're paying per token via the API Console, nothing changes.</p>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">The better news: <strong style="color:#fff">this is exactly why portability matters.</strong> OpenClaw is model-agnostic. It works with any OpenAI-compatible endpoint. Today you run Claude. Tomorrow Anthropic changes their terms and you swap to DeepSeek V3.2 at a tenth of the cost. Your tools, your memory, your workflows &mdash; none of it changes. Only the model behind it does.</p>
+  <h3 style="font-size:1.4rem;font-weight:700;margin-bottom:1rem">What This Means If You Use OpenClaw</h3>
+  <p style="margin-bottom:1rem;line-height:1.7">The good news: <strong>OpenClaw users with API keys are completely unaffected.</strong> The ban targets subscription OAuth tokens being used outside Anthropic's own apps. If you're paying per token via the API Console, nothing changes.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">The better news: <strong>this is exactly why portability matters.</strong> OpenClaw is model-agnostic. It works with any OpenAI-compatible endpoint. Today you run Claude. Tomorrow Anthropic changes their terms and you swap to DeepSeek V3.2 at a tenth of the cost. Your tools, your memory, your workflows &mdash; none of it changes. Only the model behind it does.</p>
 
-  <h3 style="font-size:1.4rem;font-weight:700;margin-bottom:1rem;color:#fff">n8n: The Secret Weapon</h3>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Here's what most people are missing. Services like Google Calendar, Notion, and Slack all require OAuth for access. Normally that means your AI tool needs its own OAuth integration with each service &mdash; which is exactly the kind of vendor-specific plumbing that creates lock-in.</p>
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">But when you put n8n in the middle, your AI never touches OAuth directly. It calls n8n through a simple MCP connection with header auth. <strong style="color:#fff">n8n handles the OAuth on the backend.</strong> Your AI gets access to OAuth-protected services through a single, portable API layer. Swap the AI, keep the tools. Swap the tools, keep the AI.</p>
+  <h3 style="font-size:1.4rem;font-weight:700;margin-bottom:1rem">n8n: The Secret Weapon</h3>
+  <p style="margin-bottom:1rem;line-height:1.7">Here's what most people are missing. Services like Google Calendar, Notion, and Slack all require OAuth for access. Normally that means your AI tool needs its own OAuth integration with each service &mdash; which is exactly the kind of vendor-specific plumbing that creates lock-in.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">But when you put n8n in the middle, your AI never touches OAuth directly. It calls n8n through a simple MCP connection with header auth. <strong>n8n handles the OAuth on the backend.</strong> Your AI gets access to OAuth-protected services through a single, portable API layer. Swap the AI, keep the tools. Swap the tools, keep the AI.</p>
 
   <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem">
@@ -211,7 +216,7 @@
     </div>
   </div>
 
-  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Anthropic's ban is a warning shot. The next one might come from OpenAI, Google, or whoever else decides their ecosystem should be a walled garden. Build your tools so it doesn't matter when it happens.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">Anthropic's ban is a warning shot. The next one might come from OpenAI, Google, or whoever else decides their ecosystem should be a walled garden. Build your tools so it doesn't matter when it happens.</p>
 </div>
 
 <!-- Enterprise CTA -->
@@ -219,8 +224,8 @@
   <div style="background:linear-gradient(135deg,#1a1e2e,#161b22);border:2px solid #f26622;border-radius:12px;padding:2rem;text-align:center;margin:2rem 0">
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-09.png" alt="Enterprise lock-in diagram" style="max-width:100%;height:auto;display:block;border-radius:8px;margin:0 auto 1.5rem">
     <h3 style="font-size:1.4rem;margin-bottom:0.75rem;color:#fff">The Enterprise Side of This Problem</h3>
-    <p style="color:#c9d1d9;margin-bottom:1rem;line-height:1.7">This post covers the personal side. For the business perspective — vendor lock-in, procurement strategy, and enterprise AI architecture — read the companion piece.</p>
-    <a href="https://aztechsol.com" style="display:inline-block;background:#f26622;color:#fff;padding:0.75rem 2rem;border-radius:6px;font-weight:700;font-size:1rem;text-decoration:none">Read the Enterprise Post →</a>
+    <p style="color:#c9d1d9;margin-bottom:1rem;line-height:1.7">This post covers the personal side. For the business perspective &mdash; vendor lock-in, procurement strategy, and enterprise AI architecture &mdash; read the companion piece.</p>
+    <a href="https://aztechsol.com/automation-ai/why-your-ai-needs-a-bouncer-and-why-n8n-is-it/" style="display:inline-block;background:#f26622;color:#fff;padding:0.75rem 2rem;border-radius:6px;font-weight:700;font-size:1rem;text-decoration:none">Read the Enterprise Post &rarr;</a>
   </div>
 </div>
 
@@ -228,5 +233,5 @@
 
 <!-- FOOTER -->
 <div style="text-align:center;padding:2rem 1rem;color:#8b949e;font-size:0.85rem;border-top:1px solid #21262d;margin-top:2rem">
-  Angel Menendez · <a href="https://djangelic.com" style="color:#f26622;text-decoration:none">djangelic.com</a> · <a href="https://aztechsol.com" style="color:#f26622;text-decoration:none">AZ Technology Solutions</a> · Staff Developer Advocate at n8n
+  Angel Menendez &middot; <a href="https://djangelic.com" style="color:#f26622;text-decoration:none">djangelic.com</a> &middot; <a href="https://aztechsol.com" style="color:#f26622;text-decoration:none">AZ Technology Solutions</a> &middot; Staff Developer Advocate at n8n
 </div>
