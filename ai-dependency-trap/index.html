@@ -180,7 +180,42 @@
     <div style="color:#c9d1d9;line-height:1.7"><strong style="color:#fff">Treat your AI like a contractor you might replace.</strong></div>
   </div>
   <p style="font-size:1.2rem;font-weight:700;color:#f26622;margin-top:1.5rem">Portability is power. 25 years in web hosting. Same lesson.</p>
+</div>
 
+<!-- UPDATE: Anthropic OAuth Ban -->
+<div style="margin-bottom:4rem">
+  <div style="background:#161b22;border:2px solid #f26622;border-radius:12px;padding:2rem;margin-bottom:2rem">
+    <p style="color:#f26622;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem">Update &mdash; February 19, 2026</p>
+    <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">It Already Happened</h2>
+    <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">While I was writing this post, Anthropic proved the point for me. They just published an <a href="https://openclaw.rocks/blog/anthropic-oauth-ban" style="color:#f26622;text-decoration:underline">official legal and compliance page</a> formally banning the use of Claude subscription OAuth tokens in any third-party tool &mdash; including their own Agent SDK.</p>
+    <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Read that again. <strong style="color:#fff">Anthropic banned their own SDK from using subscription credentials.</strong> If their own tools aren't exempt, nothing is.</p>
+    <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Developers across OpenCode (107k+ GitHub stars), Roo Code, Cline, and dozens of other tools woke up to broken workflows overnight. No advance notice. No migration path. Just a server-side switch and a terse error message. The Hacker News thread is full of devs calling it "the AI equivalent of choosing Oracle over Postgres."</p>
+  </div>
+
+  <h3 style="font-size:1.4rem;font-weight:700;margin-bottom:1rem;color:#fff">What This Means If You Use OpenClaw</h3>
+  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">The good news: <strong style="color:#fff">OpenClaw users with API keys are completely unaffected.</strong> The ban targets subscription OAuth tokens being used outside Anthropic's own apps. If you're paying per token via the API Console, nothing changes.</p>
+  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">The better news: <strong style="color:#fff">this is exactly why portability matters.</strong> OpenClaw is model-agnostic. It works with any OpenAI-compatible endpoint. Today you run Claude. Tomorrow Anthropic changes their terms and you swap to DeepSeek V3.2 at a tenth of the cost. Your tools, your memory, your workflows &mdash; none of it changes. Only the model behind it does.</p>
+
+  <h3 style="font-size:1.4rem;font-weight:700;margin-bottom:1rem;color:#fff">n8n: The Secret Weapon</h3>
+  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Here's what most people are missing. Services like Google Calendar, Notion, and Slack all require OAuth for access. Normally that means your AI tool needs its own OAuth integration with each service &mdash; which is exactly the kind of vendor-specific plumbing that creates lock-in.</p>
+  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">But when you put n8n in the middle, your AI never touches OAuth directly. It calls n8n through a simple MCP connection with header auth. <strong style="color:#fff">n8n handles the OAuth on the backend.</strong> Your AI gets access to OAuth-protected services through a single, portable API layer. Swap the AI, keep the tools. Swap the tools, keep the AI.</p>
+
+  <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
+    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem">
+      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">Without n8n</h4>
+      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">AI &rarr; OAuth to Google &rarr; OAuth to Slack &rarr; OAuth to Notion<br><em style="color:#8b949e">Each connection is provider-specific. Change your AI, rebuild everything.</em></p>
+    </div>
+    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem">
+      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">With n8n</h4>
+      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">AI &rarr; MCP (header auth) &rarr; n8n &rarr; handles all OAuth<br><em style="color:#8b949e">One connection. Swap the AI anytime. Tools don't notice.</em></p>
+    </div>
+  </div>
+
+  <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Anthropic's ban is a warning shot. The next one might come from OpenAI, Google, or whoever else decides their ecosystem should be a walled garden. Build your tools so it doesn't matter when it happens.</p>
+</div>
+
+<!-- Enterprise CTA -->
+<div style="margin-bottom:4rem">
   <div style="background:linear-gradient(135deg,#1a1e2e,#161b22);border:2px solid #f26622;border-radius:12px;padding:2rem;text-align:center;margin:2rem 0">
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-09.png" alt="Enterprise lock-in diagram" style="max-width:100%;height:auto;display:block;border-radius:8px;margin:0 auto 1.5rem">
     <h3 style="font-size:1.4rem;margin-bottom:0.75rem;color:#fff">The Enterprise Side of This Problem</h3>
