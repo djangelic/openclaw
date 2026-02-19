@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail — n8n Benchmarking V2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1280px; height: 720px; overflow: hidden; font-family: 'Inter', sans-serif; }
+
+/* === THUMBNAIL 1: The Split === */
+.thumb1 {
+  width: 1280px; height: 720px;
+  display: flex;
+  position: relative;
+  background: #0d1117;
+}
+.thumb1 .left {
+  width: 50%; height: 100%;
+  background: linear-gradient(135deg, #1a0000 0%, #2d0a0a 100%);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  position: relative;
+}
+.thumb1 .right {
+  width: 50%; height: 100%;
+  background: linear-gradient(135deg, #001a0a 0%, #0a2d15 100%);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  position: relative;
+}
+.thumb1 .divider {
+  position: absolute; left: 50%; top: 0; width: 4px; height: 100%;
+  background: linear-gradient(180deg, #ff6b35, #ff6b35 40%, #3fb950 60%, #3fb950);
+  z-index: 10;
+  transform: translateX(-50%);
+}
+.thumb1 .rps-number {
+  font-size: 140px; font-weight: 900; line-height: 1;
+}
+.thumb1 .rps-label {
+  font-size: 36px; font-weight: 700; margin-top: 8px; letter-spacing: 2px;
+}
+.thumb1 .left .rps-number { color: #f85149; }
+.thumb1 .left .rps-label { color: #f8514980; }
+.thumb1 .right .rps-number { color: #3fb950; }
+.thumb1 .right .rps-label { color: #3fb95080; }
+.thumb1 .badge {
+  position: absolute; bottom: 30px;
+  background: rgba(0,0,0,0.6); border: 1px solid #30363d;
+  border-radius: 8px; padding: 8px 16px;
+  font-size: 18px; color: #8b949e;
+}
+.thumb1 .left .badge { left: 30px; }
+.thumb1 .right .badge { right: 30px; }
+.thumb1 .top-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 20;
+}
+.thumb1 .top-text {
+  font-size: 32px; font-weight: 900; color: #ff6b35;
+  text-transform: uppercase; letter-spacing: 4px;
+}
+.thumb1 .same-hw {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+  background: #ff6b35;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 20;
+}
+.thumb1 .same-hw span {
+  font-size: 28px; font-weight: 900; color: #fff;
+  text-transform: uppercase; letter-spacing: 6px;
+}
+.thumb1 .arrow {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  z-index: 15; font-size: 60px; color: #ff6b35;
+}
+.thumb1 .multiplier {
+  position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%);
+  z-index: 15;
+  background: #ff6b35; color: #fff;
+  font-size: 42px; font-weight: 900;
+  padding: 8px 20px; border-radius: 12px;
+}
+
+/* === THUMBNAIL 2: Dark Dramatic === */
+.thumb2 {
+  width: 1280px; height: 720px;
+  background: radial-gradient(ellipse at 30% 50%, #1a1a2e 0%, #0d1117 70%);
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  padding: 60px 80px;
+  position: relative;
+}
+.thumb2 .headline {
+  font-size: 72px; font-weight: 900; color: #e6edf3; line-height: 1.1;
+  max-width: 700px;
+}
+.thumb2 .headline em {
+  color: #ff6b35; font-style: normal;
+}
+.thumb2 .subline {
+  font-size: 32px; color: #8b949e; margin-top: 16px; font-weight: 400;
+}
+.thumb2 .big-number {
+  position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
+  font-size: 200px; font-weight: 900; color: #3fb950; opacity: 0.9;
+  line-height: 1;
+}
+.thumb2 .big-number span {
+  font-size: 80px; vertical-align: super; color: #ff6b35;
+}
+.thumb2 .tag {
+  position: absolute; bottom: 30px; left: 80px;
+  background: #ff6b35; color: #fff; font-weight: 700;
+  padding: 10px 20px; border-radius: 8px; font-size: 22px;
+  letter-spacing: 1px;
+}
+.thumb2 .n8n-logo {
+  position: absolute; top: 30px; right: 40px;
+  font-size: 36px; font-weight: 700; color: #ff6b3540;
+}
+
+/* === THUMBNAIL 3: Food Truck to Franchise === */
+.thumb3 {
+  width: 1280px; height: 720px;
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  position: relative;
+}
+.thumb3 .path {
+  display: flex; align-items: center; gap: 20px; margin-bottom: 30px;
+}
+.thumb3 .stage {
+  text-align: center; padding: 20px 30px;
+  border-radius: 16px; border: 2px solid #30363d;
+  min-width: 200px;
+}
+.thumb3 .stage.s1 { border-color: #f85149; background: #f8514910; }
+.thumb3 .stage.s2 { border-color: #58a6ff; background: #58a6ff10; }
+.thumb3 .stage.s3 { border-color: #3fb950; background: #3fb95010; }
+.thumb3 .stage .emoji { font-size: 56px; }
+.thumb3 .stage .name { font-size: 22px; font-weight: 700; color: #e6edf3; margin-top: 8px; }
+.thumb3 .stage .rps { font-size: 28px; font-weight: 900; margin-top: 4px; }
+.thumb3 .stage.s1 .rps { color: #f85149; }
+.thumb3 .stage.s2 .rps { color: #58a6ff; }
+.thumb3 .stage.s3 .rps { color: #3fb950; }
+.thumb3 .arrow-between { font-size: 48px; color: #ff6b35; }
+.thumb3 .title3 {
+  font-size: 56px; font-weight: 900; color: #ff6b35;
+  margin-bottom: 40px; text-transform: uppercase; letter-spacing: 3px;
+}
+.thumb3 .bottom-tag {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 56px;
+  background: #ff6b35;
+  display: flex; align-items: center; justify-content: center;
+}
+.thumb3 .bottom-tag span {
+  font-size: 24px; font-weight: 900; color: #fff; letter-spacing: 4px; text-transform: uppercase;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+.nav { position: fixed; top: 10px; right: 10px; z-index: 999; display: flex; gap: 8px; }
+.nav button { font-size: 12px; padding: 6px 12px; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <button onclick="show(0)">Split</button>
+  <button onclick="show(1)">Dramatic</button>
+  <button onclick="show(2)">Path</button>
+</div>
+
+<!-- THUMBNAIL 1: The Split -->
+<div class="page active" id="p0">
+<div class="thumb1">
+  <div class="top-bar"><span class="top-text">n8n Benchmarking V2</span></div>
+  <div class="left">
+    <div class="rps-number">15</div>
+    <div class="rps-label">REQ/SEC</div>
+    <div class="badge">❌ Default PostgreSQL</div>
+  </div>
+  <div class="divider"></div>
+  <div class="multiplier">6.2×</div>
+  <div class="arrow">→</div>
+  <div class="right">
+    <div class="rps-number">93</div>
+    <div class="rps-label">REQ/SEC</div>
+    <div class="badge">✅ PGTune Applied</div>
+  </div>
+  <div class="same-hw"><span>Same Hardware · $0 Cost · Zero Failures</span></div>
+</div>
+</div>
+
+<!-- THUMBNAIL 2: Dark Dramatic -->
+<div class="page" id="p1">
+<div class="thumb2">
+  <div class="n8n-logo">n8n</div>
+  <div class="headline">Your n8n Instance Is <em>Starving</em></div>
+  <div class="subline">The free fix nobody uses</div>
+  <div class="big-number">6<span>×</span></div>
+  <div class="tag">$0 COST · SAME HARDWARE</div>
+</div>
+</div>
+
+<!-- THUMBNAIL 3: Food Truck to Franchise -->
+<div class="page" id="p2">
+<div class="thumb3">
+  <div class="title3">The Scaling Playbook</div>
+  <div class="path">
+    <div class="stage s1">
+      <div class="emoji">🚚</div>
+      <div class="name">Food Truck</div>
+      <div class="rps">15 RPS</div>
+    </div>
+    <div class="arrow-between">→</div>
+    <div class="stage s2">
+      <div class="emoji">🍽️</div>
+      <div class="name">Restaurant</div>
+      <div class="rps">165 RPS</div>
+    </div>
+    <div class="arrow-between">→</div>
+    <div class="stage s3">
+      <div class="emoji">🏢</div>
+      <div class="name">Franchise</div>
+      <div class="rps">273 RPS</div>
+    </div>
+  </div>
+  <div class="bottom-tag"><span>From 15 to 273 Requests Per Second</span></div>
+</div>
+</div>
+
+<script>
+function show(idx) {
+  document.querySelectorAll('.page').forEach((p,i) => p.classList.toggle('active', i===idx));
+}
+</script>
+</body>
+</html>
