@@ -75,7 +75,29 @@ That's not a hypothetical future. That's an architecture decision I've already m
 
 ---
 
-## Part 5: The Real Promise Isn't AGI
+## Part 5: It's Happening On Your Phone Too
+
+The same pattern is playing out on iOS.
+
+Apple's Shortcuts app is basically n8n for your phone — a visual workflow builder that can call webhooks, process data, chain actions together, and now run AI models. They've added ChatGPT integration, Gemini is coming, and there's already a local on-device model built in.
+
+The local model works great for small tasks. But it chokes on large text input — so for transcription analysis, I still route to ChatGPT through a shortcut. Here's the thing though: the *shortcut* doesn't care which model it's calling. When the local model improves (and it will — Apple's been investing heavily in on-device inference), I swap one action. The workflow stays.
+
+This is the dependency trap in miniature. If I'd built my transcription flow inside ChatGPT's app — using their interface, their context, their storage — I'd be locked in on my phone too. Instead, the shortcut captures the input, sends it to n8n via webhook, and n8n decides what to do with it. The phone is just another input device feeding into infrastructure I control.
+
+And this is where the picture gets interesting. I now have three layers:
+
+- **Phone:** iOS Shortcuts → webhooks → n8n
+- **Desktop:** OpenClaw → MCP servers → n8n
+- **Server:** Scheduled workflows → APIs → n8n
+
+The AI model is different at each layer. The interface is different. But **n8n is the constant** — the tool layer that stays regardless of which AI I'm talking to or which device I'm on. When local models catch up at any of these layers, I swap the brain and keep the plumbing.
+
+That's not a theoretical architecture. That's my Tuesday.
+
+---
+
+## Part 6: The Real Promise Isn't AGI
 
 The tech discourse is obsessed with AGI. When will we get it? Will it be dangerous? Will it take our jobs?
 
@@ -95,7 +117,7 @@ We don't need AGI. We need local models we control. Not models that control us.
 
 ---
 
-## Part 6: What You Should Do Today
+## Part 7: What You Should Do Today
 
 I'm not saying abandon cloud AI. I use Claude every day. It's excellent. The point is: **don't build your life around it.**
 
