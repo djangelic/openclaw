@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>n8n Benchmark — Animated B-Roll</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',system-ui,sans-serif;padding:20px;overflow-x:hidden}
+.controls{text-align:center;margin-bottom:20px;position:sticky;top:0;z-index:100;background:#0d1117;padding:10px 0;border-bottom:1px solid #21262d}
+button{background:#ff6b35;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:1em;cursor:pointer;margin:0 6px;font-weight:600}
+button:hover{background:#e55a25}
+button.secondary{background:#21262d;color:#8b949e}
+button.secondary:hover{background:#30363d}
+select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12px;border-radius:6px;font-size:.9em;margin:0 6px}
+.scene{display:none;justify-content:center;align-items:center;min-height:80vh;flex-direction:column}
+.scene.active{display:flex}
+.chart-container{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:30px;width:900px;max-width:95vw}
+.chart-container canvas{height:400px!important}
+.scene-title{font-size:1.8em;color:#ff6b35;margin-bottom:8px;font-weight:700}
+.scene-subtitle{font-size:1em;color:#8b949e;margin-bottom:24px}
+.counter{position:fixed;top:80px;right:30px;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px 20px;text-align:center;z-index:50}
+.counter .vu{font-size:2.2em;font-weight:800;color:#ff6b35}
+.counter .vu-label{font-size:.75em;color:#8b949e}
+.counter .rps{font-size:1.6em;font-weight:700;color:#3fb950;margin-top:4px}
+.counter .rps-label{font-size:.75em;color:#8b949e}
+.pulse{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3fb950;margin-right:6px}
+.status-bar{text-align:center;margin-top:12px;font-size:.85em;color:#8b949e}
+/* Hero stat animation */
+.hero-stat{display:flex;gap:20px;justify-content:center;margin-bottom:30px;flex-wrap:wrap}
+.stat-card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px 28px;text-align:center;min-width:180px;transform:scale(0);transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.stat-card.show{transform:scale(1)}
+.stat-card .num{font-size:2.8em;font-weight:800;color:#ff6b35}
+.stat-card .lbl{font-size:.85em;color:#8b949e;margin-top:2px}
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <select id="sceneSelect">
+    <option value="0">Scene 1: C5.Large — The 6x Reveal</option>
+    <option value="1">Scene 2: Failure Rates Eliminated</option>
+    <option value="2">Scene 3: The Full Scaling Ladder</option>
+    <option value="3">Scene 4: C5.4xLarge Journey</option>
+    <option value="4">Scene 5: Hero Stats Reveal</option>
+  </select>
+  <button onclick="playScene()">▶ Play Animation</button>
+  <button class="secondary" onclick="resetScene()">↺ Reset</button>
+  <span style="margin-left:12px;font-size:.8em;color:#484f58">Tip: Use OBS or browser screen record for GIF capture</span>
+</div>
+
+<div class="counter" id="counter" style="display:none">
+  <div><span class="status-dot pulse"></span><span style="font-size:.8em;color:#8b949e">BENCHMARK RUNNING</span></div>
+  <div class="vu" id="vuCount">0</div>
+  <div class="vu-label">Virtual Users</div>
+  <div class="rps" id="rpsCount">0</div>
+  <div class="rps-label">req/sec</div>
+</div>
+
+<!-- Scene 0: C5 Large Before/After -->
+<div class="scene active" id="scene0">
+  <div class="scene-title">C5.Large — Single Webhook</div>
+  <div class="scene-subtitle">PGTune: $0 cost, 6.2× improvement</div>
+  <div class="chart-container"><canvas id="chart0"></canvas></div>
+  <div class="status-bar" id="status0"></div>
+</div>
+
+<!-- Scene 1: Failure Rates -->
+<div class="scene" id="scene1">
+  <div class="scene-title">Failure Rates @ 200 Virtual Users</div>
+  <div class="scene-subtitle">From 9.21% to absolute zero</div>
+  <div class="chart-container"><canvas id="chart1"></canvas></div>
+  <div class="status-bar" id="status1"></div>
+</div>
+
+<!-- Scene 2: Scaling Ladder -->
+<div class="scene" id="scene2">
+  <div class="scene-title">The Scaling Ladder</div>
+  <div class="scene-subtitle">Single Webhook Peak RPS — same test, different configs</div>
+  <div class="chart-container"><canvas id="chart2"></canvas></div>
+  <div class="status-bar" id="status2"></div>
+</div>
+
+<!-- Scene 3: c5.4xlarge -->
+<div class="scene" id="scene3">
+  <div class="scene-title">C5.4xLarge — The Full Journey</div>
+  <div class="scene-subtitle">Untuned Single → Untuned Queue → Tuned Queue</div>
+  <div class="chart-container"><canvas id="chart3"></canvas></div>
+  <div class="status-bar" id="status3"></div>
+</div>
+
+<!-- Scene 4: Hero Stats -->
+<div class="scene" id="scene4">
+  <div class="scene-title" style="margin-bottom:30px">The Results</div>
+  <div class="hero-stat">
+    <div class="stat-card" id="hs0"><div class="num">6.2×</div><div class="lbl">RPS Improvement</div></div>
+    <div class="stat-card" id="hs1"><div class="num">17×</div><div class="lbl">Total Scaling</div></div>
+    <div class="stat-card" id="hs2"><div class="num" style="color:#3fb950">0%</div><div class="lbl">Failure Rate</div></div>
+    <div class="stat-card" id="hs3"><div class="num" style="color:#3fb950">$0</div><div class="lbl">Cost</div></div>
+  </div>
+  <div class="scene-subtitle" id="heroSub" style="opacity:0;transition:opacity 1s">Same hardware. Smart configuration. Massive results.</div>
+</div>
+
+<script>
+const VUs = [3, 10, 30, 50, 100, 200];
+const VULabels = ['3','10','30','50','100','200'];
+const o='#ff6b35',g='#3fb950',r='#f85149',b='#58a6ff',gr='#484f58';
+
+let charts = {};
+let animating = false;
+let currentScene = 0;
+
+function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+function showScene(idx) {
+  document.querySelectorAll('.scene').forEach((s,i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  currentScene = idx;
+}
+
+document.getElementById('sceneSelect').addEventListener('change', e => {
+  showScene(parseInt(e.target.value));
+  resetScene();
+});
+
+function updateCounter(vu, rps, show=true) {
+  const el = document.getElementById('counter');
+  el.style.display = show ? 'block' : 'none';
+  document.getElementById('vuCount').textContent = vu;
+  document.getElementById('rpsCount').textContent = rps + ' RPS';
+}
+
+// Chart defaults
+const baseOpts = (title) => ({
+  responsive: true, maintainAspectRatio: false,
+  animation: { duration: 800, easing: 'easeOutQuart' },
+  plugins: {
+    legend: { labels: { color: '#e6edf3', font: { size: 14 } } },
+    title: { display: true, text: title, color: '#e6edf3', font: { size: 18 } },
+    tooltip: { backgroundColor: '#161b22', borderColor: '#30363d', borderWidth: 1 }
+  },
+  scales: {
+    x: { ticks: { color: '#8b949e', font: { size: 13 } }, grid: { color: '#21262d' }, title: { display: true, text: 'Virtual Users', color: '#8b949e' } },
+    y: { ticks: { color: '#8b949e' }, grid: { color: '#21262d' }, beginAtZero: true, title: { display: true, text: 'Requests/sec', color: '#8b949e' } }
+  }
+});
+
+// DATA
+const data = {
+  c5l_untuned: [14.87, 14.94, 15.06, 15.18, 15.45, 15.97],
+  c5l_tuned: [92.21, 95.37, 92.50, 93.38, 95.16, 93.46],
+  c5l_multi_untuned: [14.99, 15.23, 15.09, 14.72, 16.74, 24.24],
+  c5l_multi_tuned: [95.43, 92.46, 91.98, 92.24, 92.21, 91.48],
+  fail_untuned: [0.16, 9.21, 0.32, 7.15],
+  fail_tuned: [0, 0, 0, 0],
+  ladder: [16, 93, 165, 273],
+  c5xl_single: [15.07, 15.19, 15.22, 15.43, 15.64, 16.19],
+  c5xl_untuned_q: [164.73, 165.23, 164.48, 161.43, 161.11, 162.94],
+  c5xl_tuned_q: [259.06, 278.84, 275.83, 272.40, 270.53, 273.41]
+};
+
+// SCENE 0: Animated line chart
+async function playScene0() {
+  const ctx = document.getElementById('chart0');
+  if (charts[0]) charts[0].destroy();
+  
+  charts[0] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [], datasets: [
+        { label: 'Untuned (V1)', data: [], borderColor: r, backgroundColor: 'rgba(248,81,73,0.1)', fill: true, tension: .3, pointRadius: 6, pointBackgroundColor: r },
+        { label: 'Tuned (V2)', data: [], borderColor: g, backgroundColor: 'rgba(63,185,80,0.1)', fill: true, tension: .3, pointRadius: 6, pointBackgroundColor: g }
+      ]
+    },
+    options: baseOpts('Single Webhook — Requests per Second')
+  });
+
+  // Phase 1: Untuned
+  document.getElementById('status0').innerHTML = '<span class="status-dot pulse"></span> Running untuned baseline...';
+  for (let i = 0; i < 6; i++) {
+    if (!animating) return;
+    charts[0].data.labels.push(VULabels[i]);
+    charts[0].data.datasets[0].data.push(data.c5l_untuned[i]);
+    charts[0].data.datasets[1].data.push(null);
+    charts[0].update();
+    updateCounter(VUs[i], data.c5l_untuned[i].toFixed(0));
+    await sleep(700);
+  }
+  
+  await sleep(800);
+  document.getElementById('status0').innerHTML = '<span class="status-dot pulse" style="background:#ff6b35"></span> Applying PGTune configuration...';
+  await sleep(1500);
+  
+  // Phase 2: Tuned — reset and show both
+  document.getElementById('status0').innerHTML = '<span class="status-dot pulse" style="background:#3fb950"></span> Running tuned benchmark...';
+  charts[0].data.labels = [];
+  charts[0].data.datasets[0].data = [];
+  charts[0].data.datasets[1].data = [];
+  charts[0].options.scales.y.max = 110;
+  charts[0].update();
+  
+  for (let i = 0; i < 6; i++) {
+    if (!animating) return;
+    charts[0].data.labels.push(VULabels[i]);
+    charts[0].data.datasets[0].data.push(data.c5l_untuned[i]);
+    charts[0].data.datasets[1].data.push(data.c5l_tuned[i]);
+    charts[0].update();
+    updateCounter(VUs[i], data.c5l_tuned[i].toFixed(0));
+    await sleep(700);
+  }
+  
+  document.getElementById('status0').innerHTML = '✅ Benchmark complete — <strong style="color:#3fb950">6.2× improvement</strong>, zero failures';
+  await sleep(500);
+  updateCounter(200, '93', true);
+}
+
+// SCENE 1: Failure rate bars
+async function playScene1() {
+  const ctx = document.getElementById('chart1');
+  if (charts[1]) charts[1].destroy();
+  
+  const labels = ['Single WH\n(c5.large)', 'Multi WH\n(c5.large)', 'Single WH\n(c5.4xl)', 'Multi WH\n(c5.4xl)'];
+  
+  charts[1] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Untuned', data: [0,0,0,0], backgroundColor: r, borderRadius: 6 },
+        { label: 'Tuned', data: [0,0,0,0], backgroundColor: g, borderRadius: 6 }
+      ]
+    },
+    options: { ...baseOpts('Failure Rate @ 200 VUs'), scales: { ...baseOpts('').scales, y: { ...baseOpts('').scales.y, title: { display: true, text: '% Failed', color: '#8b949e' }, max: 12 } } }
+  });
+
+  document.getElementById('status1').innerHTML = '<span class="status-dot pulse"></span> Loading untuned results...';
+  
+  for (let i = 0; i < 4; i++) {
+    if (!animating) return;
+    charts[1].data.datasets[0].data[i] = data.fail_untuned[i];
+    charts[1].update();
+    await sleep(800);
+  }
+  
+  await sleep(1000);
+  document.getElementById('status1').innerHTML = '<span class="status-dot pulse" style="background:#3fb950"></span> Loading tuned results...';
+  
+  for (let i = 0; i < 4; i++) {
+    if (!animating) return;
+    charts[1].data.datasets[1].data[i] = data.fail_tuned[i];
+    charts[1].update();
+    await sleep(600);
+  }
+  
+  document.getElementById('status1').innerHTML = '✅ Every failure rate: <strong style="color:#3fb950">0.00%</strong>';
+  updateCounter(200, '0% fail', false);
+}
+
+// SCENE 2: Scaling ladder
+async function playScene2() {
+  const ctx = document.getElementById('chart2');
+  if (charts[2]) charts[2].destroy();
+  
+  const labels = ['Untuned Single\n(c5.large)', 'Tuned Single\n(c5.large)', 'Untuned Queue\n(c5.4xlarge)', 'Tuned Queue\n(c5.4xlarge)'];
+  const colors = [r, o, b, g];
+  
+  charts[2] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ label: 'Peak RPS', data: [0,0,0,0], backgroundColor: colors, borderRadius: 8 }]
+    },
+    options: {
+      ...baseOpts('The Scaling Ladder — Peak RPS'),
+      indexAxis: 'y',
+      plugins: { ...baseOpts('').plugins, legend: { display: false }, title: { display: true, text: 'The Scaling Ladder — Peak RPS @ 200 VUs', color: '#e6edf3', font: { size: 18 } } },
+      scales: {
+        x: { ...baseOpts('').scales.x, title: { display: true, text: 'Requests per Second', color: '#8b949e' }, max: 300 },
+        y: { ticks: { color: '#e6edf3', font: { size: 14 } }, grid: { color: '#21262d' } }
+      }
+    }
+  });
+
+  const stepLabels = ['Food Truck (untuned)', 'Food Truck (tuned)', 'Restaurant (queue mode)', 'Franchise (tuned queue)'];
+  
+  for (let i = 0; i < 4; i++) {
+    if (!animating) return;
+    document.getElementById('status2').innerHTML = `<span class="status-dot pulse" style="background:${colors[i]}"></span> ${stepLabels[i]}...`;
+    // Animate the bar growing
+    const target = data.ladder[i];
+    const steps = 20;
+    for (let s = 1; s <= steps; s++) {
+      charts[2].data.datasets[0].data[i] = (target / steps) * s;
+      charts[2].update('none');
+      await sleep(40);
+    }
+    updateCounter('—', target);
+    await sleep(600);
+  }
+  
+  document.getElementById('status2').innerHTML = '✅ From <strong style="color:#f85149">16 RPS</strong> to <strong style="color:#3fb950">273 RPS</strong> — <strong style="color:#ff6b35">17× improvement</strong>';
+}
+
+// SCENE 3: C5.4xlarge three-line progression
+async function playScene3() {
+  const ctx = document.getElementById('chart3');
+  if (charts[3]) charts[3].destroy();
+  
+  charts[3] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'Untuned Single', data: [], borderColor: r, tension: .3, pointRadius: 5, borderWidth: 3 },
+        { label: 'Untuned Queue', data: [], borderColor: b, tension: .3, pointRadius: 5, borderWidth: 3 },
+        { label: 'Tuned Queue', data: [], borderColor: g, tension: .3, pointRadius: 5, borderWidth: 3 }
+      ]
+    },
+    options: { ...baseOpts('Single Webhook — C5.4xLarge'), scales: { ...baseOpts('').scales, y: { ...baseOpts('').scales.y, max: 300 } } }
+  });
+
+  // Phase 1: Untuned single
+  document.getElementById('status3').innerHTML = '<span class="status-dot pulse" style="background:#f85149"></span> Testing untuned single instance...';
+  for (let i = 0; i < 6; i++) {
+    if (!animating) return;
+    charts[3].data.labels.push(VULabels[i]);
+    charts[3].data.datasets[0].data.push(data.c5xl_single[i]);
+    charts[3].data.datasets[1].data.push(null);
+    charts[3].data.datasets[2].data.push(null);
+    charts[3].update();
+    updateCounter(VUs[i], data.c5xl_single[i].toFixed(0));
+    await sleep(500);
+  }
+  
+  await sleep(800);
+  document.getElementById('status3').innerHTML = '<span class="status-dot pulse" style="background:#58a6ff"></span> Enabling queue mode...';
+  await sleep(1000);
+  
+  // Phase 2: Add untuned queue
+  for (let i = 0; i < 6; i++) {
+    if (!animating) return;
+    charts[3].data.datasets[1].data[i] = data.c5xl_untuned_q[i];
+    charts[3].update();
+    updateCounter(VUs[i], data.c5xl_untuned_q[i].toFixed(0));
+    await sleep(500);
+  }
+  
+  await sleep(800);
+  document.getElementById('status3').innerHTML = '<span class="status-dot pulse" style="background:#3fb950"></span> Applying PGTune to queue mode...';
+  await sleep(1000);
+  
+  // Phase 3: Add tuned queue
+  for (let i = 0; i < 6; i++) {
+    if (!animating) return;
+    charts[3].data.datasets[2].data[i] = data.c5xl_tuned_q[i];
+    charts[3].update();
+    updateCounter(VUs[i], data.c5xl_tuned_q[i].toFixed(0));
+    await sleep(500);
+  }
+  
+  document.getElementById('status3').innerHTML = '✅ <strong style="color:#3fb950">273 RPS</strong> — 17× over untuned single';
+}
+
+// SCENE 4: Hero stats pop
+async function playScene4() {
+  document.getElementById('counter').style.display = 'none';
+  for (let i = 0; i < 4; i++) document.getElementById('hs'+i).classList.remove('show');
+  document.getElementById('heroSub').style.opacity = '0';
+  
+  await sleep(500);
+  for (let i = 0; i < 4; i++) {
+    if (!animating) return;
+    document.getElementById('hs'+i).classList.add('show');
+    await sleep(700);
+  }
+  await sleep(500);
+  document.getElementById('heroSub').style.opacity = '1';
+}
+
+const scenePlayers = [playScene0, playScene1, playScene2, playScene3, playScene4];
+
+async function playScene() {
+  animating = true;
+  await scenePlayers[currentScene]();
+  animating = false;
+}
+
+function resetScene() {
+  animating = false;
+  document.getElementById('counter').style.display = 'none';
+  if (charts[currentScene]) { charts[currentScene].destroy(); delete charts[currentScene]; }
+  const status = document.getElementById('status' + currentScene);
+  if (status) status.innerHTML = '';
+  // Reset hero stats
+  for (let i = 0; i < 4; i++) { const el = document.getElementById('hs'+i); if (el) el.classList.remove('show'); }
+  const sub = document.getElementById('heroSub'); if (sub) sub.style.opacity = '0';
+}
+</script>
+</body>
+</html>
