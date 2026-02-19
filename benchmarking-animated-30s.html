@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>n8n Benchmark — Animated B-Roll (30s)</title>
+<title>n8n Benchmark — Animated B-Roll (15s)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -167,53 +167,47 @@ async function playScene0() {
   const ctx = document.getElementById('chart0');
   if (charts[0]) charts[0].destroy();
   
+  const opts0 = baseOpts('Single Webhook — Requests per Second');
+  opts0.scales.y.max = 110;
+  
   charts[0] = new Chart(ctx, {
     type: 'line',
     data: {
       labels: [], datasets: [
-        { label: 'Untuned (V1)', data: [], borderColor: r, backgroundColor: 'rgba(248,81,73,0.1)', fill: true, tension: .3, pointRadius: 6, pointBackgroundColor: r },
-        { label: 'Tuned (V2)', data: [], borderColor: g, backgroundColor: 'rgba(63,185,80,0.1)', fill: true, tension: .3, pointRadius: 6, pointBackgroundColor: g }
+        { label: 'Untuned (V1)', data: [], borderColor: r, backgroundColor: 'rgba(248,81,73,0.1)', fill: true, tension: .3, pointRadius: 6, pointBackgroundColor: r, borderWidth: 3 },
+        { label: 'Tuned (V2)', data: [], borderColor: g, backgroundColor: 'rgba(63,185,80,0.1)', fill: true, tension: .3, pointRadius: 6, pointBackgroundColor: g, borderWidth: 3 }
       ]
     },
-    options: baseOpts('Single Webhook — Requests per Second')
+    options: opts0
   });
 
-  // Phase 1: Untuned (~12s)
+  // Phase 1: Untuned only (~5s)
   document.getElementById('status0').innerHTML = '<span class="status-dot pulse"></span> Running untuned baseline...';
   for (let i = 0; i < 6; i++) {
     if (!animating) return;
     charts[0].data.labels.push(VULabels[i]);
     charts[0].data.datasets[0].data.push(data.c5l_untuned[i]);
-    charts[0].data.datasets[1].data.push(null);
     charts[0].update();
     updateCounter(VUs[i], data.c5l_untuned[i].toFixed(0));
-    await sleep(1800);
+    await sleep(700);
   }
   
-  await sleep(1500);
-  document.getElementById('status0').innerHTML = '<span class="status-dot pulse" style="background:#ff6b35"></span> Applying PGTune configuration...';
-  await sleep(3000);
+  await sleep(1000);
+  document.getElementById('status0').innerHTML = '<span class="status-dot pulse" style="background:#ff6b35"></span> Applying PGTune configuration... $0 cost';
+  await sleep(2000);
   
-  // Phase 2: Tuned — reset and show both (~14s)
+  // Phase 2: Tuned draws on top (~5s)
   document.getElementById('status0').innerHTML = '<span class="status-dot pulse" style="background:#3fb950"></span> Running tuned benchmark...';
-  charts[0].data.labels = [];
-  charts[0].data.datasets[0].data = [];
-  charts[0].data.datasets[1].data = [];
-  charts[0].options.scales.y.max = 110;
-  charts[0].update();
-  
   for (let i = 0; i < 6; i++) {
     if (!animating) return;
-    charts[0].data.labels.push(VULabels[i]);
-    charts[0].data.datasets[0].data.push(data.c5l_untuned[i]);
     charts[0].data.datasets[1].data.push(data.c5l_tuned[i]);
     charts[0].update();
     updateCounter(VUs[i], data.c5l_tuned[i].toFixed(0));
-    await sleep(1800);
+    await sleep(700);
   }
   
+  await sleep(1000);
   document.getElementById('status0').innerHTML = '✅ Benchmark complete — <strong style="color:#3fb950">6.2× improvement</strong>, zero failures';
-  await sleep(1500);
   updateCounter(200, '93', true);
 }
 
@@ -242,19 +236,20 @@ async function playScene1() {
     if (!animating) return;
     charts[1].data.datasets[0].data[i] = data.fail_untuned[i];
     charts[1].update();
-    await sleep(3000);
+    await sleep(1500);
   }
   
-  await sleep(3000);
-  document.getElementById('status1').innerHTML = '<span class="status-dot pulse" style="background:#3fb950"></span> Loading tuned results...';
+  await sleep(1500);
+  document.getElementById('status1').innerHTML = '<span class="status-dot pulse" style="background:#3fb950"></span> Now with PGTune applied...';
   
   for (let i = 0; i < 4; i++) {
     if (!animating) return;
     charts[1].data.datasets[1].data[i] = data.fail_tuned[i];
     charts[1].update();
-    await sleep(2500);
+    await sleep(1200);
   }
   
+  await sleep(1000);
   document.getElementById('status1').innerHTML = '✅ Every failure rate: <strong style="color:#3fb950">0.00%</strong>';
   updateCounter(200, '0% fail', false);
 }
@@ -291,17 +286,17 @@ async function playScene2() {
     document.getElementById('status2').innerHTML = `<span class="status-dot pulse" style="background:${colors[i]}"></span> ${stepLabels[i]}...`;
     // Animate the bar growing
     const target = data.ladder[i];
-    const steps = 40;
+    const steps = 30;
     for (let s = 1; s <= steps; s++) {
       charts[2].data.datasets[0].data[i] = (target / steps) * s;
       charts[2].update('none');
-      await sleep(60);
+      await sleep(30);
     }
     updateCounter('—', target);
-    await sleep(2000);
+    await sleep(1500);
   }
   
-  await sleep(2000);
+  await sleep(1500);
   document.getElementById('status2').innerHTML = '✅ From <strong style="color:#f85149">16 RPS</strong> to <strong style="color:#3fb950">273 RPS</strong> — <strong style="color:#ff6b35">17× improvement</strong>';
 }
 
@@ -323,7 +318,7 @@ async function playScene3() {
     options: { ...baseOpts('Single Webhook — C5.4xLarge'), scales: { ...baseOpts('').scales, y: { ...baseOpts('').scales.y, max: 300 } } }
   });
 
-  // Phase 1: Untuned single (~8s)
+  // Phase 1: Untuned single (~4s)
   document.getElementById('status3').innerHTML = '<span class="status-dot pulse" style="background:#f85149"></span> Testing untuned single instance...';
   for (let i = 0; i < 6; i++) {
     if (!animating) return;
@@ -333,36 +328,36 @@ async function playScene3() {
     charts[3].data.datasets[2].data.push(null);
     charts[3].update();
     updateCounter(VUs[i], data.c5xl_single[i].toFixed(0));
-    await sleep(1200);
+    await sleep(500);
   }
   
-  await sleep(1500);
+  await sleep(800);
   document.getElementById('status3').innerHTML = '<span class="status-dot pulse" style="background:#58a6ff"></span> Enabling queue mode...';
-  await sleep(2000);
+  await sleep(1200);
   
-  // Phase 2: Add untuned queue (~8s)
+  // Phase 2: Add untuned queue (~4s)
   for (let i = 0; i < 6; i++) {
     if (!animating) return;
     charts[3].data.datasets[1].data[i] = data.c5xl_untuned_q[i];
     charts[3].update();
     updateCounter(VUs[i], data.c5xl_untuned_q[i].toFixed(0));
-    await sleep(1200);
+    await sleep(500);
   }
   
-  await sleep(1500);
+  await sleep(800);
   document.getElementById('status3').innerHTML = '<span class="status-dot pulse" style="background:#3fb950"></span> Applying PGTune to queue mode...';
-  await sleep(2000);
+  await sleep(1200);
   
-  // Phase 3: Add tuned queue (~8s)
+  // Phase 3: Add tuned queue (~4s)
   for (let i = 0; i < 6; i++) {
     if (!animating) return;
     charts[3].data.datasets[2].data[i] = data.c5xl_tuned_q[i];
     charts[3].update();
     updateCounter(VUs[i], data.c5xl_tuned_q[i].toFixed(0));
-    await sleep(1200);
+    await sleep(500);
   }
   
-  await sleep(1500);
+  await sleep(1000);
   document.getElementById('status3').innerHTML = '✅ <strong style="color:#3fb950">273 RPS</strong> — 17× over untuned single';
 }
 
@@ -372,13 +367,13 @@ async function playScene4() {
   for (let i = 0; i < 4; i++) document.getElementById('hs'+i).classList.remove('show');
   document.getElementById('heroSub').style.opacity = '0';
   
-  await sleep(2000);
+  await sleep(1000);
   for (let i = 0; i < 4; i++) {
     if (!animating) return;
     document.getElementById('hs'+i).classList.add('show');
-    await sleep(5000);
+    await sleep(2500);
   }
-  await sleep(3000);
+  await sleep(2000);
   document.getElementById('heroSub').style.opacity = '1';
 }
 
