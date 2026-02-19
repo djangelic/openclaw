@@ -42,6 +42,8 @@ Now look at how we treat AI.
 
 Most AI integrations work on API keys with broad scopes. You connect your Google account, and the model gets read-write access to every calendar, every doc, every email thread. The scoping is blunt — "calendar access" means *all* calendars. "Email access" means the whole inbox. The model sees everything because the permission model doesn't have a middle gear.
 
+Google tried to fix this with service accounts — granular, scoped access through domain-wide delegation. The intent was right. But the UX was wrong. Nobody outside of GCP admins knows how to configure a service account with delegation scoped to a single calendar. The feature exists; the adoption doesn't. So people fall back to OAuth, which gives the model everything, because that's what the setup wizard offers.
+
 n8n changes this equation fundamentally. When you build a workflow in n8n that exposes calendar functionality to an AI, you decide *exactly* what that means. Read-only on your work calendar. Read-write on your personal one. No access whatsoever to the shared family calendar with your kids' schedules on it. The AI interacts with a workflow endpoint — it never touches the underlying API directly. It never sees the full picture. It sees precisely what you've decided it should see.
 
 This isn't a feature. It's an architecture. The AI operates through n8n, and n8n enforces the boundaries. You don't have to trust the model to respect limits — the limits are structural.
