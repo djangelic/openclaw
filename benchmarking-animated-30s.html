@@ -167,27 +167,32 @@ async function playScene0() {
   const ctx = document.getElementById('chart0');
   if (charts[0]) charts[0].destroy();
   
-  const opts0 = baseOpts('Single Webhook — Requests per Second');
-  opts0.scales.y.max = 110;
-  
   charts[0] = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: [], datasets: [
-        { label: 'Untuned (V1)', data: [], borderColor: r, backgroundColor: 'rgba(248,81,73,0.1)', fill: true, tension: .3, pointRadius: 6, pointBackgroundColor: r, borderWidth: 3 },
-        { label: 'Tuned (V2)', data: [], borderColor: g, backgroundColor: 'rgba(63,185,80,0.1)', fill: true, tension: .3, pointRadius: 6, pointBackgroundColor: g, borderWidth: 3 }
+      labels: VULabels,
+      datasets: [
+        { label: 'Untuned (V1)', data: [null,null,null,null,null,null], borderColor: r, backgroundColor: 'rgba(248,81,73,0.1)', fill: true, tension: .3, pointRadius: 6, pointBackgroundColor: r, borderWidth: 3 },
+        { label: 'Tuned (V2)', data: [null,null,null,null,null,null], borderColor: g, backgroundColor: 'rgba(63,185,80,0.1)', fill: true, tension: .3, pointRadius: 6, pointBackgroundColor: g, borderWidth: 3 }
       ]
     },
-    options: opts0
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 400 },
+      plugins: {
+        legend: { labels: { color: '#e6edf3', font: { size: 14 } } },
+        title: { display: true, text: 'Single Webhook — Requests per Second', color: '#e6edf3', font: { size: 18 } },
+        tooltip: { backgroundColor: '#161b22', borderColor: '#30363d', borderWidth: 1 }
+      },
+      scales: {
+        x: { ticks: { color: '#8b949e', font: { size: 13 } }, grid: { color: '#21262d' }, title: { display: true, text: 'Virtual Users', color: '#8b949e' } },
+        y: { ticks: { color: '#8b949e' }, grid: { color: '#21262d' }, min: 0, max: 110, title: { display: true, text: 'Requests/sec', color: '#8b949e' } }
+      }
+    }
   });
 
   // Phase 1: Untuned only (~5s) — red line draws across all 6 VU levels
   document.getElementById('status0').innerHTML = '<span class="status-dot pulse"></span> Running untuned baseline...';
-  // Pre-fill labels and null slots for tuned
-  charts[0].data.labels = [...VULabels];
-  charts[0].data.datasets[0].data = [null,null,null,null,null,null];
-  charts[0].data.datasets[1].data = [null,null,null,null,null,null];
-  charts[0].update('none');
   
   for (let i = 0; i < 6; i++) {
     if (!animating) return;
