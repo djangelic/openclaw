@@ -50,23 +50,43 @@
   <p style="margin-bottom:1rem;line-height:1.7">AI tooling is at exactly the same inflection point right now. If your tools are MCP servers you own, your AI is replaceable. If your tools are ChatGPT plugins, Claude Projects, or Gemini extensions &mdash; you're the one locked in.</p>
 </div>
 
-<!-- PART 3: MCP Standard -->
+<!-- PART 3: MCP Standard — UPDATED -->
 <div style="margin-bottom:4rem">
   <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">MCP &mdash; The Portability Standard</h2>
   <div style="margin:1.5rem 0">
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-04.png" alt="Circuit brain representing the MCP standard" style="max-width:100%;height:auto;display:block;border-radius:8px">
   </div>
   <p style="margin-bottom:1rem;line-height:1.7">MCP &mdash; Model Context Protocol &mdash; is an open standard that lets any AI model call external tools through a single, universal interface. Instead of building custom integrations for every AI provider, you build once and connect anywhere.</p>
-  <p style="margin-bottom:1rem;line-height:1.7">In n8n, MCP works through two complementary mechanisms:</p>
+  <p style="margin-bottom:1rem;line-height:1.7">If you've used n8n before, you're used to integrations coming in pairs &mdash; a trigger and a node. One to receive, one to send. MCP is different. There's no MCP "node" in the traditional sense. Instead, that node is split into two pieces: the <strong>MCP Trigger</strong> receives calls from external AIs, and the <strong>MCP Tool</strong> lets your n8n agents call out to external MCP servers, acting as a client to them.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">Same integration, two shapes, because AI workflows don't fit neatly into a single rectangle.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">And sitting above both of them is what I'm calling the <strong>MCP Gateway</strong> &mdash; a newer, instance-level capability where your entire n8n deployment acts as a single MCP server with OAuth authentication. Flip a toggle in any workflow's settings, and it becomes available to external AI clients through one unified endpoint.</p>
+
+  <p style="margin-bottom:0.5rem;line-height:1.7"><em style="color:#8b949e">A note on naming: n8n officially calls these the "MCP Server Trigger node," the "MCP Client Tool node," and... well, the instance-level feature doesn't have a clean name yet. I think Gateway, Trigger, and Tool are clearer. If engineering is reading this &mdash; you're welcome.</em></p>
+
+  <h3 style="font-size:1.4rem;font-weight:700;margin:2rem 0 1rem;border-left:4px solid #f26622;padding-left:0.75rem">The Three Layers</h3>
+
   <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
-    <div style="flex:1;min-width:280px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">MCP Server</h3>
-      <p style="color:#c9d1d9;margin:0;line-height:1.7">The enterprise workhorse. MCP Server lets you build and test complex, multi-step workflows that run consistently every time. This matters because automation offers guarantees that AI alone cannot &mdash; and when you pair AI's reasoning with deterministic workflows, you get the best of both worlds.</p>
+    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem">
+      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">MCP Gateway</h4>
+      <p style="color:#8b949e;font-size:0.8rem;margin-bottom:0.5rem">Instance-level &bull; OAuth &bull; One endpoint</p>
+      <p style="color:#c9d1d9;margin:0;line-height:1.7">Your entire n8n instance becomes a single MCP server. External AIs connect through one URL with OAuth authentication. Any workflow you toggle on becomes a tool the AI can call. This is the front door &mdash; the bouncer with the clipboard.</p>
     </div>
-    <div style="flex:1;min-width:280px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">MCP Trigger</h3>
-      <p style="color:#c9d1d9;margin:0;line-height:1.7">The everyday superpower. MCP Trigger lets your AI activate specific tools on demand &mdash; check a calendar, create a note, query a database &mdash; with zero friction. While Server handles the heavy backend logic, Trigger is where the magic happens for individual users. Together, they make AI feel less like a chatbot and more like a capable assistant.</p>
+    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
+      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">MCP Trigger</h4>
+      <p style="color:#8b949e;font-size:0.8rem;margin-bottom:0.5rem">Workflow-level &bull; Header auth &bull; Granular control</p>
+      <p style="color:#c9d1d9;margin:0;line-height:1.7">A dedicated workflow that starts when an external AI calls in. You build the workflow, attach specific tools, and get a unique URL. More manual than the Gateway, but you control exactly what's exposed and how. This is the side door with its own lock.</p>
     </div>
+    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
+      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">MCP Tool</h4>
+      <p style="color:#8b949e;font-size:0.8rem;margin-bottom:0.5rem">Sub-node &bull; Attaches to AI agents &bull; Outbound</p>
+      <p style="color:#c9d1d9;margin:0;line-height:1.7">The other direction. When you build an AI agent inside n8n and want it to use tools hosted on someone else's MCP server, you attach an MCP Tool. n8n becomes the client, reaching out instead of receiving.</p>
+    </div>
+  </div>
+
+  <div style="background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem;margin:1.5rem 0">
+    <h4 style="color:#f26622;font-size:1.1rem;margin-bottom:0.75rem">Why This Matters for Portability</h4>
+    <p style="margin-bottom:0.75rem;color:#c9d1d9;line-height:1.7">The Gateway and Trigger handle the <strong style="color:#fff">receiving</strong> side &mdash; external AIs calling into n8n. The Tool handles the <strong style="color:#fff">sending</strong> side &mdash; n8n's agents calling out. Together they're the complete MCP integration, split across two shapes because the two directions live in fundamentally different contexts.</p>
+    <p style="margin-bottom:0;color:#c9d1d9;line-height:1.7">The important part: <strong style="color:#fff">n8n handles all the OAuth on the backend.</strong> Your AI connects to n8n with simple header auth or through the Gateway's OAuth. n8n connects to Google, Slack, Notion, and everything else using its own credentials. The AI never touches those tokens directly. Swap the AI, keep the tools. Swap the tools, keep the AI.</p>
   </div>
 
   <div style="margin:1.5rem 0">
@@ -74,10 +94,11 @@
   </div>
 
   <h2 style="font-size:1.8rem;font-weight:700;margin:2rem 0 1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">My MCP Tools</h2>
+  <p style="margin-bottom:1rem;line-height:1.7">Here's what I've connected through the MCP Trigger. Each of these is an n8n workflow my AI can call on demand:</p>
   <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
     <div style="flex:1;min-width:280px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
       <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">&#128197; Calendar Access</h3>
-      <p style="color:#c9d1d9;margin:0;line-height:1.7">The AI can check my work calendar (busy/not busy), manage details and read/write events for my personal calendar, and access my divorce calendar in read-only mode.</p>
+      <p style="color:#c9d1d9;margin:0;line-height:1.7">The AI can check my work calendar (busy/not busy), manage details and read/write events for my personal calendar, and access my custody calendar in read-only mode.</p>
     </div>
     <div style="flex:1;min-width:280px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
       <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">&#128221; Notes System</h3>
