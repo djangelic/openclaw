@@ -1,3 +1,5 @@
+<!-- BLOG 1: THE AI DEPENDENCY TRAP — PORTABILITY -->
+
 <!-- HERO -->
 <div style="position:relative;width:100%;min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden">
   <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-01.png" alt="Person tangled in cables representing AI dependency" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:0">
@@ -24,10 +26,6 @@
       <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-02.png" alt="Messy draft vs clean document — ChatGPT vs Claude quality comparison" style="max-width:100%;height:auto;display:block;border-radius:8px">
     </div>
   </div>
-  <div style="background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem;margin:1.5rem 0">
-    <h3 style="color:#f26622;font-size:1.1rem;margin-bottom:0.75rem">&#9888;&#65039; On MCP Authentication</h3>
-    <p style="margin-bottom:0;color:#c9d1d9;line-height:1.7">ChatGPT's MCP implementation only supports OAuth. The n8n MCP Trigger node supports header auth or no auth. Running MCP with no authentication is essentially a verbose, self-describing webhook with zero protection. Go with header auth.</p>
-  </div>
 </div>
 
 <!-- PART 2: WordPress Lesson -->
@@ -48,80 +46,30 @@
     </ul>
   </div>
   <p style="margin-bottom:1rem;line-height:1.7">AI tooling is at exactly the same inflection point right now. If your tools are MCP servers you own, your AI is replaceable. If your tools are ChatGPT plugins, Claude Projects, or Gemini extensions &mdash; you're the one locked in.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">This isn't theoretical. Earlier this year, Anthropic briefly restricted third-party tools from using Claude subscription tokens &mdash; breaking workflows for thousands of developers overnight. The ones who had portable tool setups through MCP barely noticed. The ones locked into Claude-specific integrations scrambled.</p>
 </div>
 
-<!-- PART 3: MCP Standard — UPDATED -->
+<!-- PART 3: What is MCP (brief) -->
 <div style="margin-bottom:4rem">
-  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">MCP &mdash; The Portability Standard</h2>
+  <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">MCP &mdash; The Protocol That Makes This Possible</h2>
   <div style="margin:1.5rem 0">
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-04.png" alt="Circuit brain representing the MCP standard" style="max-width:100%;height:auto;display:block;border-radius:8px">
   </div>
   <p style="margin-bottom:1rem;line-height:1.7">MCP &mdash; Model Context Protocol &mdash; is an open standard that lets any AI model call external tools through a single, universal interface. Instead of building custom integrations for every AI provider, you build once and connect anywhere.</p>
-  <p style="margin-bottom:1rem;line-height:1.7">If you've used n8n before, you're used to integrations coming in pairs &mdash; a trigger and a node. One to receive, one to send. MCP is different. There's no MCP "node" in the traditional sense. Instead, that node is split into two pieces: the <strong>MCP Trigger</strong> receives calls from external AIs, and the <strong>MCP Tool</strong> lets your n8n agents call out to external MCP servers, acting as a client to them.</p>
-  <p style="margin-bottom:1rem;line-height:1.7">Same integration, two shapes, because AI workflows don't fit neatly into a single rectangle.</p>
-  <p style="margin-bottom:1rem;line-height:1.7">And sitting above both of them is what I'm calling the <strong>MCP Gateway</strong> &mdash; a newer, instance-level capability where your entire n8n deployment acts as a single MCP server with OAuth authentication. Flip a toggle in any workflow's settings, and it becomes available to external AI clients through one unified endpoint.</p>
-
-  <p style="margin-bottom:0.5rem;line-height:1.7"><em style="color:#8b949e">A note on naming: n8n officially calls these the "MCP Server Trigger node," the "MCP Client Tool node," and... well, the instance-level feature doesn't have a clean name yet. I think Gateway, Trigger, and Tool are clearer. If engineering is reading this &mdash; you're welcome.</em></p>
-
-  <h3 style="font-size:1.4rem;font-weight:700;margin:2rem 0 1rem;border-left:4px solid #f26622;padding-left:0.75rem">The Three Layers</h3>
+  <p style="margin-bottom:1rem;line-height:1.7">I run all my tools through n8n's MCP implementation. My AI connects to n8n, n8n connects to everything else. Google Calendar, Obsidian, Slack &mdash; n8n handles all the OAuth on the backend. The AI never touches those tokens directly.</p>
 
   <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem">
-      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">MCP Gateway</h4>
-      <p style="color:#8b949e;font-size:0.8rem;margin-bottom:0.5rem">Instance-level &bull; OAuth &bull; One endpoint</p>
-      <p style="color:#c9d1d9;margin:0;line-height:1.7">Your entire n8n instance becomes a single MCP server. External AIs connect through one URL with OAuth authentication. Any workflow you toggle on becomes a tool the AI can call. This is the front door &mdash; the bouncer with the clipboard.</p>
+      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">Without n8n</h4>
+      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">AI &rarr; OAuth to Google &rarr; OAuth to Slack &rarr; OAuth to Notion<br><em style="color:#8b949e">Each connection is provider-specific. Change your AI, rebuild everything.</em></p>
     </div>
-    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">MCP Trigger</h4>
-      <p style="color:#8b949e;font-size:0.8rem;margin-bottom:0.5rem">Workflow-level &bull; Header auth &bull; Granular control</p>
-      <p style="color:#c9d1d9;margin:0;line-height:1.7">A dedicated workflow that starts when an external AI calls in. You build the workflow, attach specific tools, and get a unique URL. More manual than the Gateway, but you control exactly what's exposed and how. This is the side door with its own lock.</p>
-    </div>
-    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">MCP Tool</h4>
-      <p style="color:#8b949e;font-size:0.8rem;margin-bottom:0.5rem">Sub-node &bull; Attaches to AI agents &bull; Outbound</p>
-      <p style="color:#c9d1d9;margin:0;line-height:1.7">The other direction. When you build an AI agent inside n8n and want it to use tools hosted on someone else's MCP server, you attach an MCP Tool. n8n becomes the client, reaching out instead of receiving.</p>
+    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem">
+      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">With n8n</h4>
+      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">AI &rarr; MCP (header auth) &rarr; n8n &rarr; handles all OAuth<br><em style="color:#8b949e">One connection. Swap the AI anytime. Tools don't notice.</em></p>
     </div>
   </div>
 
-  <div style="background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem;margin:1.5rem 0">
-    <h4 style="color:#f26622;font-size:1.1rem;margin-bottom:0.75rem">Why This Matters for Portability</h4>
-    <p style="margin-bottom:0.75rem;color:#c9d1d9;line-height:1.7">The Gateway and Trigger handle the <strong style="color:#fff">receiving</strong> side &mdash; external AIs calling into n8n. The Tool handles the <strong style="color:#fff">sending</strong> side &mdash; n8n's agents calling out. Together they're the complete MCP integration, split across two shapes because the two directions live in fundamentally different contexts.</p>
-    <p style="margin-bottom:0;color:#c9d1d9;line-height:1.7">The important part: <strong style="color:#fff">n8n handles all the OAuth on the backend.</strong> Your AI connects to n8n with simple header auth or through the Gateway's OAuth. n8n connects to Google, Slack, Notion, and everything else using its own credentials. The AI never touches those tokens directly. Swap the AI, keep the tools. Swap the tools, keep the AI.</p>
-  </div>
-
-  <div style="margin:1.5rem 0">
-    <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-05.png" alt="Network map showing MCP tools and connections" style="max-width:100%;height:auto;display:block;border-radius:8px">
-  </div>
-
-  <h2 style="font-size:1.8rem;font-weight:700;margin:2rem 0 1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">My MCP Tools</h2>
-  <p style="margin-bottom:1rem;line-height:1.7">Here's what I've connected through the MCP Trigger. Each of these is an n8n workflow my AI can call on demand:</p>
-  <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
-    <div style="flex:1;min-width:280px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">&#128197; Calendar Access</h3>
-      <p style="color:#c9d1d9;margin:0;line-height:1.7">The AI can check my work calendar (busy/not busy), manage details and read/write events for my personal calendar, and access my custody calendar in read-only mode.</p>
-    </div>
-    <div style="flex:1;min-width:280px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.1rem">&#128221; Notes System</h3>
-      <p style="color:#c9d1d9;margin:0;line-height:1.7">Direct access to my journal via Obsidian. AI can review recent events or save new notes, automatically tagging content.</p>
-    </div>
-  </div>
-
-  <h2 style="font-size:1.8rem;font-weight:700;margin:2rem 0 1.5rem;border-left:4px solid #f26622;padding-left:0.75rem">Portable Use Cases</h2>
-  <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
-    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">Custody Negotiation with Live Calendar Visualization</h3>
-      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">I provide OpenClaw with a screenshot of a proposed trade. AI extracts details and creates temporary calendar entries to visualize impact before agreeing.</p>
-    </div>
-    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">Local Event Scraper</h3>
-      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">Pulls events from local Tucson websites, processes them, pushes to a shared Google Calendar for 150+ people.</p>
-    </div>
-    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
-      <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">Meeting Transcripts</h3>
-      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">Record via Apple Watch, iOS shortcut prompts for context, audio transcribed locally, summarized by local model, sent via webhook to n8n for Obsidian storage.</p>
-    </div>
-  </div>
-  <p style="margin-bottom:1rem;line-height:1.7">When I transitioned from ChatGPT to Claude to OpenClaw, none of these tools required changes. Re-pointed the model, back to work in minutes.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">n8n actually has three distinct ways to work with MCP &mdash; a Gateway, a Trigger, and a Tool &mdash; each serving different purposes. I wrote a <a href="#" style="color:#f26622;text-decoration:underline">deep dive into how MCP works inside n8n</a> if you want the technical details. For this post, what matters is the principle: <strong>your tools should outlive your AI provider.</strong></p>
 </div>
 
 <!-- PART 4: OpenClaw -->
@@ -132,7 +80,7 @@
   </div>
   <p style="margin-bottom:1rem;line-height:1.7">OpenClaw is an open-source framework that turns an AI model into a persistent assistant &mdash; running on your machine, scheduling its own tasks, managing memory across sessions. It feels less like chatting with a model and more like having an employee who happens to be software.</p>
   <p style="margin-bottom:1rem;line-height:1.7">OpenClaw is model-agnostic. The framework doesn't care if it's running Claude, GPT, Gemini, or local. The tools, memory, scheduling &mdash; all infrastructure you own. The model is just the brain you plug in.</p>
-  <p style="margin-bottom:1rem;line-height:1.7">Want to see how to integrate MCP in n8n? Check out this raw video of me integrating it with Cortana, my OpenClaw assistant:</p>
+  <p style="margin-bottom:1rem;line-height:1.7">Want to see it in action? Here's a raw video of me integrating MCP tools with Cortana, my OpenClaw assistant:</p>
   <div style="position:relative;padding-bottom:56.25%;height:0">
     <iframe src="https://www.loom.com/embed/8f1d6bcfc23d434ea2b5c5c2faabaa88" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
   </div>
@@ -145,7 +93,7 @@
   <div style="margin:1.5rem 0">
     <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-07.png" alt="Circuit board representing iOS and phone hardware" style="max-width:100%;height:auto;display:block;border-radius:8px">
   </div>
-  <p style="margin-bottom:1rem;line-height:1.7">Apple's Shortcuts app is basically n8n for your phone. Local model works for small tasks but chokes on large text.</p>
+  <p style="margin-bottom:1rem;line-height:1.7">Apple's Shortcuts app is basically n8n for your phone. Local model works for small tasks but chokes on large text. The solution is the same layered approach:</p>
   <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
       <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">&#128241; Phone</h3>
@@ -153,7 +101,7 @@
     </div>
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
       <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">&#128421;&#65039; Desktop</h3>
-      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">OpenClaw &rarr; MCP servers &rarr; n8n</p>
+      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">OpenClaw &rarr; MCP &rarr; n8n</p>
     </div>
     <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem">
       <h3 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">&#128423; Server</h3>
@@ -195,7 +143,7 @@
   </div>
   <div style="background:#161b22;border-left:4px solid #f26622;border-radius:0 8px 8px 0;padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem">
     <div style="background:#f26622;color:#fff;font-weight:800;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem">2</div>
-    <div style="color:#c9d1d9;line-height:1.7"><strong style="color:#fff">Define your tools as MCP servers.</strong></div>
+    <div style="color:#c9d1d9;line-height:1.7"><strong style="color:#fff">Build your tools as MCP servers you own.</strong></div>
   </div>
   <div style="background:#161b22;border-left:4px solid #f26622;border-radius:0 8px 8px 0;padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem">
     <div style="background:#f26622;color:#fff;font-weight:800;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem">3</div>
@@ -208,45 +156,20 @@
   <p style="font-size:1.2rem;font-weight:700;color:#f26622;margin-top:1.5rem">Portability is power. 25 years in web hosting. Same lesson.</p>
 </div>
 
-<!-- UPDATE: Anthropic OAuth Ban -->
+<!-- Cross-links -->
 <div style="margin-bottom:4rem">
-  <div style="background:#161b22;border:2px solid #f26622;border-radius:12px;padding:2rem;margin-bottom:2rem">
-    <p style="color:#f26622;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem">Update &mdash; February 19, 2026</p>
-    <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:1rem;color:#fff;border-left:4px solid #f26622;padding-left:0.75rem">It Already Happened</h2>
-    <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">While I was writing this post, Anthropic proved the point for me. They just published an <a href="https://openclaw.rocks/blog/anthropic-oauth-ban" style="color:#f26622;text-decoration:underline">official legal and compliance page</a> formally banning the use of Claude subscription OAuth tokens in any third-party tool &mdash; including their own Agent SDK.</p>
-    <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Read that again. <strong style="color:#fff">Anthropic banned their own SDK from using subscription credentials.</strong> If their own tools aren't exempt, nothing is.</p>
-    <p style="margin-bottom:1rem;color:#c9d1d9;line-height:1.7">Developers across OpenCode (107k+ GitHub stars), Roo Code, Cline, and dozens of other tools woke up to broken workflows overnight. No advance notice. No migration path. Just a server-side switch and a terse error message. The Hacker News thread is full of devs calling it "the AI equivalent of choosing Oracle over Postgres."</p>
-  </div>
-
-  <h3 style="font-size:1.4rem;font-weight:700;margin-bottom:1rem">What This Means If You Use OpenClaw</h3>
-  <p style="margin-bottom:1rem;line-height:1.7">The good news: <strong>OpenClaw users with API keys are completely unaffected.</strong> The ban targets subscription OAuth tokens being used outside Anthropic's own apps. If you're paying per token via the API Console, nothing changes.</p>
-  <p style="margin-bottom:1rem;line-height:1.7">The better news: <strong>this is exactly why portability matters.</strong> OpenClaw is model-agnostic. It works with any OpenAI-compatible endpoint. Today you run Claude. Tomorrow Anthropic changes their terms and you swap to DeepSeek V3.2 at a tenth of the cost. Your tools, your memory, your workflows &mdash; none of it changes. Only the model behind it does.</p>
-
-  <h3 style="font-size:1.4rem;font-weight:700;margin-bottom:1rem">n8n: The Secret Weapon</h3>
-  <p style="margin-bottom:1rem;line-height:1.7">Here's what most people are missing. Services like Google Calendar, Notion, and Slack all require OAuth for access. Normally that means your AI tool needs its own OAuth integration with each service &mdash; which is exactly the kind of vendor-specific plumbing that creates lock-in.</p>
-  <p style="margin-bottom:1rem;line-height:1.7">But when you put n8n in the middle, your AI never touches OAuth directly. It calls n8n through a simple MCP connection with header auth. <strong>n8n handles the OAuth on the backend.</strong> Your AI gets access to OAuth-protected services through a single, portable API layer. Swap the AI, keep the tools. Swap the tools, keep the AI.</p>
-
-  <div style="display:flex;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap">
-    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem">
-      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">Without n8n</h4>
-      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">AI &rarr; OAuth to Google &rarr; OAuth to Slack &rarr; OAuth to Notion<br><em style="color:#8b949e">Each connection is provider-specific. Change your AI, rebuild everything.</em></p>
+  <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+    <div style="flex:1;min-width:280px;background:linear-gradient(135deg,#1a1e2e,#161b22);border:2px solid #f26622;border-radius:12px;padding:2rem;text-align:center">
+      <h3 style="font-size:1.2rem;margin-bottom:0.75rem;color:#fff">How MCP Works in n8n</h3>
+      <p style="color:#c9d1d9;margin-bottom:1rem;line-height:1.7;font-size:0.95rem">The technical deep dive &mdash; Gateway, Trigger, and Tool explained with GIFs and real workflows.</p>
+      <a href="#" style="display:inline-block;background:#f26622;color:#fff;padding:0.6rem 1.5rem;border-radius:6px;font-weight:700;font-size:0.9rem;text-decoration:none">Read the MCP Guide &rarr;</a>
     </div>
-    <div style="flex:1;min-width:250px;background:#161b22;border:1px solid #f26622;border-radius:8px;padding:1.5rem">
-      <h4 style="color:#f26622;margin-bottom:0.5rem;font-size:1.05rem">With n8n</h4>
-      <p style="color:#c9d1d9;font-size:0.95rem;margin:0;line-height:1.7">AI &rarr; MCP (header auth) &rarr; n8n &rarr; handles all OAuth<br><em style="color:#8b949e">One connection. Swap the AI anytime. Tools don't notice.</em></p>
+    <div style="flex:1;min-width:280px;background:linear-gradient(135deg,#1a1e2e,#161b22);border:2px solid #30363d;border-radius:12px;padding:2rem;text-align:center">
+      <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-09.png" alt="Enterprise lock-in diagram" style="max-width:100%;height:auto;display:block;border-radius:8px;margin:0 auto 1rem">
+      <h3 style="font-size:1.2rem;margin-bottom:0.75rem;color:#fff">The Enterprise Side</h3>
+      <p style="color:#c9d1d9;margin-bottom:1rem;line-height:1.7;font-size:0.95rem">Vendor lock-in, procurement strategy, and enterprise AI architecture.</p>
+      <a href="https://aztechsol.com/automation-ai/why-your-ai-needs-a-bouncer-and-why-n8n-is-it/" style="display:inline-block;background:transparent;color:#f26622;padding:0.6rem 1.5rem;border-radius:6px;font-weight:700;font-size:0.9rem;text-decoration:none;border:2px solid #f26622">Read the Enterprise Post &rarr;</a>
     </div>
-  </div>
-
-  <p style="margin-bottom:1rem;line-height:1.7">Anthropic's ban is a warning shot. The next one might come from OpenAI, Google, or whoever else decides their ecosystem should be a walled garden. Build your tools so it doesn't matter when it happens.</p>
-</div>
-
-<!-- Enterprise CTA -->
-<div style="margin-bottom:4rem">
-  <div style="background:linear-gradient(135deg,#1a1e2e,#161b22);border:2px solid #f26622;border-radius:12px;padding:2rem;text-align:center;margin:2rem 0">
-    <img src="https://djangelic.github.io/openclaw/ai-dependency-trap/images/img-09.png" alt="Enterprise lock-in diagram" style="max-width:100%;height:auto;display:block;border-radius:8px;margin:0 auto 1.5rem">
-    <h3 style="font-size:1.4rem;margin-bottom:0.75rem;color:#fff">The Enterprise Side of This Problem</h3>
-    <p style="color:#c9d1d9;margin-bottom:1rem;line-height:1.7">This post covers the personal side. For the business perspective &mdash; vendor lock-in, procurement strategy, and enterprise AI architecture &mdash; read the companion piece.</p>
-    <a href="https://aztechsol.com/automation-ai/why-your-ai-needs-a-bouncer-and-why-n8n-is-it/" style="display:inline-block;background:#f26622;color:#fff;padding:0.75rem 2rem;border-radius:6px;font-weight:700;font-size:1rem;text-decoration:none">Read the Enterprise Post &rarr;</a>
   </div>
 </div>
 
