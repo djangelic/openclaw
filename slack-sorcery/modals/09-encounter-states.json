@@ -1,0 +1,279 @@
+{
+  "_comment": "These are the 4 states of an encounter message. The bot updates the SAME message as the state changes. Paste each 'blocks' array into Block Kit Builder to preview.",
+
+  "state_1_fresh": {
+    "_description": "Initial spawn — no one has claimed it yet",
+    "blocks": [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "🔴 A wild Pokémon appeared!",
+          "emoji": true
+        }
+      },
+      {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        "alt_text": "A wild Charizard"
+      },
+      {
+        "type": "section",
+        "fields": [
+          { "type": "mrkdwn", "text": "*Name:*\nCharizard" },
+          { "type": "mrkdwn", "text": "*Level:*\n38" },
+          { "type": "mrkdwn", "text": "*Type:*\n🔥 Fire · ✈️ Flying" },
+          { "type": "mrkdwn", "text": "*Rarity:*\n🟪 Rare" }
+        ]
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*HP:* `████████████████` 180/180  ·  *CP:* 2,100"
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "⚡ First trainer to battle claims the encounter  ·  🏃 Flees in *10 minutes*  ·  🎲 Catch rate: 45%"
+          }
+        ]
+      },
+      {
+        "type": "actions",
+        "block_id": "encounter_actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": { "type": "plain_text", "text": "⚡ Battle!", "emoji": true },
+            "action_id": "claim_encounter",
+            "value": "enc_abc123",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": { "type": "plain_text", "text": "👀 Inspect", "emoji": true },
+            "action_id": "inspect_encounter",
+            "value": "enc_abc123"
+          }
+        ]
+      }
+    ]
+  },
+
+  "state_2_battling": {
+    "_description": "Someone claimed it — battle in progress. Buttons disabled for others.",
+    "blocks": [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "🔴 A wild Pokémon appeared!",
+          "emoji": true
+        }
+      },
+      {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        "alt_text": "A wild Charizard"
+      },
+      {
+        "type": "section",
+        "fields": [
+          { "type": "mrkdwn", "text": "*Name:*\nCharizard" },
+          { "type": "mrkdwn", "text": "*Level:*\n38" },
+          { "type": "mrkdwn", "text": "*Type:*\n🔥 Fire · ✈️ Flying" },
+          { "type": "mrkdwn", "text": "*Rarity:*\n🟪 Rare" }
+        ]
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*HP:* `████████████████` 180/180  ·  *CP:* 2,100"
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "⚔️ *@Angel* is battling this Pokémon..."
+        },
+        "accessory": {
+          "type": "image",
+          "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/9.gif",
+          "alt_text": "Blastoise battling"
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "⏳ Battle in progress... If the trainer loses, the encounter reopens for others!"
+          }
+        ]
+      }
+    ]
+  },
+
+  "state_3_failed_reopen": {
+    "_description": "Trainer lost — encounter reopens. Shows who already tried and failed. Weakened HP.",
+    "blocks": [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "🔴 Wild Charizard is still standing!",
+          "emoji": true
+        }
+      },
+      {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        "alt_text": "A wild Charizard"
+      },
+      {
+        "type": "section",
+        "fields": [
+          { "type": "mrkdwn", "text": "*Name:*\nCharizard" },
+          { "type": "mrkdwn", "text": "*Level:*\n38" },
+          { "type": "mrkdwn", "text": "*Type:*\n🔥 Fire · ✈️ Flying" },
+          { "type": "mrkdwn", "text": "*Rarity:*\n🟪 Rare" }
+        ]
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*HP:* `████████████░░░░` 132/180 _(weakened!)_  ·  *CP:* 2,100"
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "❌ @Angel tried and lost!  ·  🏃 Flees in *6 minutes*  ·  🎲 Catch rate: 52% _(increased — it's weakened!)_"
+          }
+        ]
+      },
+      {
+        "type": "actions",
+        "block_id": "encounter_actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": { "type": "plain_text", "text": "⚡ Battle!", "emoji": true },
+            "action_id": "claim_encounter",
+            "value": "enc_abc123",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": { "type": "plain_text", "text": "👀 Inspect", "emoji": true },
+            "action_id": "inspect_encounter",
+            "value": "enc_abc123"
+          }
+        ]
+      }
+    ]
+  },
+
+  "state_4_caught": {
+    "_description": "Someone caught it! Final state — no more buttons.",
+    "blocks": [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "✨ Charizard was caught!",
+          "emoji": true
+        }
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "🏆 *@Alex* caught the wild *Charizard*!"
+        },
+        "accessory": {
+          "type": "image",
+          "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/6.gif",
+          "alt_text": "Charizard caught"
+        }
+      },
+      {
+        "type": "section",
+        "fields": [
+          { "type": "mrkdwn", "text": "*Level:*\n38" },
+          { "type": "mrkdwn", "text": "*CP:*\n2,100" },
+          { "type": "mrkdwn", "text": "*Type:*\n🔥 Fire · ✈️ Flying" },
+          { "type": "mrkdwn", "text": "*Rarity:*\n🟪 Rare" }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "📜 *Battle log:* ❌ @Angel (lost) → ✅ @Alex (caught!)  ·  2 trainers attempted"
+          }
+        ]
+      }
+    ]
+  },
+
+  "state_5_fled": {
+    "_description": "Time expired — no one caught it.",
+    "blocks": [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "💨 Charizard fled!",
+          "emoji": true
+        }
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "The wild *Charizard* escaped! Nobody managed to catch it."
+        },
+        "accessory": {
+          "type": "image",
+          "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+          "alt_text": "Charizard fled"
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "📜 *Battle log:* ❌ @Angel (lost) · ❌ @Alex (lost)  ·  Better luck next time! 🍀"
+          }
+        ]
+      }
+    ]
+  }
+}

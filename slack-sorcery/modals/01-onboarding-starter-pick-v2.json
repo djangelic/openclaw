@@ -1,0 +1,146 @@
+{
+  "type": "modal",
+  "callback_id": "onboarding_starter_pick",
+  "title": {
+    "type": "plain_text",
+    "text": "🔴 SlackéMon",
+    "emoji": true
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "I Choose You!",
+    "emoji": true
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Cancel"
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Welcome, Trainer! 🎉",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Professor Oak has three Pokémon waiting for you. Choose wisely — this partner will be with you from the start!"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "input",
+      "block_id": "trainer_name_block",
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "trainer_name",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Enter your trainer name..."
+        },
+        "max_length": 20
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "🏷️ Trainer Name",
+        "emoji": true
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*🌿 Bulbasaur*  —  Grass / Poison\n`HP 45 · ATK 49 · DEF 49 · SPD 45`\n_A strange seed was planted on its back at birth._"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+        "alt_text": "Bulbasaur"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*🔥 Charmander*  —  Fire\n`HP 39 · ATK 52 · DEF 43 · SPD 65`\n_The flame on its tail shows the strength of its life force._"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
+        "alt_text": "Charmander"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*💧 Squirtle*  —  Water\n`HP 44 · ATK 48 · DEF 65 · SPD 43`\n_It shelters itself in its shell, then strikes back with jets of water._"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+        "alt_text": "Squirtle"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "input",
+      "block_id": "starter_pick_block",
+      "element": {
+        "type": "radio_buttons",
+        "action_id": "starter_pick",
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "🌿 Bulbasaur",
+              "emoji": true
+            },
+            "value": "bulbasaur"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "🔥 Charmander",
+              "emoji": true
+            },
+            "value": "charmander"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "💧 Squirtle",
+              "emoji": true
+            },
+            "value": "squirtle"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "⚡ Choose Your Starter",
+        "emoji": true
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "💡 *Tip:* Type matchups matter! 🌿 beats 💧 beats 🔥 beats 🌿"
+        }
+      ]
+    }
+  ]
+}
