@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slack & Sorcery — Game Design</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    font-family: 'Segoe UI', system-ui, sans-serif; 
+    background: #0f0a1a; 
+    color: #e0dce8; 
+    line-height: 1.6;
+    padding: 2rem;
+  }
+  h1 { 
+    font-size: 2.5rem; 
+    background: linear-gradient(135deg, #ff6b6b, #c44dff, #4dabff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  h2 { color: #c44dff; margin: 2rem 0 1rem; font-size: 1.5rem; border-bottom: 1px solid #2a2040; padding-bottom: 0.5rem; }
+  h3 { color: #4dabff; margin: 1.5rem 0 0.75rem; }
+  .subtitle { color: #8a82a0; font-size: 1.1rem; margin-bottom: 2rem; }
+  .card {
+    background: #1a1428;
+    border: 1px solid #2a2040;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  .card.highlight { border-color: #c44dff; }
+  .mermaid { 
+    background: #1a1428; 
+    border-radius: 12px; 
+    padding: 1.5rem; 
+    margin: 1rem 0;
+    display: flex;
+    justify-content: center;
+  }
+  .grid-demo {
+    font-family: monospace;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    background: #120e1c;
+    padding: 1rem;
+    border-radius: 8px;
+    display: inline-block;
+  }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  @media (max-width: 800px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+  code { background: #2a2040; padding: 2px 6px; border-radius: 4px; color: #4dabff; }
+  .tag { display: inline-block; background: #2a2040; color: #c44dff; padding: 2px 10px; border-radius: 999px; font-size: 0.85rem; margin: 2px; }
+  .tag.mtg { color: #ff6b6b; }
+  .tag.dnd { color: #4dabff; }
+  .tag.tactics { color: #4dff88; }
+  ul { padding-left: 1.5rem; }
+  li { margin: 0.3rem 0; }
+  .emoji { font-size: 1.3rem; }
+</style>
+</head>
+<body>
+
+<h1>⚔️ Slack & Sorcery</h1>
+<p class="subtitle">A collaborative tactical RPG in Slack — powered by n8n, D&D node, and Block Kit</p>
+
+<!-- ==================== GAME LOOP ==================== -->
+<h2>🔄 Core Game Loop</h2>
+<p>The fundamental cycle players experience. Designed to be <strong>async-friendly</strong> — no one waits on anyone.</p>
+
+<div class="mermaid">
+flowchart TD
+    A["🔔 Random Encounter Appears\n(scheduled or triggered)"] --> B["📢 Bot posts to #tavern channel\nwith enemy info + grid"]
+    B --> C["⚡ Players open Action Modal\n(private — no metagaming)"]
+    C --> D{"⏰ Timer expires\nor all players submitted?"}
+    D -->|Waiting| C
+    D -->|Ready| E["🎲 n8n resolves all actions\nsimultaneously"]
+    E --> F["📖 AI Narrator posts results\n(damage, movement, story)"]
+    F --> G{"❤️ Enemy defeated?"}
+    G -->|No| H["Update grid + HP bars\nNext round"]
+    H --> C
+    G -->|Yes| I["🎉 Loot & XP distributed\nCards drawn"]
+    I --> J["📦 Update D&D Node\n(stats, inventory, cards)"]
+    J --> K["😴 Idle until next encounter"]
+    K --> A
+
+    style A fill:#4a1942,stroke:#c44dff
+    style E fill:#1a3a4a,stroke:#4dabff
+    style I fill:#1a4a2a,stroke:#4dff88
+</div>
+
+<!-- ==================== BLENDED MECHANICS ==================== -->
+<h2>🎮 Blended Mechanics — The Best of Three Worlds</h2>
+<p>We're pulling from D&D, Magic: The Gathering, and tactical RPGs. Here's what comes from where:</p>
+
+<div class="three-col">
+  <div class="card">
+    <h3><span class="tag dnd">D&D</span> Stats & Progression</h3>
+    <ul>
+      <li><strong>6 core stats:</strong> STR, DEX, CON, INT, WIS, CHA</li>
+      <li>Stat checks happen automatically (you don't roll — the bot does)</li>
+      <li>Level up after X encounters → pick new abilities</li>
+      <li>Classes define your starting card deck</li>
+      <li>HP, AC (armor), and basic attack/defend</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3><span class="tag mtg">MTG</span> Card-Based Abilities</h3>
+    <ul>
+      <li>Each player has a <strong>hand of 5 cards</strong></li>
+      <li>Cards = abilities (spells, attacks, buffs)</li>
+      <li>Play 1 card per round + basic attack</li>
+      <li><strong>Mana system:</strong> regenerates each round</li>
+      <li>Loot = new cards for your deck</li>
+      <li>Deck building between encounters</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3><span class="tag tactics">Tactics</span> Grid & Positioning</h3>
+    <ul>
+      <li><strong>5×5 emoji grid</strong> in Slack messages</li>
+      <li>Move 1-2 tiles per turn</li>
+      <li>Flanking bonus (adjacent ally = +damage)</li>
+      <li>Terrain matters (🪨 cover, 🔥 hazard)</li>
+      <li>Range: melee (adjacent) vs ranged (2+ tiles)</li>
+      <li>AoE spells hit grid patterns</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== GRID SYSTEM ==================== -->
+<h2>🗺️ The Tactical Grid (In Slack!)</h2>
+<p>This is the tactics element. A 5×5 emoji grid posted as a code block or rich message. Simple enough to read at a glance.</p>
+
+<div class="two-col">
+  <div class="card">
+    <h3>Example: Combat Grid</h3>
+    <div class="grid-demo">
+⬛⬛🪨⬛⬛<br>
+⬛⬛⬛👹⬛<br>
+⬛🧙⬛⬛🏹<br>
+⬛⬛⬛🪨⬛<br>
+⬛⚔️⬛⬛⬛
+    </div>
+    <br>
+    <small>
+      ⚔️ = Fighter (Angel) &nbsp; 🧙 = Mage (Alex) &nbsp; 🏹 = Ranger (Friend)<br>
+      👹 = Orc &nbsp; 🪨 = Cover (+2 AC) &nbsp; 🔥 = Hazard (dmg/round)
+    </small>
+  </div>
+  <div class="card">
+    <h3>How Movement Works</h3>
+    <ul>
+      <li>In the Action Modal, pick a direction: ⬆️⬇️⬅️➡️ or stay</li>
+      <li>Heavy armor = 1 tile, light/none = 2 tiles</li>
+      <li><strong>Flanking:</strong> if 2+ allies adjacent to enemy → +50% damage</li>
+      <li><strong>Cover:</strong> behind 🪨 = ranged attacks have disadvantage</li>
+      <li><strong>Hazards:</strong> standing on 🔥 = 2 damage/round</li>
+      <li>All movement resolves simultaneously (collisions = both stop)</li>
+    </ul>
+    <p style="margin-top:1rem; color:#8a82a0;">Think <em>Final Fantasy Tactics</em> or <em>Into the Breach</em> — simple grid, big decisions.</p>
+  </div>
+</div>
+
+<!-- ==================== CARD SYSTEM ==================== -->
+<h2>🃏 The Card System (MTG Meets D&D)</h2>
+<p>Instead of memorizing spell lists, players hold <strong>cards</strong>. This is the MTG influence — deck building, hand management, and combos.</p>
+
+<div class="mermaid">
+flowchart LR
+    A["📦 Your Deck\n(10-20 cards)"] -->|Draw 5 at\nencounter start| B["🖐️ Your Hand\n(5 cards)"]
+    B -->|Play 1\nper round| C["⚡ Active Card\n(resolves with action)"]
+    C --> D["🪦 Discard Pile"]
+    D -->|Reshuffle when\ndeck empty| A
+    E["🎁 Loot Drop"] -->|Add to deck| A
+    F["🏪 Shop\n(between encounters)"] -->|Buy/trade| A
+    
+    style B fill:#4a1942,stroke:#c44dff
+    style C fill:#1a3a4a,stroke:#4dabff
+    style E fill:#1a4a2a,stroke:#4dff88
+</div>
+
+<div class="two-col">
+  <div class="card highlight">
+    <h3>Example Cards by Class</h3>
+    <p><strong>⚔️ Fighter</strong></p>
+    <ul>
+      <li><strong>Shield Bash</strong> (1 mana) — Push enemy 1 tile + stun</li>
+      <li><strong>Cleave</strong> (2 mana) — Hit all adjacent enemies</li>
+      <li><strong>Rally</strong> (1 mana) — Adjacent allies +2 ATK this round</li>
+    </ul>
+    <p style="margin-top:1rem"><strong>🧙 Mage</strong></p>
+    <ul>
+      <li><strong>Fireball</strong> (3 mana) — 3×3 AoE, 8 damage</li>
+      <li><strong>Frost Wall</strong> (2 mana) — Create 🧊 row, blocks movement</li>
+      <li><strong>Arcane Sight</strong> (1 mana) — Reveal enemy next action</li>
+    </ul>
+    <p style="margin-top:1rem"><strong>🏹 Ranger</strong></p>
+    <ul>
+      <li><strong>Snipe</strong> (2 mana) — Any tile, ignores cover</li>
+      <li><strong>Trap</strong> (1 mana) — Place on tile, triggers on step</li>
+      <li><strong>Shadow Step</strong> (1 mana) — Teleport 3 tiles</li>
+    </ul>
+  </div>
+  <div class="card highlight">
+    <h3>Card Rarity & Loot</h3>
+    <p>Like MTG, cards have rarity that affects power:</p>
+    <ul>
+      <li>⬜ <strong>Common</strong> — Basic abilities, low mana</li>
+      <li>🟦 <strong>Uncommon</strong> — Stronger effects, combos</li>
+      <li>🟪 <strong>Rare</strong> — Powerful, deck-defining</li>
+      <li>🟨 <strong>Legendary</strong> — 1 per deck limit, game-changers</li>
+    </ul>
+    <br>
+    <p><strong>Combo System:</strong></p>
+    <p>If two players play cards with matching tags in the same round, they <strong>combo</strong>:</p>
+    <ul>
+      <li>🔥+🔥 = <strong>Inferno</strong> (double fire damage)</li>
+      <li>🧊+⚡ = <strong>Shatter</strong> (frozen enemies take 3× lightning)</li>
+      <li>🛡️+🛡️ = <strong>Phalanx</strong> (all allies +4 AC this round)</li>
+    </ul>
+    <p style="margin-top:1rem; color:#4dff88;">Combos reward coordination without requiring voice chat!</p>
+  </div>
+</div>
+
+<!-- ==================== ENCOUNTER FLOW ==================== -->
+<h2>⚔️ Encounter Flow — Step by Step</h2>
+
+<div class="mermaid">
+sequenceDiagram
+    participant S as 🤖 Slack Bot
+    participant P1 as ⚔️ Player 1
+    participant P2 as 🧙 Player 2
+    participant N as ⚙️ n8n Workflow
+    participant AI as 🧠 AI Narrator
+    participant DB as 📦 D&D Node
+
+    Note over S: ⏰ Scheduled trigger or /encounter command
+    N->>DB: Load party stats + decks
+    N->>AI: Generate encounter (vector store context)
+    AI->>S: Post encounter message + grid + enemy stats
+    S->>P1: Action available! (Button)
+    S->>P2: Action available! (Button)
+    
+    P1->>S: Opens Action Modal
+    Note over P1: Picks: Move ➡️, Play "Cleave", Target 👹
+    P1->>N: Submit action (private)
+    
+    P2->>S: Opens Action Modal  
+    Note over P2: Picks: Stay, Play "Fireball" on tile C3
+    P2->>N: Submit action (private)
+    
+    Note over N: ⏰ Timer expires / all submitted
+    N->>N: Resolve all actions simultaneously
+    N->>N: Calculate damage, movement, combos
+    N->>DB: Update HP, inventory, XP
+    N->>AI: Narrate results
+    AI->>S: Post round results + updated grid
+    
+    Note over S: Round 2 begins...
+</div>
+
+<!-- ==================== SLACK UI MAPPING ==================== -->
+<h2>📱 Slack UI Mapping</h2>
+<p>Every game element maps to a Slack feature. No custom app UI needed.</p>
+
+<div class="mermaid">
+flowchart TD
+    subgraph "Slack Channel (#tavern)"
+        A["📢 Encounter Messages\n(Block Kit rich messages)"]
+        B["🗺️ Grid Display\n(code block or image)"]
+        C["❤️ HP Bars\n(progress bar components)"]
+        D["🗳️ Group Decisions\n(polls / button votes)"]
+    end
+    
+    subgraph "Slack Modals (Private)"
+        E["🎮 Action Modal\n(move + card + target)"]
+        F["📋 Character Sheet\n(stats, level, class)"]
+        G["🃏 Hand/Deck Manager\n(view cards, swap deck)"]
+        H["🎒 Inventory\n(equipment, potions)"]
+    end
+    
+    subgraph "Slack DMs (Secret)"
+        I["🗡️ Stealth Actions\n(steal, sneak, betray)"]
+        J["🔮 Private Reveals\n(trap detected, lore found)"]
+    end
+    
+    subgraph "Slash Commands"
+        K["/adventure — start campaign"]
+        L["/encounter — trigger fight"]
+        M["/character — open sheet"]
+        N["/hand — view cards"]
+        O["/grid — show current board"]
+    end
+
+    style A fill:#1a3a4a,stroke:#4dabff
+    style E fill:#4a1942,stroke:#c44dff
+    style I fill:#1a4a2a,stroke:#4dff88
+</div>
+
+<!-- ==================== n8n ARCHITECTURE ==================== -->
+<h2>⚙️ n8n Workflow Architecture</h2>
+<p>One exportable workflow with sub-workflows for each system.</p>
+
+<div class="mermaid">
+flowchart TB
+    subgraph "Main Workflow"
+        T1["Slack Trigger\n(slash commands)"]
+        T2["Slack Trigger\n(modal submissions)"]
+        T3["Schedule Trigger\n(random encounters)"]
+    end
+    
+    subgraph "Game Engine"
+        R["🎯 Router\n(command type)"]
+        CE["⚔️ Combat Engine\nResolve actions, calc damage"]
+        GE["🗺️ Grid Engine\nMovement, collision, terrain"]
+        CD["🃏 Card Engine\nDraw, play, discard, combo"]
+    end
+    
+    subgraph "Data Layer"
+        DND["📦 D&D Node\nStats, inventory, XP"]
+        VS["🧠 Vector Store\nCritical Role campaigns"]
+        DECK["🃏 D&D Node\nCard decks per player"]
+    end
+    
+    subgraph "AI Layer"
+        NAR["📖 AI Narrator\nEncounter generation"]
+        LOOT["🎁 AI Loot Generator\nContext-aware drops"]
+    end
+    
+    subgraph "Output"
+        SM["📢 Slack Message\n(Block Kit grid + story)"]
+        MOD["📋 Slack Modal\n(action/character/hand)"]
+        DM["💬 Slack DM\n(private info)"]
+    end
+    
+    T1 --> R
+    T2 --> R
+    T3 --> R
+    R --> CE
+    R --> GE
+    R --> CD
+    CE <--> DND
+    CD <--> DECK
+    CE --> NAR
+    NAR <--> VS
+    CE --> LOOT
+    GE --> SM
+    NAR --> SM
+    R --> MOD
+    CE --> DM
+
+    style DND fill:#1a3a4a,stroke:#4dabff
+    style VS fill:#4a1942,stroke:#c44dff
+    style NAR fill:#4a1942,stroke:#c44dff
+</div>
+
+<!-- ==================== PLAYER EXPERIENCE ==================== -->
+<h2>🎯 What a Player Actually Experiences</h2>
+
+<div class="card highlight">
+<h3>Scenario: Tuesday Morning in #tavern</h3>
+<ol style="padding-left:1.5rem;">
+  <li>📱 <strong>9:00 AM</strong> — You get a Slack notification: <em>"A wounded orc staggers into the tavern, axe raised!"</em></li>
+  <li>🗺️ The message shows a 5×5 grid. The orc is at position C2. Your fighter is at E4. Your friend's mage is at A3.</li>
+  <li>⚡ You tap <strong>"Take Action"</strong> button → modal opens</li>
+  <li>🎮 In the modal you see:
+    <ul>
+      <li><strong>Move:</strong> dropdown → you pick "Up 2 tiles" (now at E2, adjacent to orc)</li>
+      <li><strong>Card:</strong> your hand shows 5 cards → you pick "Shield Bash" (1 mana, push + stun)</li>
+      <li><strong>Target:</strong> 👹 Orc</li>
+    </ul>
+  </li>
+  <li>✅ You submit. Bot says <em>"Action locked in! Waiting on 1 more player..."</em></li>
+  <li>🧙 Your friend (at lunch) opens their modal, picks Fireball targeting tile C2</li>
+  <li>🎲 <strong>Both actions resolve simultaneously:</strong>
+    <ul>
+      <li>You moved to E2 and Shield Bashed for 6 damage + stun</li>
+      <li>Friend's Fireball hits C2... but you pushed the orc to C1! Fireball hits empty tile 😅</li>
+      <li>BUT — your Shield (🛡️) + their Fire (🔥) triggered no combo this time</li>
+    </ul>
+  </li>
+  <li>📖 AI narrates: <em>"The fighter charges forward, slamming his shield into the orc's jaw. The beast staggers backward just as a column of fire erupts where it stood a moment ago. The mage curses from across the room. The orc, dazed but alive, snarls..."</em></li>
+  <li>🗺️ Updated grid posted. Round 2 begins. You have 4 hours to submit.</li>
+</ol>
+</div>
+
+<!-- ==================== PROGRESSION ==================== -->
+<h2>📈 Progression & Meta-Game</h2>
+
+<div class="two-col">
+  <div class="card">
+    <h3>Short Term (Per Encounter)</h3>
+    <ul>
+      <li>Survive the fight</li>
+      <li>Earn XP + gold</li>
+      <li>Draw loot cards (new abilities!)</li>
+      <li>Spend gold at the shop modal between fights</li>
+    </ul>
+    <h3 style="margin-top:1rem">Medium Term (Per Week)</h3>
+    <ul>
+      <li>Level up → unlock class upgrade tree</li>
+      <li>Build/refine your card deck</li>
+      <li>Unlock harder encounter tiers</li>
+      <li>Complete quest chains (AI-driven story arcs)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Long Term (Per Campaign)</h3>
+    <ul>
+      <li>Boss encounters (multi-round, complex grids)</li>
+      <li>Party reputation score (affects shop prices, NPC interactions)</li>
+      <li>Leaderboards in a pinned channel message</li>
+      <li>Seasonal campaigns (vector store loads different story)</li>
+    </ul>
+    <h3 style="margin-top:1rem">Social Hooks</h3>
+    <ul>
+      <li>🏆 Achievement reactions (auto-react milestones)</li>
+      <li>📊 Weekly stats post ("Angel dealt 847 damage this week")</li>
+      <li>🃏 Card trading between players</li>
+      <li>⚔️ PvP arena (optional 1v1 channel)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== WHY SLACK ==================== -->
+<h2>💡 Why This Works Better in Slack</h2>
+
+<div class="card">
+<div class="two-col">
+  <div>
+    <h3>Custom App (Friend's Approach)</h3>
+    <ul>
+      <li>❌ Needs hosting, deployment, onboarding</li>
+      <li>❌ Another app to check</li>
+      <li>❌ No built-in social layer</li>
+      <li>❌ Hard to share</li>
+      <li>✅ Richer UI possibilities</li>
+    </ul>
+  </div>
+  <div>
+    <h3>Slack + n8n (Your Approach)</h3>
+    <ul>
+      <li>✅ Zero new apps — play where you already are</li>
+      <li>✅ Notifications built in</li>
+      <li>✅ Social layer is the platform</li>
+      <li>✅ One template = instant setup</li>
+      <li>✅ Async-native (no scheduling needed)</li>
+      <li>✅ Portable to Discord later</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<h2>🚀 MVP Scope (What to Build First)</h2>
+<div class="card highlight">
+  <ol style="padding-left:1.5rem; font-size:1.05rem;">
+    <li><strong>Character creation modal</strong> — pick class, name, get starter deck</li>
+    <li><strong>/encounter command</strong> — spawn a single orc on a 5×5 grid</li>
+    <li><strong>Action modal</strong> — move + basic attack (no cards yet)</li>
+    <li><strong>Combat resolver</strong> — simultaneous resolution, narrated results</li>
+    <li><strong>D&D node storage</strong> — HP, stats, XP tracking</li>
+  </ol>
+  <p style="margin-top:1rem; color:#4dff88;"><strong>That's it for v0.1.</strong> Cards, combos, terrain, and story come in v0.2+. Get the loop fun first.</p>
+</div>
+
+<script>
+  mermaid.initialize({ 
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#2a2040',
+      primaryTextColor: '#e0dce8',
+      primaryBorderColor: '#c44dff',
+      lineColor: '#4dabff',
+      secondaryColor: '#1a3a4a',
+      tertiaryColor: '#1a4a2a'
+    }
+  });
+</script>
+</body>
+</html>
