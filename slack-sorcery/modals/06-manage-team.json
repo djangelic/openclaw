@@ -1,0 +1,223 @@
+{
+  "type": "modal",
+  "callback_id": "manage_team",
+  "title": {
+    "type": "plain_text",
+    "text": "🔄 Manage Team",
+    "emoji": true
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "Save Team",
+    "emoji": true
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Cancel"
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Choose Your Active Team (max 6)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Select up to 6 Pokémon from your collection. Your lead Pokémon will be sent out first in wild encounters."
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "input",
+      "block_id": "team_members_block",
+      "element": {
+        "type": "checkboxes",
+        "action_id": "team_members",
+        "initial_options": [
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "💧 *Blastoise* — Lv.35 — CP 1,890"
+            },
+            "value": "blastoise_9"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "⚡ *Jolteon* — Lv.28 — CP 1,420"
+            },
+            "value": "jolteon_135"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "🔥 *Charizard* — Lv.38 — CP 2,100"
+            },
+            "value": "charizard_6"
+          }
+        ],
+        "options": [
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "💧 *Blastoise* — Lv.35 — CP 1,890"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Hydro Pump · Water Pulse · Surf · Bite"
+            },
+            "value": "blastoise_9"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "⚡ *Jolteon* — Lv.28 — CP 1,420"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Thunderbolt · Quick Attack · Pin Missile · Thunder Wave"
+            },
+            "value": "jolteon_135"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "🔥 *Charizard* — Lv.38 — CP 2,100"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Flamethrower · Dragon Claw · Air Slash · Fire Spin"
+            },
+            "value": "charizard_6"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "🌿 *Venusaur* — Lv.32 — CP 1,650"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Solar Beam · Vine Whip · Poison Powder · Sleep Powder"
+            },
+            "value": "venusaur_3"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "👻 *Gengar* — Lv.30 — CP 1,580"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Shadow Ball · Hypnosis · Dream Eater · Lick"
+            },
+            "value": "gengar_94"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "🥊 *Machamp* — Lv.27 — CP 1,350"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Cross Chop · Karate Chop · Seismic Toss · Bulk Up"
+            },
+            "value": "machamp_68"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "😴 *Snorlax* — Lv.25 — CP 1,280"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Body Slam · Rest · Headbutt · Hyper Beam"
+            },
+            "value": "snorlax_143"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "🦋 *Butterfree* — Lv.14 — CP 620"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Confusion · Sleep Powder · Psybeam · Gust"
+            },
+            "value": "butterfree_12"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "📦 Your Collection (8 Pokémon)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "input",
+      "block_id": "lead_block",
+      "element": {
+        "type": "static_select",
+        "action_id": "lead_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Choose lead Pokémon..."
+        },
+        "initial_option": {
+          "text": {
+            "type": "plain_text",
+            "text": "💧 Blastoise"
+          },
+          "value": "blastoise_9"
+        },
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "💧 Blastoise"
+            },
+            "value": "blastoise_9"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "⚡ Jolteon"
+            },
+            "value": "jolteon_135"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "🔥 Charizard"
+            },
+            "value": "charizard_6"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "⭐ Lead Pokémon (first in wild encounters)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "💡 *Tip:* A diverse team with different types gives you the best coverage against wild encounters!"
+        }
+      ]
+    }
+  ]
+}

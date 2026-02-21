@@ -1,0 +1,96 @@
+{
+  "channel": "#pokemon",
+  "text": "A wild Charizard appeared!",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "🔴 A wild Pokémon appeared!",
+        "emoji": true
+      }
+    },
+    {
+      "type": "image",
+      "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+      "alt_text": "A wild Charizard"
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Name:*\nCharizard"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Level:*\n38"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Type:*\n🔥 Fire · ✈️ Flying"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Rarity:*\n🟪 Rare"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*HP:* `████████████████` 180/180\n*CP:* 2,100"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "⚡ First trainer to battle claims the encounter  ·  🏃 Flees in *10 minutes*  ·  🎲 Catch rate: 45%"
+        }
+      ]
+    },
+    {
+      "type": "actions",
+      "block_id": "encounter_actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "⚡ Battle!",
+            "emoji": true
+          },
+          "action_id": "claim_encounter",
+          "value": "enc_abc123",
+          "style": "primary"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "👀 Inspect",
+            "emoji": true
+          },
+          "action_id": "inspect_encounter",
+          "value": "enc_abc123"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "🏃 Pass",
+            "emoji": true
+          },
+          "action_id": "pass_encounter",
+          "value": "enc_abc123"
+        }
+      ]
+    }
+  ]
+}

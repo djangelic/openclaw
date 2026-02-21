@@ -1,0 +1,243 @@
+{
+  "type": "modal",
+  "callback_id": "shop_purchase",
+  "title": {
+    "type": "plain_text",
+    "text": "🏪 PokéShop",
+    "emoji": true
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "Buy",
+    "emoji": true
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Leave Shop"
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Welcome to the PokéShop!",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "💰 *Your Balance:* 3,200 PokéCoins"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*🔴 Poké Balls*"
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "pokeball_qty_block",
+      "optional": true,
+      "element": {
+        "type": "static_select",
+        "action_id": "pokeball_qty",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Quantity..."
+        },
+        "options": [
+          {
+            "text": { "type": "plain_text", "text": "0" },
+            "value": "0"
+          },
+          {
+            "text": { "type": "plain_text", "text": "5  (500 coins)" },
+            "value": "5"
+          },
+          {
+            "text": { "type": "plain_text", "text": "10  (1,000 coins)" },
+            "value": "10"
+          },
+          {
+            "text": { "type": "plain_text", "text": "20  (2,000 coins)" },
+            "value": "20"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "⚪ Poké Ball — 100 coins each  (×1.0 catch rate)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "greatball_qty_block",
+      "optional": true,
+      "element": {
+        "type": "static_select",
+        "action_id": "greatball_qty",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Quantity..."
+        },
+        "options": [
+          {
+            "text": { "type": "plain_text", "text": "0" },
+            "value": "0"
+          },
+          {
+            "text": { "type": "plain_text", "text": "3  (750 coins)" },
+            "value": "3"
+          },
+          {
+            "text": { "type": "plain_text", "text": "5  (1,250 coins)" },
+            "value": "5"
+          },
+          {
+            "text": { "type": "plain_text", "text": "10  (2,500 coins)" },
+            "value": "10"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "🔵 Great Ball — 250 coins each  (×1.5 catch rate)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "ultraball_qty_block",
+      "optional": true,
+      "element": {
+        "type": "static_select",
+        "action_id": "ultraball_qty",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Quantity..."
+        },
+        "options": [
+          {
+            "text": { "type": "plain_text", "text": "0" },
+            "value": "0"
+          },
+          {
+            "text": { "type": "plain_text", "text": "1  (500 coins)" },
+            "value": "1"
+          },
+          {
+            "text": { "type": "plain_text", "text": "3  (1,500 coins)" },
+            "value": "3"
+          },
+          {
+            "text": { "type": "plain_text", "text": "5  (2,500 coins)" },
+            "value": "5"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "🟡 Ultra Ball — 500 coins each  (×2.0 catch rate)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*🧪 Items*"
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "potion_qty_block",
+      "optional": true,
+      "element": {
+        "type": "static_select",
+        "action_id": "potion_qty",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Quantity..."
+        },
+        "options": [
+          {
+            "text": { "type": "plain_text", "text": "0" },
+            "value": "0"
+          },
+          {
+            "text": { "type": "plain_text", "text": "3  (450 coins)" },
+            "value": "3"
+          },
+          {
+            "text": { "type": "plain_text", "text": "5  (750 coins)" },
+            "value": "5"
+          },
+          {
+            "text": { "type": "plain_text", "text": "10  (1,500 coins)" },
+            "value": "10"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "💊 Potion — 150 coins each  (Heal 50 HP)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "revive_qty_block",
+      "optional": true,
+      "element": {
+        "type": "static_select",
+        "action_id": "revive_qty",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Quantity..."
+        },
+        "options": [
+          {
+            "text": { "type": "plain_text", "text": "0" },
+            "value": "0"
+          },
+          {
+            "text": { "type": "plain_text", "text": "1  (400 coins)" },
+            "value": "1"
+          },
+          {
+            "text": { "type": "plain_text", "text": "3  (1,200 coins)" },
+            "value": "3"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "⭐ Revive — 400 coins each  (Revive fainted Pokémon at 50% HP)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "💡 Earn PokéCoins by catching Pokémon (+100), winning PvP (+300), and daily login (+50)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "type": "modal",
+  "callback_id": "pvp_move_select",
+  "private_metadata": "{\"battle_id\":\"pvp_xyz789\",\"round\":2,\"your_pokemon\":\"charizard\",\"opponent_pokemon\":\"blastoise\"}",
+  "title": {
+    "type": "plain_text",
+    "text": "⚔️ Round 2",
+    "emoji": true
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "Use Move!",
+    "emoji": true
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Your Turn!",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Your Pokémon:* 🔥 Charizard — Lv.38\n`HP ████████░░░░░░░░ 98/180`"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/6.gif",
+        "alt_text": "Charizard"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Opponent:* 💧 Blastoise — Lv.35\n`HP ██████████░░░░░░ 110/162`"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/9.gif",
+        "alt_text": "Blastoise"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "input",
+      "block_id": "move_select_block",
+      "element": {
+        "type": "radio_buttons",
+        "action_id": "move_select",
+        "options": [
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "*🔥 Flamethrower*  ·  Power 90  ·  Acc 100%\n_Not very effective vs 💧 Water..._"
+            },
+            "value": "flamethrower"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "*🐉 Dragon Claw*  ·  Power 80  ·  Acc 100%\n_Neutral damage — a safe bet_"
+            },
+            "value": "dragon-claw"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "*✈️ Air Slash*  ·  Power 75  ·  Acc 95%\n_Neutral damage — may cause flinch_"
+            },
+            "value": "air-slash"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "*🌀 Fire Spin*  ·  Power 35  ·  Acc 85%\n_Traps opponent for 4-5 turns_"
+            },
+            "value": "fire-spin"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Choose your move!",
+        "emoji": true
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "⏰ You have *5 minutes* to pick a move  |  If time expires, a random move will be used"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "type": "modal",
+  "callback_id": "trainer_profile",
+  "title": {
+    "type": "plain_text",
+    "text": "👤 Trainer Profile",
+    "emoji": true
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Close"
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "🏆 Trainer Angel",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Level:* 12\n*XP:* `████████████░░░░░░░░` 2,400 / 3,000\n*💰 PokéCoins:* 3,200\n*🔥 Catch Streak:* 4"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png",
+        "alt_text": "Blastoise - Partner Pokemon"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "📋 Active Team",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "1️⃣ 💧 *Blastoise* — Lv.35 — CP 1,890\n`HP ████████████████ 162/162`"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
+        "alt_text": "Blastoise"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "2️⃣ ⚡ *Jolteon* — Lv.28 — CP 1,420\n`HP ████████████████ 120/120`"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+        "alt_text": "Jolteon"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "3️⃣ 🔥 *Charizard* — Lv.38 — CP 2,100 ✨ NEW\n`HP ████████████████ 180/180`"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
+        "alt_text": "Charizard"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "4️⃣ _empty slot_\n5️⃣ _empty slot_\n6️⃣ _empty slot_"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "📊 Stats",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*📦 Collection:*\n23 / 151"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*📖 Pokédex:*\n`███░░░░░░░░░` 15%"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*⚔️ PvP Record:*\n7W - 3L (70%)"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*🏆 Rank:*\n#2 on leaderboard"
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "🎒 Full Collection",
+            "emoji": true
+          },
+          "action_id": "view_collection",
+          "value": "collection"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "📖 Pokédex",
+            "emoji": true
+          },
+          "action_id": "view_pokedex",
+          "value": "pokedex"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "🔄 Manage Team",
+            "emoji": true
+          },
+          "action_id": "manage_team",
+          "value": "manage_team",
+          "style": "primary"
+        }
+      ]
+    }
+  ]
+}

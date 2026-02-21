@@ -1,0 +1,193 @@
+{
+  "type": "modal",
+  "callback_id": "pvp_team_select",
+  "private_metadata": "{\"challenge_id\":\"pvp_xyz789\",\"opponent\":\"U087ABCDE\",\"wager_type\":\"pokemon\"}",
+  "title": {
+    "type": "plain_text",
+    "text": "⚔️ PvP Battle",
+    "emoji": true
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "Lock In Team!",
+    "emoji": true
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Forfeit"
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "🏟️ Choose Your Battle Team",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "You've been challenged by *@Alex*!\n💰 *Wager:* Loser gives up one Pokémon (loser chooses which)\n🏟️ *Format:* Best of 3"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "input",
+      "block_id": "team_select_block",
+      "element": {
+        "type": "checkboxes",
+        "action_id": "team_select",
+        "options": [
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "💧 *Blastoise* — Lv.35 — CP 1,890"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Moves: Hydro Pump, Water Pulse, Surf, Bite"
+            },
+            "value": "blastoise_9"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "⚡ *Jolteon* — Lv.28 — CP 1,420"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Moves: Thunderbolt, Quick Attack, Pin Missile, Thunder Wave"
+            },
+            "value": "jolteon_135"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "🔥 *Charizard* — Lv.38 — CP 2,100"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Moves: Flamethrower, Dragon Claw, Air Slash, Fire Spin"
+            },
+            "value": "charizard_6"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "🌿 *Venusaur* — Lv.32 — CP 1,650"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Moves: Solar Beam, Vine Whip, Poison Powder, Sleep Powder"
+            },
+            "value": "venusaur_3"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "👻 *Gengar* — Lv.30 — CP 1,580"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Moves: Shadow Ball, Hypnosis, Dream Eater, Lick"
+            },
+            "value": "gengar_94"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "🥊 *Machamp* — Lv.27 — CP 1,350"
+            },
+            "description": {
+              "type": "mrkdwn",
+              "text": "Moves: Cross Chop, Karate Chop, Seismic Toss, Bulk Up"
+            },
+            "value": "machamp_68"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Select exactly 3 Pokémon for battle",
+        "emoji": true
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "input",
+      "block_id": "lead_pokemon_block",
+      "element": {
+        "type": "static_select",
+        "action_id": "lead_pokemon",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Who leads the charge?"
+        },
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "💧 Blastoise"
+            },
+            "value": "blastoise_9"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "⚡ Jolteon"
+            },
+            "value": "jolteon_135"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "🔥 Charizard"
+            },
+            "value": "charizard_6"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "🌿 Venusaur"
+            },
+            "value": "venusaur_3"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "👻 Gengar"
+            },
+            "value": "gengar_94"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "🥊 Machamp"
+            },
+            "value": "machamp_68"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "⭐ Lead Pokémon (sent out first)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "⚠️ Your opponent won't see your team until battle begins. Choose wisely!"
+        }
+      ]
+    }
+  ]
+}

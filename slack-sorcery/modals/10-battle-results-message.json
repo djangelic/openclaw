@@ -1,0 +1,112 @@
+{
+  "channel": "#pokemon",
+  "text": "Battle Results: Angel vs Wild Charizard",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "⚔️ BATTLE RESULTS",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Angel* vs *Wild Charizard*"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Angel sent out 💧 *Blastoise* (Lv. 35)"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/9.gif",
+        "alt_text": "Blastoise"
+      }
+    },
+    {
+      "type": "rich_text",
+      "elements": [
+        {
+          "type": "rich_text_preformatted",
+          "elements": [
+            {
+              "type": "text",
+              "text": "🌊 Blastoise used Hydro Pump!\n   💥 It's super effective!  (-82 HP)\n\n🔥 Charizard used Flamethrower!\n   😑 Not very effective...  (-18 HP)\n\n🌊 Blastoise used Water Pulse!\n   💥 It's super effective!  (-64 HP)\n\n🔥 Charizard used Dragon Claw!\n   (-34 HP)\n\n🌊 Blastoise used Surf!\n   💥 Critical hit!  (-52 HP)\n\n💀 Charizard fainted!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "💧 *Blastoise:* `██████████░░░░░░` 110/162 HP remaining"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "🎲 *Catch attempt...* rolling..."
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "⚪ _shake_ . . . ⚪ _shake_ . . . ⚪ _shake_ . . .\n\n✨ *CAUGHT!* 🔥 Charizard has been added to Angel's collection!"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/6.gif",
+        "alt_text": "Charizard caught!"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*🏆 XP Earned:*\n+240"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*💰 Coins Earned:*\n+100"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*📦 Collection:*\n24 / 151"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*🔥 Catch Streak:*\n5 in a row!"
+        }
+      ]
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "📖 _The flames on Charizard's tail flickered defiantly as the Poké Ball sealed shut. A worthy addition to any trainer's team._ 🔥"
+        }
+      ]
+    }
+  ]
+}

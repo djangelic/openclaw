@@ -1,0 +1,196 @@
+{
+  "type": "modal",
+  "callback_id": "battle_action",
+  "private_metadata": "{\"encounter_id\":\"enc_abc123\",\"wild_pokemon\":\"charizard\",\"wild_pokemon_id\":6}",
+  "title": {
+    "type": "plain_text",
+    "text": "⚔️ Battle!",
+    "emoji": true
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "Fight!",
+    "emoji": true
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Run Away 🏃"
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "A wild Charizard appeared!",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*🔥 Charizard*  ·  Lv. 38  ·  Fire / Flying\n`HP ████████████░░░░ 180/180`"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        "alt_text": "Charizard"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "🎯 *Choose your lead Pokémon:*"
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "pokemon_select_block",
+      "element": {
+        "type": "static_select",
+        "action_id": "pokemon_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Pick your Pokémon..."
+        },
+        "options": [
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "💧 *Blastoise* — Lv.35 — HP 162/162"
+            },
+            "value": "blastoise_9"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "⚡ *Jolteon* — Lv.28 — HP 120/120"
+            },
+            "value": "jolteon_135"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "🌿 *Venusaur* — Lv.32 — HP 148/148"
+            },
+            "value": "venusaur_3"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "🎒 Your Team",
+        "emoji": true
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "🎲 *Battle Strategy:*"
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "strategy_block",
+      "element": {
+        "type": "radio_buttons",
+        "action_id": "strategy_select",
+        "options": [
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "*⚔️ All-Out Attack*\n_Maximum damage, but takes more hits_"
+            },
+            "value": "aggressive"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "*⚖️ Balanced*\n_Smart play — mix of offense and defense_"
+            },
+            "value": "balanced"
+          },
+          {
+            "text": {
+              "type": "mrkdwn",
+              "text": "*🛡️ Play It Safe*\n_Less damage dealt, but higher catch chance_"
+            },
+            "value": "defensive"
+          }
+        ],
+        "initial_option": {
+          "text": {
+            "type": "mrkdwn",
+            "text": "*⚖️ Balanced*\n_Smart play — mix of offense and defense_"
+          },
+          "value": "balanced"
+        }
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "How do you want to fight?",
+        "emoji": true
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "input",
+      "block_id": "pokeball_block",
+      "element": {
+        "type": "static_select",
+        "action_id": "pokeball_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Choose your Poké Ball..."
+        },
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "⚪ Poké Ball  (×1.0 catch rate)  — 14 left"
+            },
+            "value": "pokeball"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "🔵 Great Ball  (×1.5 catch rate)  — 5 left"
+            },
+            "value": "greatball"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "🟡 Ultra Ball  (×2.0 catch rate)  — 2 left"
+            },
+            "value": "ultraball"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "🔴 Poké Ball to Use (after winning)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "💡 *Type hint:* 💧 Water is *super effective* against 🔥 Fire!  |  ⚡ Electric is *super effective* against ✈️ Flying!"
+        }
+      ]
+    }
+  ]
+}

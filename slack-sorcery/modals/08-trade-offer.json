@@ -1,0 +1,158 @@
+{
+  "type": "modal",
+  "callback_id": "trade_offer",
+  "title": {
+    "type": "plain_text",
+    "text": "🔄 Trade Pokémon",
+    "emoji": true
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "Send Offer",
+    "emoji": true
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Cancel"
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Propose a Trade",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Pick a trainer and offer one of your Pokémon for one of theirs. They'll get a DM to accept or decline."
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "input",
+      "block_id": "trade_partner_block",
+      "element": {
+        "type": "users_select",
+        "action_id": "trade_partner",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select a trainer..."
+        }
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "🤝 Trade With",
+        "emoji": true
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "offer_pokemon_block",
+      "element": {
+        "type": "static_select",
+        "action_id": "offer_pokemon",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Choose Pokémon to offer..."
+        },
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "💧 Blastoise — Lv.35 — CP 1,890"
+            },
+            "value": "blastoise_9"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "⚡ Jolteon — Lv.28 — CP 1,420"
+            },
+            "value": "jolteon_135"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "🔥 Charizard — Lv.38 — CP 2,100"
+            },
+            "value": "charizard_6"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "🌿 Venusaur — Lv.32 — CP 1,650"
+            },
+            "value": "venusaur_3"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "👻 Gengar — Lv.30 — CP 1,580"
+            },
+            "value": "gengar_94"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "📤 You're Offering",
+        "emoji": true
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "request_pokemon_block",
+      "optional": true,
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "request_pokemon",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "e.g. Pikachu, or 'any water type'"
+        }
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "📥 You're Requesting (optional — leave blank for open offer)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "trade_message_block",
+      "optional": true,
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "trade_message",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Add a message to your trade offer..."
+        },
+        "max_length": 200
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "💬 Message (optional)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "⚠️ Trades are final! Once accepted, both Pokémon swap trainers permanently."
+        }
+      ]
+    }
+  ]
+}
