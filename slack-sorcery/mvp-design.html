@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slack & Sorcery — MVP Design (Psychology-Driven)</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    font-family: 'Segoe UI', system-ui, sans-serif; 
+    background: #0f0a1a; 
+    color: #e0dce8; 
+    line-height: 1.7;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  h1 { 
+    font-size: 2.5rem; 
+    background: linear-gradient(135deg, #ff6b6b, #c44dff, #4dabff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.25rem;
+  }
+  h2 { color: #c44dff; margin: 2.5rem 0 1rem; font-size: 1.5rem; border-bottom: 1px solid #2a2040; padding-bottom: 0.5rem; }
+  h3 { color: #4dabff; margin: 1.5rem 0 0.75rem; }
+  h4 { color: #4dff88; margin: 1rem 0 0.5rem; }
+  .subtitle { color: #8a82a0; font-size: 1.1rem; margin-bottom: 2rem; }
+  .card {
+    background: #1a1428;
+    border: 1px solid #2a2040;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  .card.purple { border-color: #c44dff; }
+  .card.blue { border-color: #4dabff; }
+  .card.green { border-color: #4dff88; }
+  .card.red { border-color: #ff6b6b; }
+  .card.gold { border-color: #ffd700; }
+  .mermaid { 
+    background: #1a1428; 
+    border-radius: 12px; 
+    padding: 1.5rem; 
+    margin: 1rem 0;
+    display: flex;
+    justify-content: center;
+  }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  @media (max-width: 900px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+  code { background: #2a2040; padding: 2px 6px; border-radius: 4px; color: #4dabff; font-size: 0.9em; }
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.8rem; margin: 2px; font-weight: 600; }
+  .tag.psych { background: #3a1a42; color: #c44dff; }
+  .tag.block { background: #1a2a3a; color: #4dabff; }
+  .tag.game { background: #1a3a2a; color: #4dff88; }
+  .tag.risk { background: #3a1a1a; color: #ff6b6b; }
+  ul, ol { padding-left: 1.5rem; }
+  li { margin: 0.3rem 0; }
+  .principle {
+    background: #1a1428;
+    border-left: 4px solid #c44dff;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .principle .name { color: #c44dff; font-weight: 700; font-size: 1.05rem; }
+  .principle .source { color: #8a82a0; font-size: 0.85rem; }
+  .blockkit-box {
+    background: #1e1533;
+    border: 1px dashed #4dabff;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+  }
+  .blockkit-label { color: #4dabff; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  th { background: #2a2040; color: #c44dff; padding: 0.75rem; text-align: left; }
+  td { padding: 0.75rem; border-bottom: 1px solid #2a2040; }
+  .version-badge { display: inline-block; background: #2a2040; color: #ffd700; padding: 4px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+  .slack-mock {
+    background: #1a1128;
+    border: 1px solid #3a2a50;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .slack-mock .bot-name { color: #c44dff; font-weight: 700; }
+  .slack-mock .time { color: #6a6280; font-size: 0.8rem; margin-left: 8px; }
+  .slack-mock .msg { margin-top: 0.5rem; }
+  .slack-mock .btn { display: inline-block; background: #4dabff; color: #fff; padding: 4px 14px; border-radius: 4px; font-size: 0.85rem; margin: 4px 4px 4px 0; cursor: default; }
+  .slack-mock .btn.danger { background: #ff6b6b; }
+  .slack-mock .btn.green { background: #4dff88; color: #0f0a1a; }
+  .slack-mock .img-placeholder { background: #2a2040; border-radius: 8px; padding: 2rem; text-align: center; color: #6a6280; margin: 0.5rem 0; }
+  .slack-mock .context { color: #8a82a0; font-size: 0.85rem; margin-top: 0.5rem; }
+  .divider { border: none; border-top: 1px solid #2a2040; margin: 0.75rem 0; }
+</style>
+</head>
+<body>
+
+<h1>⚔️ Slack & Sorcery</h1>
+<p class="subtitle">MVP Design Document — Psychology-Driven, Block Kit-Native, Themeable</p>
+<p style="color:#8a82a0;">Version 0.1 — Focus: Pokémon Theme (PokeAPI) → Reskinnable to DnD / Pirates / Space</p>
+
+<!-- ==================== DESIGN PHILOSOPHY ==================== -->
+<h2>🧠 Design Philosophy: Psychology First</h2>
+<p>Every mechanic is grounded in proven game psychology. We're not guessing — we're applying frameworks from <strong>Bartle's Player Types</strong>, <strong>Nir Eyal's Hook Model</strong>, <strong>Skinner's Variable Ratio Reinforcement</strong>, and <strong>Self-Determination Theory</strong>. The game should feel addictive before it feels complex.</p>
+
+<div class="three-col">
+  <div class="card purple">
+    <h4>🎰 Variable Ratio Reinforcement</h4>
+    <p class="source" style="color:#8a82a0;">B.F. Skinner — most addictive reward schedule</p>
+    <p>Random encounters at unpredictable times. Random Pokémon species. Random catch rates. Like slot machines — the uncertainty is the hook.</p>
+    <p style="margin-top:0.5rem"><span class="tag game">Random spawns</span> <span class="tag game">Catch rates</span> <span class="tag game">Loot drops</span></p>
+  </div>
+  <div class="card purple">
+    <h4>📈 Endowed Progress Effect</h4>
+    <p class="source" style="color:#8a82a0;">Nunes & Drèze — people complete goals they've started</p>
+    <p>Start with a starter Pokémon immediately. You're not at zero — you're already 1/151. The Pokédex progress bar does the rest.</p>
+    <p style="margin-top:0.5rem"><span class="tag game">Starter pick</span> <span class="tag game">Pokédex %</span> <span class="tag game">Collection</span></p>
+  </div>
+  <div class="card purple">
+    <h4>😰 Loss Aversion</h4>
+    <p class="source" style="color:#8a82a0;">Kahneman & Tversky — losses hurt 2× more than gains</p>
+    <p>Lose a Pokémon in PvP? That stings. You'll fight harder to get it back. Stakes make every battle matter.</p>
+    <p style="margin-top:0.5rem"><span class="tag game">PvP wagers</span> <span class="tag game">Steal mechanics</span> <span class="tag risk">Emotional stakes</span></p>
+  </div>
+</div>
+
+<div class="three-col">
+  <div class="card purple">
+    <h4>🏆 Bartle's Player Types</h4>
+    <p class="source" style="color:#8a82a0;">Richard Bartle — 4 player motivations</p>
+    <ul>
+      <li><strong>Achievers:</strong> Pokédex completion, XP, levels</li>
+      <li><strong>Explorers:</strong> Rare spawns, hidden encounters</li>
+      <li><strong>Socializers:</strong> Trading, team battles, chat</li>
+      <li><strong>Killers:</strong> PvP, leaderboards, stealing</li>
+    </ul>
+  </div>
+  <div class="card purple">
+    <h4>🪝 The Hook Model</h4>
+    <p class="source" style="color:#8a82a0;">Nir Eyal — Trigger → Action → Variable Reward → Investment</p>
+    <ol>
+      <li><strong>Trigger:</strong> Slack notification ("A wild Pikachu appeared!")</li>
+      <li><strong>Action:</strong> Tap one button to battle</li>
+      <li><strong>Variable Reward:</strong> Did you catch it? What moves does it know?</li>
+      <li><strong>Investment:</strong> Train it, level it, add to your team</li>
+    </ol>
+  </div>
+  <div class="card purple">
+    <h4>🎯 Self-Determination Theory</h4>
+    <p class="source" style="color:#8a82a0;">Deci & Ryan — intrinsic motivation</p>
+    <ul>
+      <li><strong>Autonomy:</strong> Choose your team, your strategy</li>
+      <li><strong>Competence:</strong> Get better at type matchups, timing</li>
+      <li><strong>Relatedness:</strong> Trade, battle, collaborate with coworkers</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== THEME SYSTEM ==================== -->
+<h2>🎨 Theme System — One Engine, Many Skins</h2>
+<p>The game engine is theme-agnostic. A <code>theme</code> config object controls all flavor text, emojis, API sources, and imagery. Ship with presets, let admins pick in App Home settings.</p>
+
+<div class="mermaid">
+flowchart LR
+    subgraph "Theme Config"
+        T["🎮 Theme Object\nname, emoji set, API,\nflavor text templates"]
+    end
+    subgraph "Presets"
+        P1["🔴 Pokémon\nPokeAPI\nCatch & Battle"]
+        P2["⚔️ DnD\nD&D Node\nQuest & Loot"]
+        P3["🏴‍☠️ Pirates\nCustom data\nPlunder & Sail"]
+        P4["🚀 Space\nStar Wars API\nExplore & Conquer"]
+    end
+    subgraph "Engine"
+        E1["Encounter System"]
+        E2["Battle System"]
+        E3["Collection System"]
+        E4["PvP System"]
+    end
+    P1 --> T
+    P2 --> T
+    P3 --> T
+    P4 --> T
+    T --> E1
+    T --> E2
+    T --> E3
+    T --> E4
+</div>
+
+<table>
+  <tr><th>Element</th><th>🔴 Pokémon</th><th>⚔️ DnD</th><th>🏴‍☠️ Pirates</th><th>🚀 Star Wars</th></tr>
+  <tr><td>Creatures</td><td>Pokémon (PokeAPI)</td><td>Monsters (D&D Node)</td><td>Sea creatures</td><td>Aliens (SWAPI)</td></tr>
+  <tr><td>Collect</td><td>Catch Pokémon</td><td>Tame monsters / loot</td><td>Capture ships</td><td>Recruit characters</td></tr>
+  <tr><td>Currency</td><td>PokéCoins</td><td>Gold</td><td>Doubloons</td><td>Credits</td></tr>
+  <tr><td>Encounter verb</td><td>"A wild X appeared!"</td><td>"A X emerges from the shadows!"</td><td>"A X surfaces off starboard!"</td><td>"Sensors detect a X!"</td></tr>
+  <tr><td>Player role</td><td>Trainer</td><td>Adventurer</td><td>Captain</td><td>Commander</td></tr>
+  <tr><td>PvP</td><td>Pokémon Battle</td><td>Arena Duel</td><td>Ship Combat</td><td>Lightsaber Duel</td></tr>
+  <tr><td>Image source</td><td>PokeAPI sprites</td><td>AI-generated</td><td>AI-generated</td><td>SWAPI + AI</td></tr>
+</table>
+
+<!-- ==================== MVP POKÉMON ==================== -->
+<h2>🔴 MVP: Pokémon Theme — "SlackéMon"</h2>
+<p>Why Pokémon first: free API with images + stats + types + moves, universally understood mechanics, collection loop is the simplest and most addictive, and it's <em>fun to say "a wild Snorlax appeared" in a work channel.</em></p>
+
+<h3>Core Loop (Minimal)</h3>
+<div class="mermaid">
+flowchart TD
+    A["🔔 Random Pokémon spawns\nin #pokemon channel"] --> B["📢 Block Kit message:\nimage, name, type, CP"]
+    B --> C["👆 First person to tap\n'⚡ Battle!' button"]
+    C --> D["⚔️ Auto-battle resolves\n(type matchups + levels)"]
+    D --> E{"🎲 Catch roll\n(variable rate)"}
+    E -->|Caught!| F["🎉 Added to your collection\nChannel celebrates"]
+    E -->|Escaped!| G["💨 Pokémon fled\nBetter luck next time"]
+    F --> H["📦 D&D Node updates\nplayer inventory"]
+    G --> H
+    H --> I["😴 Wait for next spawn"]
+    I --> A
+
+    style A fill:#4a1a1a,stroke:#ff6b6b
+    style E fill:#4a1942,stroke:#c44dff
+    style F fill:#1a4a2a,stroke:#4dff88
+</div>
+
+<!-- ==================== BLOCK KIT SHOWCASE ==================== -->
+<h2>📱 Block Kit Showcase — Every Feature Used</h2>
+<p>This is also a <strong>portfolio piece</strong> — showing what's possible with Block Kit. Here's every component mapped to a game function:</p>
+
+<table>
+  <tr><th>Block Kit Component</th><th>Game Usage</th><th>Where</th></tr>
+  <tr><td><code>section</code> + <code>image</code></td><td>Pokémon encounter card (sprite + stats)</td><td>Channel message</td></tr>
+  <tr><td><code>actions</code> + <code>button</code></td><td>Battle / Run / Use Item buttons</td><td>Channel message</td></tr>
+  <tr><td><code>context</code></td><td>Type effectiveness hints, timestamps</td><td>Channel message</td></tr>
+  <tr><td><code>divider</code></td><td>Separating encounter sections</td><td>Everywhere</td></tr>
+  <tr><td><code>header</code></td><td>"⚔️ BATTLE RESULTS" announcements</td><td>Channel message</td></tr>
+  <tr><td><code>rich_text</code></td><td>Narrated battle play-by-play</td><td>Channel message</td></tr>
+  <tr><td><code>image</code> (full-width)</td><td>Pokémon sprite / encounter scene GIF</td><td>Channel message</td></tr>
+  <tr><td>Modal: <code>input</code> + <code>static_select</code></td><td>Choose starter, pick active Pokémon</td><td>Modal</td></tr>
+  <tr><td>Modal: <code>radio_buttons</code></td><td>Choose attack move in PvP</td><td>Modal</td></tr>
+  <tr><td>Modal: <code>checkboxes</code></td><td>Select team of 6 from collection</td><td>Modal</td></tr>
+  <tr><td>Modal: <code>overflow</code> menu</td><td>Quick actions (trade, release, inspect)</td><td>App Home / messages</td></tr>
+  <tr><td>App Home <code>tabs</code></td><td>Pokédex, Team, Leaderboard, Settings</td><td>App Home</td></tr>
+  <tr><td><code>emoji</code> reactions</td><td>Quick-catch attempts, celebrate catches</td><td>Channel</td></tr>
+  <tr><td>Unfurl / <code>attachments</code></td><td>Battle result summaries</td><td>Channel</td></tr>
+  <tr><td><code>mrkdwn</code> formatting</td><td>HP bars, stat tables, type charts</td><td>Everywhere</td></tr>
+</table>
+
+<!-- ==================== MOCK MESSAGES ==================== -->
+<h3>Mock: Wild Encounter</h3>
+<div class="slack-mock">
+  <div><span class="bot-name">SlackéMon</span> <span class="time">10:32 AM</span></div>
+  <div class="msg">
+    <strong>🔴 A wild Pokémon appeared!</strong>
+  </div>
+  <div class="img-placeholder">
+    🖼️ [Charizard sprite from PokeAPI]<br>
+    <small>https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png</small>
+  </div>
+  <div class="msg">
+    <strong>Charizard</strong> &nbsp; Lv. 38 &nbsp; CP 2,100<br>
+    Type: 🔥 Fire · 🐉 Flying<br>
+    <code>████████████░░░░</code> HP 180/180
+  </div>
+  <hr class="divider">
+  <div class="context">⚡ First trainer to battle claims the encounter · 🏃 Flees in 10 minutes</div>
+  <div style="margin-top:0.75rem">
+    <span class="btn">⚡ Battle!</span>
+    <span class="btn" style="background:#2a2040;color:#e0dce8;">👀 Inspect</span>
+    <span class="btn" style="background:#2a2040;color:#e0dce8;">🏃 Pass</span>
+  </div>
+</div>
+
+<h3>Mock: Battle Resolution</h3>
+<div class="slack-mock">
+  <div><span class="bot-name">SlackéMon</span> <span class="time">10:33 AM</span></div>
+  <div class="msg">
+    <strong>⚔️ BATTLE — Angel vs Wild Charizard</strong>
+  </div>
+  <hr class="divider">
+  <div class="msg" style="font-family:monospace; font-size:0.9rem; line-height:1.8; background:#120e1c; padding:1rem; border-radius:6px;">
+    Angel sent out <strong>Blastoise</strong> (Lv. 35, 💧 Water)<br><br>
+    🌊 Blastoise used <strong>Hydro Pump</strong>! → 💥 Super effective! (-82 HP)<br>
+    🔥 Charizard used <strong>Flamethrower</strong>! → Not very effective... (-18 HP)<br>
+    🌊 Blastoise used <strong>Water Pulse</strong>! → 💥 Super effective! (-64 HP)<br>
+    🔥 Charizard used <strong>Dragon Claw</strong>! → (-34 HP)<br>
+    🌊 Blastoise used <strong>Surf</strong>! → 💥 Critical hit! (-52 HP)<br><br>
+    <strong>Charizard fainted!</strong>
+  </div>
+  <hr class="divider">
+  <div class="msg">
+    🎲 Catch attempt... <strong>rolling...</strong><br>
+    <span style="font-size:1.5rem">⚪ . . . ⚪ . . . ⚪ . . . </span><br>
+    <span style="font-size:1.3rem; color:#4dff88;">✨ <strong>CAUGHT!</strong> Charizard added to your collection!</span>
+  </div>
+  <div class="context">📊 Angel: 23 Pokémon caught · Pokédex: 15% · Rank #2 on leaderboard</div>
+</div>
+
+<h3>Mock: PvP Challenge</h3>
+<div class="slack-mock">
+  <div><span class="bot-name">SlackéMon</span> <span class="time">2:15 PM</span></div>
+  <div class="msg">
+    <strong>⚔️ PvP CHALLENGE</strong><br>
+    <strong>@Angel</strong> challenges <strong>@Alex</strong> to a battle!
+  </div>
+  <hr class="divider">
+  <div class="msg">
+    💰 <strong>Wager:</strong> Winner takes one Pokémon from loser's collection (loser chooses which)<br>
+    🏟️ <strong>Format:</strong> Best of 3 (each player picks 3 Pokémon)
+  </div>
+  <div style="margin-top:0.75rem">
+    <span class="btn green">✅ Accept Challenge</span>
+    <span class="btn danger">❌ Decline</span>
+    <span class="btn" style="background:#2a2040;color:#ffd700;">💰 Counter-wager</span>
+  </div>
+  <div class="context">⏰ Challenge expires in 24 hours · Both players pick teams via DM modal</div>
+</div>
+
+<h3>Mock: App Home — Trainer Profile</h3>
+<div class="slack-mock" style="border-color:#c44dff;">
+  <div style="color:#8a82a0; font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:0.75rem;">App Home · SlackéMon</div>
+  <div class="msg">
+    <strong style="font-size:1.3rem;">🏆 Trainer Angel</strong> &nbsp; <span style="background:#2a2040; padding:2px 8px; border-radius:4px; color:#ffd700; font-size:0.85rem;">Lv. 12</span><br>
+    <code>████████████░░░░░░░░</code> 2,400 / 3,000 XP to Lv. 13
+  </div>
+  <hr class="divider">
+  <div class="msg">
+    <strong>📋 Active Team (3/6)</strong><br>
+    1. 💧 Blastoise — Lv. 35 — CP 1,890<br>
+    2. ⚡ Jolteon — Lv. 28 — CP 1,420<br>
+    3. 🔥 Charizard — Lv. 38 — CP 2,100 &nbsp; <span style="color:#4dff88;">✨ NEW</span><br>
+    <span style="color:#8a82a0;">[ 3 empty slots ]</span>
+  </div>
+  <hr class="divider">
+  <div class="msg">
+    <strong>📦 Collection:</strong> 23 / 151 &nbsp; <code>███░░░░░░░░░</code> 15%<br>
+    <strong>💰 PokéCoins:</strong> 3,200<br>
+    <strong>⚔️ PvP Record:</strong> 7W - 3L (70%)<br>
+    <strong>🔥 Streak:</strong> 4 catches in a row
+  </div>
+  <div style="margin-top:0.75rem">
+    <span class="btn">🎒 Full Collection</span>
+    <span class="btn">📊 Pokédex</span>
+    <span class="btn">🔄 Manage Team</span>
+    <span class="btn">⚙️ Settings</span>
+  </div>
+</div>
+
+<!-- ==================== PSYCHOLOGY MAPPED ==================== -->
+<h2>🧠 Psychology → Mechanic → Block Kit Mapping</h2>
+<p>Every feature tied back to <em>why</em> it works.</p>
+
+<div class="card purple">
+<table>
+  <tr><th>Psychology Principle</th><th>Game Mechanic</th><th>Block Kit Implementation</th></tr>
+  <tr>
+    <td><strong>Variable Ratio Reinforcement</strong><br><span class="tag psych">Skinner</span></td>
+    <td>Random spawn times (2-6x/day)<br>Random species<br>Random catch rate (40-90%)</td>
+    <td>Schedule trigger with jitter → <code>section</code> + <code>image</code> + <code>actions</code></td>
+  </tr>
+  <tr>
+    <td><strong>Scarcity & FOMO</strong><br><span class="tag psych">Cialdini</span></td>
+    <td>First to tap claims encounter<br>10-min flee timer<br>Rare spawns (5% legendary)</td>
+    <td><code>context</code> block with countdown<br><code>button</code> disables after claim</td>
+  </tr>
+  <tr>
+    <td><strong>Endowed Progress</strong><br><span class="tag psych">Nunes & Drèze</span></td>
+    <td>Start with a starter Pokémon<br>Pokédex shows X/151 immediately</td>
+    <td>Onboarding modal → App Home progress bar (<code>mrkdwn</code>)</td>
+  </tr>
+  <tr>
+    <td><strong>Loss Aversion</strong><br><span class="tag psych">Kahneman</span></td>
+    <td>PvP wager: loser gives up a Pokémon<br>"Your Pikachu was stolen!"</td>
+    <td>PvP challenge <code>actions</code> with wager display</td>
+  </tr>
+  <tr>
+    <td><strong>Social Proof</strong><br><span class="tag psych">Cialdini</span></td>
+    <td>Public catches in channel<br>Leaderboard on App Home<br>"Alex just caught a Mewtwo!"</td>
+    <td>Channel messages + App Home <code>section</code> blocks</td>
+  </tr>
+  <tr>
+    <td><strong>Competence / Mastery</strong><br><span class="tag psych">SDT</span></td>
+    <td>Type effectiveness matters<br>Team building strategy<br>Leveling up Pokémon</td>
+    <td>Battle log in <code>rich_text</code><br>Type hints in <code>context</code></td>
+  </tr>
+  <tr>
+    <td><strong>Autonomy / Choice</strong><br><span class="tag psych">SDT</span></td>
+    <td>Pick starter<br>Choose active team<br>Decide to battle or pass</td>
+    <td>Modals with <code>static_select</code>, <code>radio_buttons</code>, <code>checkboxes</code></td>
+  </tr>
+  <tr>
+    <td><strong>Near-Miss Effect</strong><br><span class="tag psych">Gambling Psychology</span></td>
+    <td>"The ball shook 3 times... but Charizard broke free!"<br>Animated catch sequence</td>
+    <td>Sequential message updates or ephemeral suspense messages</td>
+  </tr>
+  <tr>
+    <td><strong>Collection Completion</strong><br><span class="tag psych">Zeigarnik Effect</span></td>
+    <td>Pokédex with silhouettes for uncaught<br>"You're 3 away from completing Fire types!"</td>
+    <td>App Home grid of emojis (caught = color, uncaught = ⬛)</td>
+  </tr>
+  <tr>
+    <td><strong>Reciprocity</strong><br><span class="tag psych">Cialdini</span></td>
+    <td>Trading system — "I'll give you my extra Jigglypuff for your Gastly"</td>
+    <td>DM modals for trade proposals</td>
+  </tr>
+</table>
+</div>
+
+<!-- ==================== ENCOUNTER ECONOMY ==================== -->
+<h2>⚖️ Encounter Economy & Pacing</h2>
+
+<div class="card blue">
+  <h3>Spawn Schedule (Configurable)</h3>
+  <div class="two-col">
+    <div>
+      <h4>Frequency</h4>
+      <ul>
+        <li><strong>Casual:</strong> 2-3 spawns/day (friends server)</li>
+        <li><strong>Active:</strong> 4-6 spawns/day (engaged team)</li>
+        <li><strong>Intense:</strong> 8-12 spawns/day (gaming server)</li>
+      </ul>
+      <p style="margin-top:0.5rem; color:#8a82a0;">Admins set in App Home → Settings</p>
+    </div>
+    <div>
+      <h4>Rarity Distribution</h4>
+      <ul>
+        <li>⬜ Common: 50% (Pidgey, Rattata, etc.)</li>
+        <li>🟦 Uncommon: 30% (Eevee, Machop, etc.)</li>
+        <li>🟪 Rare: 15% (Dragonair, Alakazam, etc.)</li>
+        <li>🟨 Legendary: 5% (Mewtwo, Mew, etc.)</li>
+      </ul>
+    </div>
+  </div>
+  <h4>Anti-Monopoly Rules</h4>
+  <ul>
+    <li>Cooldown after catch: can't claim next encounter (30 min)</li>
+    <li>Max active team: 6 Pokémon (forces strategy)</li>
+    <li>Duplicate Pokémon: keep max 2 (trade or release extras for coins)</li>
+    <li>Legendary limit: 1 of each (if you lose it in PvP, it's gone until you recatch)</li>
+  </ul>
+</div>
+
+<!-- ==================== BATTLE SYSTEM ==================== -->
+<h2>⚔️ Battle System — Simple but Strategic</h2>
+<p>Battles auto-resolve using Pokémon stats from PokeAPI. Players don't choose moves in wild encounters (keeps it fast). In PvP, they pick one move per round via modal.</p>
+
+<div class="mermaid">
+flowchart TD
+    subgraph "Wild Encounter (Auto)"
+        W1["Bot picks wild Pokémon moves\nbased on type advantage AI"] --> W2["Your lead Pokémon\nauto-uses best moves"]
+        W2 --> W3["3-5 rounds simulated\ninstantly"]
+        W3 --> W4{"Win?"}
+        W4 -->|Yes| W5["Catch roll based on:\nHP remaining + rarity + ball type"]
+        W4 -->|No| W6["Pokémon fled\nYour Pokémon loses some HP"]
+    end
+    
+    subgraph "PvP Battle (Interactive)"
+        P1["Both players pick\n3 Pokémon via modal"] --> P2["Round: each picks\n1 move via modal"]
+        P2 --> P3["Simultaneous resolution\ntype matchups + stats"]
+        P3 --> P4{"KO?"}
+        P4 -->|No| P2
+        P4 -->|Yes| P5["Send next Pokémon\nor lose"]
+        P5 --> P6{"All 3 KO'd?"}
+        P6 -->|No| P2
+        P6 -->|Yes| P7["Winner takes wager\nLoser picks which to give up"]
+    end
+</div>
+
+<div class="card green">
+  <h3>Why Auto-Battle for Wild Encounters?</h3>
+  <p><span class="tag psych">Reducing Friction</span> — The psychology is clear: every additional step between trigger and reward reduces engagement. Wild encounters should be <strong>one tap</strong>. The fun is in the <em>result</em> (did I catch it?), not the process. Save interactive battles for PvP where the stakes and social element justify the friction.</p>
+  <p style="margin-top:0.5rem;"><strong>Think poker:</strong> You're dealt a hand (your team), the flop is the wild Pokémon. You decide to play (battle) or fold (pass). The cards play themselves. Your edge comes from team building and type knowledge, not clicking buttons.</p>
+</div>
+
+<!-- ==================== DATA MODEL ==================== -->
+<h2>📦 Data Model (D&D Node / n8n Storage)</h2>
+
+<div class="two-col">
+  <div class="card">
+    <h3>Player Object</h3>
+<pre style="background:#120e1c; padding:1rem; border-radius:6px; font-size:0.85rem; overflow-x:auto;"><code>{
+  "slackId": "U043QN9HD",
+  "name": "Angel",
+  "level": 12,
+  "xp": 2400,
+  "coins": 3200,
+  "starter": "squirtle",
+  "activeTeam": [9, 135, 6],  // Pokémon IDs
+  "collection": [9, 135, 6, 25, 39, ...],
+  "pokedex": [1,4,6,7,9,25,...],  // seen/caught
+  "pvpRecord": { "wins": 7, "losses": 3 },
+  "catchStreak": 4,
+  "lastCatchTime": "2026-02-20T10:33:00",
+  "cooldownUntil": "2026-02-20T11:03:00"
+}</code></pre>
+  </div>
+  <div class="card">
+    <h3>Owned Pokémon Object</h3>
+<pre style="background:#120e1c; padding:1rem; border-radius:6px; font-size:0.85rem; overflow-x:auto;"><code>{
+  "id": "uuid-here",
+  "speciesId": 6,  // Charizard
+  "nickname": null,
+  "level": 38,
+  "cp": 2100,
+  "hp": 180,
+  "currentHp": 180,
+  "moves": ["flamethrower", "dragon-claw",
+            "fire-blast", "fly"],
+  "caughtBy": "U043QN9HD",
+  "caughtAt": "2026-02-20T10:33:00",
+  "originalTrainer": "U043QN9HD",
+  "traded": false
+}</code></pre>
+  </div>
+</div>
+
+<!-- ==================== n8n WORKFLOW ==================== -->
+<h2>⚙️ n8n Workflow Architecture</h2>
+
+<div class="mermaid">
+flowchart TB
+    subgraph "Triggers"
+        T1["⏰ Schedule Trigger\n(random spawn cron)"]
+        T2["🔗 Slack Trigger\n(slash commands)"]
+        T3["🔗 Slack Trigger\n(button clicks)"]
+        T4["🔗 Slack Trigger\n(modal submissions)"]
+    end
+
+    subgraph "Router"
+        R{"🎯 Route by\nevent type"}
+    end
+
+    subgraph "Game Logic"
+        S["🔴 Spawn Engine\nPokeAPI → random Pokémon\napply rarity weights"]
+        B["⚔️ Battle Engine\ntype chart + stats\nauto or interactive"]
+        C["🎲 Catch Engine\nroll + modifiers\nupdate collection"]
+        PVP["🏟️ PvP Engine\nchallenge flow\nwager resolution"]
+        SHOP["🏪 Shop Engine\nbuy items, trade"]
+    end
+
+    subgraph "APIs"
+        POKE["🌐 PokeAPI\nspecies, sprites,\nmoves, types"]
+        AI["🧠 AI Node\nencounter narration\nflavor text"]
+        GIF["🎬 Giphy/Tenor\nbattle effect GIFs"]
+    end
+
+    subgraph "Storage"
+        DND["📦 D&D Node\nplayers, pokémon,\ninventory, state"]
+    end
+
+    subgraph "Output"
+        MSG["📢 Slack: Post Message\n(Block Kit encounter)"]
+        UPD["✏️ Slack: Update Message\n(battle results)"]
+        MOD["📋 Slack: Open Modal\n(team select, moves)"]
+        HOME["🏠 Slack: Update App Home\n(profile, pokédex)"]
+        DM["💬 Slack: DM\n(trade offers, secrets)"]
+    end
+
+    T1 --> S
+    T2 --> R
+    T3 --> R
+    T4 --> R
+    R --> S
+    R --> B
+    R --> C
+    R --> PVP
+    R --> SHOP
+    S --> POKE
+    S --> AI
+    B --> POKE
+    B --> AI
+    B --> GIF
+    S --> DND
+    B --> DND
+    C --> DND
+    PVP --> DND
+    SHOP --> DND
+    S --> MSG
+    B --> UPD
+    C --> UPD
+    PVP --> MSG
+    R --> MOD
+    R --> HOME
+    PVP --> DM
+    SHOP --> DM
+
+    style POKE fill:#4a1a1a,stroke:#ff6b6b
+    style DND fill:#1a3a4a,stroke:#4dabff
+    style AI fill:#4a1942,stroke:#c44dff
+</div>
+
+<!-- ==================== MVP SCOPE ==================== -->
+<h2>🚀 MVP Build Order</h2>
+
+<div class="card gold">
+  <h3><span class="version-badge">v0.1</span> &nbsp; The Hook (1-2 weeks)</h3>
+  <p>Goal: People open Slack and see a Pokémon. They tap a button. Something fun happens. That's it.</p>
+  <ol>
+    <li><strong>Onboarding modal</strong> — /slackemon → pick starter from Gen 1 starters (Bulbasaur, Charmander, Squirtle)</li>
+    <li><strong>Random spawn</strong> — Schedule trigger → PokeAPI → Block Kit encounter message</li>
+    <li><strong>One-tap battle</strong> — Button click → auto-battle → catch roll → result posted</li>
+    <li><strong>App Home profile</strong> — Team, collection count, XP bar</li>
+    <li><strong>D&D Node storage</strong> — Player + Pokémon state</li>
+  </ol>
+  <p style="color:#4dff88; margin-top:0.5rem;">✅ Covers: Hook Model (trigger→action→reward→investment), Variable Reinforcement, Endowed Progress</p>
+</div>
+
+<div class="card">
+  <h3><span class="version-badge">v0.2</span> &nbsp; The Stakes (1-2 weeks)</h3>
+  <ol>
+    <li><strong>PvP challenges</strong> — /challenge @user → team select modal → interactive battle</li>
+    <li><strong>Wager system</strong> — winner takes a Pokémon</li>
+    <li><strong>Leaderboard</strong> — App Home tab, weekly auto-post to channel</li>
+    <li><strong>GIF effects</strong> — Battle animations via Giphy/Tenor API</li>
+  </ol>
+  <p style="color:#c44dff; margin-top:0.5rem;">✅ Covers: Loss Aversion, Social Proof, Competence/Mastery</p>
+</div>
+
+<div class="card">
+  <h3><span class="version-badge">v0.3</span> &nbsp; The Economy (1-2 weeks)</h3>
+  <ol>
+    <li><strong>Trading</strong> — DM-based trade proposals with confirmation modals</li>
+    <li><strong>Shop</strong> — Spend coins on Poké Balls (better catch rate), potions (heal team)</li>
+    <li><strong>Pokédex view</strong> — Full grid with caught/uncaught silhouettes</li>
+    <li><strong>Achievements</strong> — Auto-react milestones, special badges on profile</li>
+  </ol>
+  <p style="color:#4dabff; margin-top:0.5rem;">✅ Covers: Reciprocity, Collection Completion (Zeigarnik), Autonomy</p>
+</div>
+
+<div class="card">
+  <h3><span class="version-badge">v0.4</span> &nbsp; Themes & Polish</h3>
+  <ol>
+    <li><strong>Theme engine</strong> — Admin settings modal to switch Pokémon / DnD / Pirates / Space</li>
+    <li><strong>AI narration</strong> — Flavor text for encounters and battles</li>
+    <li><strong>Custom emoji support</strong> — Upload Pokémon as workspace emoji for avatars</li>
+    <li><strong>Workplace rewards integration</strong> — Hook for external reward APIs</li>
+  </ol>
+</div>
+
+<!-- ==================== TEMPLATE GALLERY ==================== -->
+<h2>📦 Template Gallery Strategy</h2>
+<div class="card green">
+  <h3>Why This Wins in the n8n Template Gallery</h3>
+  <ul>
+    <li><strong>Single workflow</strong> — import and go (with setup instructions)</li>
+    <li><strong>Uses hot nodes:</strong> Slack, PokeAPI (HTTP), AI, D&D community node, Schedule</li>
+    <li><strong>Visual wow factor</strong> — Block Kit messages look incredible in screenshots</li>
+    <li><strong>Viral loop:</strong> Every player tells their Slack workspace → more n8n users</li>
+    <li><strong>Extensible:</strong> "Fork and customize" is a feature, not a limitation</li>
+    <li><strong>Showcases n8n strengths:</strong> event-driven, API orchestration, state management, AI</li>
+  </ul>
+  <p style="margin-top:1rem;">This isn't just a game — it's a <strong>demo of what n8n + Slack can do</strong>. Every workspace that installs it is a walking advertisement for both platforms.</p>
+</div>
+
+<script>
+  mermaid.initialize({ 
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#2a2040',
+      primaryTextColor: '#e0dce8',
+      primaryBorderColor: '#c44dff',
+      lineColor: '#4dabff',
+      secondaryColor: '#1a3a4a',
+      tertiaryColor: '#1a4a2a',
+      fontSize: '14px'
+    }
+  });
+</script>
+</body>
+</html>
