@@ -8,286 +8,279 @@
 
 ## StoryBrand Elements
 
-- **Hero:** DevOps person — self-hosts at home, deploys enterprise at work  
-- **Villain:** Complexity — everyone says "scale" but nobody shows which architecture to pick  
-- **Guide:** Angel — broke n8n in V1, came back with a framework  
+- **Hero:** Angel (and by extension, the viewer) — curious enough to ask "why don't I understand this?"  
+- **Villain:** Complexity that nobody bothers to demystify  
+- **Guide:** The data — real benchmarks that replace guessing with knowing  
 - **Plan:** Understand the three types → see the data → know your path  
-- **Success:** Picking the right architecture the first time  
-- **Failure avoided:** Burning money on the wrong one
+- **Transformation:** "I didn't understand our own architecture" → "Now I can explain it with food"  
+- **Tagline thread:** "Stay curious" — curiosity is what started this entire investigation
 
 ---
 
-## SEGMENT 1: COLD OPEN
-**[0:00 - 1:00]**
+## SEGMENT 1: COLD OPEN — THE CONFESSION
+**[0:00 - 1:30]**
 
-**[VISUAL: Split screen — left: cozy food truck, center: busy restaurant kitchen, right: franchise map with multiple locations. Quick cuts between all three. n8n logo fades in.]**
+**[VISUAL: Angel talking to camera, honest and direct. Cut to: n8n architecture docs, complex diagrams. Then: food truck, restaurant, franchise b-roll montage.]**
 
-There are three ways to run n8n. And most people pick the wrong one.
+I work at n8n. I'm a Solutions Engineer. And until recently, I didn't fully understand our own architecture.
 
-Not because they're bad engineers. Because nobody explains the actual difference in a way that sticks.
+Single main. Queue mode. Multi-main. I knew the words. I could point at diagrams. But if you asked me "when should I use which one, and what's the actual difference in performance?" — I'd be guessing.
 
-So here's what we're going to do. I'm going to show you the three architectures as three types of restaurants. Food truck, restaurant, franchise. I'll show you real benchmark data — requests per second, failure rates, the works — so you can see exactly what each one can handle.
+And that bothered me. Because if *I* don't understand it — someone who works here — how is the community supposed to figure it out?
 
-By the end, you'll know which one you need. No guessing. No wasted money.
+So I did what I always do when something doesn't make sense. I got curious. I broke things. I benchmarked everything. And I came back with a framework that I think makes it click.
+
+Three architectures. Three types of restaurants. Food truck, restaurant, franchise. Real numbers showing exactly what each one can handle.
+
+By the end of this video, you'll understand n8n's architecture better than most people who deploy it. And you'll know exactly which one you need.
 
 Let's eat.
 
-**[VISUAL: Punchy title card: "Food Truck. Restaurant. Franchise." with the three images side by side]**
+**[VISUAL: Title card — "Food Truck. Restaurant. Franchise." with the three images. Punchy music hit.]**
 
 ---
 
-## SEGMENT 2: WHY THIS MATTERS — THE VILLAIN
-**[1:00 - 2:00]**
+## SEGMENT 2: WHY NOBODY UNDERSTANDS THIS
+**[1:30 - 2:30]**
 
-**[VISUAL: Montage of forum posts, Stack Overflow questions, Discord messages asking "how do I scale n8n?" Screenshots of AWS bills. Architecture diagrams that look like subway maps.]**
+**[VISUAL: Montage of forum posts, Discord questions, Stack Overflow — "how do I scale n8n?" Screenshots of AWS bills. Architecture diagrams that look like subway maps.]**
 
-Here's the problem.
+Here's what happens when you search "scale n8n."
 
-You search "scale n8n" and you get: "Enable queue mode." "Use Redis." "Multi-main for HA." "Split your workers across instances."
+"Enable queue mode." "Use Redis-s." "Multi-main for HA." "Split your workers."
 
-That's like telling someone who's never run a kitchen: "Just open a franchise." Great. How?
+That's like telling someone who's never cooked: "Just open a franchise." Great. How?
 
-The real question isn't "what are my options." It's "which option matches where I actually am."
+The documentation tells you what's *possible*. It doesn't tell you what you *should* do. And when you're staring at a cloud bill that's climbing every month, "possible" isn't good enough.
 
-Because if you're running a food truck and you try to operate like a franchise, you'll burn through money and end up worse off. And if you're ready for a franchise but still operating like a food truck, you're leaving performance on the table.
+I realized the reason this is confusing is that nobody puts the architectures side by side and shows what they actually do under pressure. Everyone explains the theory. Nobody shows the receipts.
 
-In my last video, I broke n8n at 15 requests per second and couldn't figure out why. This time, I tested every architecture. Seven configurations. Real hardware. Real data.
-
-Here's what I found.
+So I ran the receipts. Seven different configurations. Same benchmark tests. Real hardware on AWS. Let me show you what I found — starting with where everyone begins.
 
 ---
 
 ## SEGMENT 3: THE FOOD TRUCK — Single Instance Mode
-**[2:00 - 5:00]**
+**[2:30 - 5:30]**
 
-**[VISUAL: B-roll of food trucks — one chef, cramped space, a line forming. Overlay: single Docker container diagram. Simple, contained.]**
+**[VISUAL: B-roll of food trucks — one chef, cramped space, a line forming outside. Overlay: single Docker container diagram.]**
 
 ### The Concept
 
 The food truck. One vehicle. One chef. One tiny kitchen.
 
-Everything happens in one place. Taking orders, cooking, plating, serving — all the same person, same space.
+Everything happens in one space. Taking orders, cooking, plating, serving — all the same person. When it's quiet, it's beautiful. Simple. Efficient.
 
-When business is slow? Perfect. The chef can handle it solo. But when the lunch rush hits, that line grows. And no matter how talented the chef is, one person can only move so fast.
+But when the lunch rush hits, that line grows. And no matter how talented the chef is, one person can only plate so fast.
 
-This is **single instance n8n**. One Docker container. Webhooks, executions, database — all running in the same process.
+This is **single instance n8n**. One Docker container handling webhooks, executions, database writes — everything in the same process.
 
-And here's the thing about food trucks: they come with a tiny pantry. A small cabinet. Even if the chef has energy to spare, if the pantry can't supply ingredients fast enough, everything slows down.
+And every food truck comes with a tiny pantry. A small cabinet. Even if the chef has energy to cook, if the pantry can't supply ingredients fast enough, everything slows down.
 
-### The Default: SQLite
+### SQLite — The Tiny Pantry
 
-When you first install n8n, it uses SQLite. That's the tiny pantry. Single-threaded. One access at a time.
+When you first install n8n, it uses SQLite. That's the default. The tiny pantry with a lock that only one person can open at a time.
 
-I tested this on a c5.large instance — two CPUs, four gigs of RAM.
+I tested this on a c5.large — two CPUs, four gigs of RAM.
 
-**[VISUAL: Animated bar chart building as numbers are read]**
+**[VISUAL: Animated bar chart, flat line building across VU levels]**
 
-- 3 virtual users: 47 requests per second
-- 10 virtual users: 47 RPS
-- 50 virtual users: 48 RPS
-- 200 virtual users: 48 RPS
+- 3 virtual users: 47 requests per second  
+- 10 users: 47  
+- 50 users: 48  
+- 200 users: 48  
 
-Flat line. Doesn't matter how many customers show up — 48 RPS is the ceiling. The chef has capacity, but the pantry has a lock that only one person can use at a time.
+Flat line. Hard ceiling at 48 RPS. Doesn't matter how many customers show up.
 
-SQLite is **perfect** for getting started. For home projects. For learning n8n. For solo starters getting their feet wet. But it has a hard ceiling, and no amount of hardware will lift it.
+That's not a CPU problem or a memory problem. SQLite is single-threaded by design. The chef has energy to spare, but the pantry only lets one person in at a time.
 
-### Upgrading the Pantry: PostgreSQL
+This is **perfect for getting started**. Home projects. Learning n8n. Solo starters getting their feet wet. But it has a ceiling you can't lift with hardware.
 
-Now, same food truck — same c5.large — but swap the tiny cabinet for a real pantry. PostgreSQL instead of SQLite.
+### PostgreSQL — A Real Pantry
 
-**[VISUAL: Animation showing tiny cabinet morphing into proper shelving]**
+Same food truck. Same c5.large. But swap the tiny cabinet for proper shelving. PostgreSQL instead of SQLite.
 
-- 3 virtual users: 8 RPS (cold start)
-- 10 users: 18 RPS
-- 50 users: 43 RPS
-- 100 users: 59 RPS
-- 200 users: 71 RPS
+**[VISUAL: Animation — tiny cabinet morphs into organized shelving]**
 
-Something interesting here. The food truck isn't flat-lining anymore — it scales *up* under load. PostgreSQL manages resources intelligently. The more orders come in, the better it optimizes.
+- 3 users: 8 RPS (cold start, the kitchen's warming up)  
+- 10 users: 18 RPS  
+- 50 users: 43 RPS  
+- 100 users: 59 RPS  
+- 200 users: 71 RPS  
 
-And here's the great news: **the n8n engineers already tuned the defaults for you.** Version 2.8.3 ships with solid PostgreSQL configuration out of the box. 71 RPS on default settings is a 48% improvement over SQLite with zero configuration.
+Now it scales *up* under load. PostgreSQL manages resources intelligently — the more orders come in, the better it optimizes.
 
-**[VISUAL: Side-by-side: SQLite flat at 48 vs PG Default climbing to 71]**
+And here's something I was genuinely surprised to find: **the n8n engineers already tuned the defaults well.** Version 2.8.3 ships PostgreSQL configuration that gets you to 71 RPS out of the box. That's a 48% jump over SQLite, zero configuration required.
 
-### Who should be a food truck?
+**[VISUAL: Side-by-side — SQLite flat at 48 vs PG Default climbing to 71]**
 
-You. At home. Running personal automations, testing workflows, building integrations for fun or for small teams. Community edition, single instance, PostgreSQL.
+When I first saw this data, I felt a little dumb. I'd been telling people they needed to tune everything, and it turns out our engineers had already done a solid job on the defaults. That's what curiosity does though — sometimes you find out the thing you were worried about was already handled.
 
-This is your learning ground. And 71 requests per second handles a LOT of webhooks.
+### Who's a food truck?
+
+You, at home. Running personal automations. Small teams. Community edition, single instance, PostgreSQL. This is your learning ground. And 71 RPS handles a LOT of webhooks.
 
 ---
 
 ## SEGMENT 4: THE RESTAURANT — Queue Mode
-**[5:00 - 8:30]**
+**[5:30 - 9:00]**
 
-**[VISUAL: B-roll of restaurant interior — ticket rail, multiple stations, waiters bringing orders, cooks at their posts. Overlay: queue mode architecture with Redis, webhook workers, execution workers.]**
+**[VISUAL: B-roll of restaurant kitchen — ticket rail, multiple stations, waiters and cooks coordinating. Overlay: queue mode architecture with Redis, webhook workers, execution workers.]**
 
 ### The Concept
 
-One day, the food truck isn't enough. You've got real demand. Time for a proper restaurant.
+One day the food truck isn't enough. Real demand. Time for a proper restaurant.
 
 A restaurant has something a food truck doesn't: **separation of concerns.**
 
-Waiters handle the front of house. They take orders and put tickets on a rail. In the kitchen, cooks pull tickets from the rail and work their stations. The pantry supplies ingredients to whoever needs them.
+Waiters handle the front of house — take orders, put tickets on a rail. In the kitchen, cooks pull tickets and work their stations. The pantry supplies ingredients to whoever needs them.
 
-Nobody's doing everything anymore. Each role is specialized.
+Nobody does everything anymore. Each role is specialized.
 
-This is **queue mode**. Redis is your ticket rail. Webhook workers are your waiters — they receive incoming requests and put them on the queue. Execution workers are your cooks — they pull jobs and process them.
+This is **queue mode**. Redis-s is your ticket rail. Webhook workers are your waiters — they receive requests and queue them up. Execution workers are your cooks — they pull jobs and process them.
 
-Docker Compose lets you spin up as many workers as you need. Two cooks. Four cooks. Ten. As many as your kitchen can hold.
+Docker Compose lets you spin up as many workers as your kitchen can hold.
 
-**[VISUAL: Architecture diagram building piece by piece — Redis in center, webhook workers on left, execution workers on right, all connecting to PostgreSQL]**
+**[VISUAL: Architecture diagram building piece by piece — Redis center, webhook workers left, execution workers right, PostgreSQL at bottom]**
 
 ### The Data
 
-I tested this on a c5.4xlarge — bigger instance, more power, room for multiple workers.
+I tested this on a c5.4xlarge — bigger instance, more CPU, room for multiple workers.
+
+**[VISUAL: Bar chart JUMPING dramatically from ~71 to ~266]**
 
 Queue mode with default settings:
 
-- 3 virtual users: 221 RPS
-- 10 users: 266 RPS
-- 30 users: 266 RPS
-- 50 users: 263 RPS
-- 100 users: 255 RPS
-- 200 users: 260 RPS
+- 3 users: 221 RPS  
+- 10 users: 266 RPS  
+- 30 users: 266 RPS  
+- 100 users: 255 RPS  
+- 200 users: 260 RPS  
 
-**[VISUAL: Bar chart JUMPING from food truck ~71 to restaurant ~266. Make this dramatic.]**
+266 requests per second. **Nearly 4x** the food truck. And it barely flinches under extreme load. Zero failures at every level.
 
-266 requests per second. That's nearly **4x** what the food truck could do. And look at that consistency — it barely drops under extreme load. The restaurant handles a packed house without breaking a sweat.
+Multiple webhooks — ten different workflows triggered simultaneously? 263 RPS. The restaurant handles variety as well as volume.
 
-Zero failures. Every single request served. At every load level.
+This was the moment in my testing when I went "oh — *that's* what queue mode is for." I'd understood it conceptually. But seeing the number jump from 71 to 266? That's when the architecture clicked for me.
 
-Multiple webhooks — ten different workflows triggered simultaneously? 263 RPS. Almost identical. The restaurant handles variety as well as it handles volume.
+### The One Caveat
 
-### The Trade-off
+There's something you need to know about this restaurant.
 
-But there's something you need to know about this restaurant.
+You can have as many cooks and waiters as you want. But there's only **one test kitchen**. One place where your recipe developers can create and refine the menu.
 
-You can have as many cooks and waiters as you want. But there's only **one test kitchen**. One place where your recipe developers — your workflow builders — can create and refine the menu.
+If that test kitchen goes down, your team can't build or edit workflows. The cooks keep cooking — active workflows keep running. But nobody can make changes until it's back.
 
-If that test kitchen goes down, your developers can't work. In n8n terms, that's your single UI instance. If it goes down, nobody can build or edit workflows.
+**[VISUAL: "Test Kitchen CLOSED" sign, while main kitchen keeps humming]**
 
-Your cooks keep cooking — active workflows keep running. But nobody can make changes until the test kitchen is back.
+On community edition, this is as far as you go. And for most deployments? 266 RPS is more than enough.
 
-**[VISUAL: "Test Kitchen CLOSED" sign on one room, while the main kitchen keeps running]**
+### Who's a restaurant?
 
-On community edition, this is as far as you go. And honestly? For most deployments, 266 RPS with a well-configured restaurant is more than enough.
-
-### Who should be a restaurant?
-
-Teams running production workflows. Companies with enough volume that a single instance can't keep up. Anyone who needs reliable, high-throughput automation.
+Teams running production workflows. Companies with real volume. Anyone who needs reliable, high-throughput automation without enterprise licensing.
 
 Queue mode is the workhorse. Most people who think they need a franchise actually just need a well-run restaurant.
 
 ---
 
 ## SEGMENT 5: THE FRANCHISE — Multi-Main Mode
-**[8:30 - 10:30]**
+**[9:00 - 11:00]**
 
-**[VISUAL: B-roll of franchise operations — map with multiple pins, multiple restaurant interiors, assembly line efficiency. Overlay: multi-main architecture with multiple UI instances.]**
+**[VISUAL: B-roll of franchise — map with pins, multiple restaurants, assembly line. Overlay: multi-main architecture.]**
 
 ### The Concept
 
-The franchise. Multiple locations. Multiple kitchens. Multiple front entrances.
+The franchise. Multiple locations. Multiple kitchens. Multiple entrances.
 
-A customer walks into any location and gets the same menu, same experience. If one location goes down, the others keep running.
+A customer walks into any location — same menu, same experience. If one goes down, the others keep running.
 
-And most importantly — **multiple test kitchens**. Your recipe developers can work from any location. If one is closed, they walk to another.
+And multiple test kitchens. Your recipe developers work from any location. One closes? Walk to another.
 
-This is **multi-main mode**, available with an enterprise license. Multiple UI instances. Multiple entry points. True high availability.
+This is **multi-main mode**. Enterprise license. Multiple UI instances. True high availability. All sharing the same Redis queue, same database.
 
-All locations share the same Redis queue. Same database. Same recipes. But if one main instance has a problem, the others handle traffic automatically.
-
-**[VISUAL: Map with multiple restaurant pins, each connected to a shared database in the center]**
+**[VISUAL: Map with restaurant pins, each connected to shared database center]**
 
 ### When You Actually Need This
 
 You need multi-main when:
 
-- **Uptime is non-negotiable.** Your workflows can't afford even minutes of downtime.
-- **Multiple teams need simultaneous access.** Developers building workflows across different locations/time zones.
-- **Regulatory requirements** demand redundancy.
+- **Uptime is non-negotiable.** Minutes of downtime cost real money.  
+- **Multiple teams** need simultaneous UI access across locations or time zones.  
+- **Compliance** requires redundancy.  
 
-You don't need it when you just want more speed. Queue mode already gives you that.
+You don't need it for speed. Queue mode already gives you that.
 
-### The Surprise: Don't Split What Works
+### The Surprise That Changed How I Think About This
 
-Now here's something that surprised me in testing.
+Here's where curiosity paid off in a way I didn't expect.
 
-I tested split queue mode — running the main instance on one machine and workers on a separate, bigger machine. In theory, more total hardware should mean more performance.
+I tested split queue mode — main instance on one machine, workers on a separate bigger machine. More total hardware. Should be faster, right?
 
-**[VISUAL: Two separate buildings connected by a road with traffic jams]**
+**[VISUAL: Two buildings connected by a road with traffic jam between them]**
 
-Split queue: 128 RPS.  
-All-in-one queue: 266 RPS.
+Split queue: **128 RPS.**  
+All-in-one queue: **266 RPS.**
 
-**More hardware, LESS performance.**
+More hardware. Less performance.
 
-This is like opening a second restaurant location but connecting the kitchens with a hallway between buildings. Orders get passed back and forth. The communication overhead — network latency between instances — kills the efficiency gains.
+**[VISUAL: Side-by-side — single building at 266 vs two buildings at 128, "NETWORK LATENCY" stamped on the road between them]**
 
-**[VISUAL: Side-by-side: Single restaurant at 266 vs Split at 128, with "Network Latency" shown between the split buildings]**
+I stared at this data for a while. Then it clicked.
 
-The lesson: don't over-engineer. If everything fits in one well-built restaurant, keep it there. Only go multi-location when you need the *redundancy*, not the speed.
+It's like opening a second restaurant location connected by a hallway between buildings. Every order gets passed back and forth through that hallway. The communication overhead — network latency between instances — eats the hardware gains alive.
+
+If everything fits in one well-built restaurant, keep it there. Only go multi-location when you need **redundancy**, not speed.
+
+This is why you benchmark instead of assume. I would have deployed split queue at work and wasted money if I hadn't run the numbers first.
 
 ---
 
 ## SEGMENT 6: THE COMPLETE PICTURE
-**[10:30 - 12:00]**
+**[11:00 - 12:30]**
 
-**[VISUAL: All configurations side by side in one animated chart. The full scaling ladder building piece by piece.]**
+**[VISUAL: All configurations in one animated chart, each bar appearing as named. The full scaling ladder.]**
 
-Let's put it all together.
+Let's put the whole menu on the table.
 
-**[VISUAL: Animated bar chart, each bar appearing as it's named]**
+**[VISUAL: Bars building one by one]**
 
-| Architecture | Instance | Peak RPS | Cost Level |
+| Architecture | Instance | Peak RPS | Cost |
 |---|---|---|---|
-| SQLite (Food Cart) | c5.large | 48 | $ |
+| SQLite (Tiny Pantry) | c5.large | 48 | $ |
 | PostgreSQL Default (Food Truck) | c5.large | 71 | $ |
 | PostgreSQL Tuned (Food Truck+) | c5.large | 95 | $ |
 | Queue Default (Restaurant) | c5.4xlarge | 266 | $$ |
 | Queue Tuned (Restaurant+) | c5.4xlarge | 280 | $$ |
-| Split Queue (Bad Franchise) | c5.xlarge + c5.4xlarge | 128 | $$$ |
+| Split Queue (Bad Idea) | c5.xlarge + c5.4xlarge | 128 | $$$ |
 | Multi-Main (Franchise) | Enterprise | HA + Scale | $$$$ |
 
-The progression is clear. Each step up gets you more capability, but costs more — in money and complexity.
+**[VISUAL: Arrow showing the recommended path: 48 → 71 → 95 → 266 → 280, with split queue crossed out]**
 
-**[VISUAL: Arrow showing the path: 48 → 71 → 95 → 266 → 280]**
-
-Notice what's NOT on this path: split queue. It costs more and delivers less. It's the franchise that tries to run two kitchens connected by a bad hallway.
-
-The smart path goes: SQLite → PostgreSQL → PostgreSQL tuned → queue mode. Multi-main when you need redundancy, not speed.
+The path is clear. Each step gets you more, costs more. And split queue — more money for less performance — isn't on the path at all.
 
 ---
 
 ## SEGMENT 7: HOW TO KNOW WHERE YOU ARE
-**[12:00 - 13:30]**
+**[12:30 - 13:30]**
 
-**[VISUAL: Decision flowchart building piece by piece. Three questions, three paths.]**
+**[VISUAL: Decision flowchart building piece by piece.]**
 
-Here's how you figure out your next move.
+Three questions to find your next move.
 
-**Question 1: Is your database the bottleneck?**
+**Is your database the bottleneck?**  
+Database maxed, n8n has headroom? Pantry problem.  
+→ SQLite? Switch to PostgreSQL. Free.  
+→ PG defaults? Try PGTune. Also free.  
+→ Already tuned? Bigger kitchen or queue mode.
 
-Watch your monitoring. Database CPU maxed, n8n container has headroom? That's a pantry problem.
+**Is n8n the bottleneck?**  
+Database fine, executions queuing up?  
+→ Queue mode. Redis. Workers. The restaurant upgrade.
 
-- On SQLite? Switch to PostgreSQL. Free.
-- On PostgreSQL defaults? Try PGTune. Also free.
-- Already tuned? You need a bigger kitchen.
+**Do you need high availability?**  
+Can't afford downtime? Multiple teams?  
+→ Multi-main. Enterprise license. The franchise.
 
-**Question 2: Is n8n itself the bottleneck?**
-
-Database is fine, but executions are queuing up?
-
-Time for queue mode. Add Redis, spin up workers. This is the restaurant upgrade.
-
-**Question 3: Do you need high availability?**
-
-Single point of failure is unacceptable? Multiple teams need simultaneous UI access?
-
-Multi-main. Enterprise license. The franchise.
-
-**[VISUAL: Complete flowchart with all three paths, annotated with costs]**
+**[VISUAL: Complete flowchart with costs annotated]**
 
 Don't skip steps. Prove you need each level before paying for it.
 
@@ -296,36 +289,34 @@ Don't skip steps. Prove you need each level before paying for it.
 ## SEGMENT 8: THE BINARY REALITY CHECK
 **[13:30 - 14:00]**
 
-**[VISUAL: Brief chart showing ~9 RPS across all configs for binary data. Keep it quick.]**
+**[VISUAL: Quick chart — ~9 RPS flat across configs. Brief.]**
 
-One workload breaks the pattern: binary data.
+One workload breaks the pattern: large file processing.
 
-Large file processing — 2MB files in my test — caps around 9 RPS regardless of configuration. SQLite, PostgreSQL, tuned, untuned. Same ceiling.
+Binary data — 2MB files — caps at about 9 RPS regardless of configuration. Queue mode actually fails entirely on binary right now.
 
-Queue mode? Actually fails entirely on binary workloads right now. HTTP 500 errors.
+The n8n team is building a new binary management system. I've seen the beta internally. When that ships, this changes. For now, if files are your primary workload, keep that in mind.
 
-The n8n team is building a new binary management system — I've seen the beta internally. When that ships, this picture changes. For now, if your primary workload is file processing, keep that in mind.
-
-But for webhook and API workloads — which is what most people are scaling — the framework holds.
+For webhook and API workloads — which is what most people are scaling — the framework holds solid.
 
 ---
 
 ## SEGMENT 9: THE FREE OPTIMIZATION — PGTUNE
 **[14:00 - 15:30]**
 
-**[VISUAL: Screen recording of PGTune website. Form filling. Generated config. AI generating Docker Compose. YAML highlighted.]**
+**[VISUAL: Screen recording — PGTune website, form, generated config. AI generating Docker Compose.]**
 
-Before I go, there's one thing you should do regardless of which architecture you pick.
+One more thing before you go. Regardless of which architecture you pick, do this.
 
-This is PGTune. Free. Takes five minutes. Industry standard for PostgreSQL optimization.
+PGTune. Free. Five minutes. Industry standard.
 
-PostgreSQL ships with conservative defaults — it has to work on a Raspberry Pi and a 64-core server. PGTune generates a config that matches YOUR actual hardware.
+PostgreSQL ships with conservative defaults that work everywhere — Raspberry Pi to 64-core server. PGTune generates a config for YOUR hardware.
 
-For our c5.large: PostgreSQL default gave us 71 RPS. With PGTune: 95 RPS. That's 34% improvement, zero cost.
+On our c5.large: default PostgreSQL gave us 71 RPS. With PGTune: **95 RPS**. That's 34% for free.
 
-**[VISUAL: PGTune form: PostgreSQL 16, Linux, 4GB RAM, 2 CPUs, Mixed workload, 100 connections, SSD]**
+**[VISUAL: PGTune form — PostgreSQL 16, Linux, 4GB RAM, 2 CPUs, Mixed, 100 connections, SSD]**
 
-Here's the docker-compose trick: take PGTune's output, paste it into Claude or Cursor, say "generate a docker-compose for n8n with these PostgreSQL settings." Done.
+Docker-compose trick: paste PGTune output into Claude or Cursor, say "generate a docker-compose for n8n with these PostgreSQL settings." Done.
 
 ```yaml
 postgres:
@@ -335,59 +326,57 @@ postgres:
   command: postgres -c config_file=/etc/postgresql/postgresql.conf
 ```
 
-The tuning carries forward to every architecture level. Whether you're running a food truck or a franchise, a well-stocked pantry makes everything run better.
+This optimization carries forward to every level. Food truck or franchise — a well-stocked pantry makes everything better.
 
-PGTune link is in the description. Use it.
+Link in the description. Use it.
 
 ---
 
 ## SEGMENT 10: RUNNING YOUR OWN BENCHMARKS
 **[15:30 - 16:30]**
 
-**[VISUAL: Screen recording of k6 running, results appearing, Beszel monitoring dashboard with live CPU/memory graphs.]**
+**[VISUAL: Screen recording — k6 running, results appearing, Beszel dashboard with live graphs.]**
 
-You don't have to take my word for any of this. Run the same tests yourself.
+Don't take my word for it. Run the tests yourself.
 
-Controlled load at different levels — three users, ten, thirty, fifty, a hundred, two hundred. Three scenarios: single webhook, multiple webhooks, binary data.
+Controlled load at different levels — three, ten, thirty, fifty, a hundred, two hundred virtual users. Three scenarios: single webhook, multiple webhooks, binary data.
 
-I use k6 for load generation — free and scriptable. Pair it with monitoring so you can watch where bottlenecks form in real time.
+k6 for load generation. Free, scriptable. Beszel or Grafana for monitoring. Watch where the bottleneck actually forms.
 
-The key: test before AND after changes. Numbers don't lie. If PGTune doesn't help your specific workload, you haven't wasted anything. If queue mode doesn't improve things, you know it's a different bottleneck.
+Test before changes. Test after. Compare. The data tells you what to do next.
 
-Measure, change, measure again.
+That's how I got here. Not by reading docs or asking colleagues. By running the numbers until the architecture made sense.
 
 ---
 
-## SEGMENT 11: CLOSING
+## SEGMENT 11: CLOSING — STAY CURIOUS
 **[16:30 - 17:30]**
 
-**[VISUAL: The three restaurant images side by side one final time. Performance numbers underneath each. Links on screen.]**
+**[VISUAL: The three restaurant images one final time, each lighting up. Numbers underneath. Then Angel to camera, genuine.]**
 
-Food truck. Restaurant. Franchise.
+This whole video exists because I got curious about something I didn't understand.
 
-**[VISUAL: Each lights up as named]**
+I work at n8n. I talk to customers about architecture every day. And I couldn't confidently explain when to use what. That bothered me enough to spin up seven AWS configurations, run hundreds of benchmark tests, and break things until they made sense.
 
-48 requests per second with SQLite. Perfect for getting started.
+**[VISUAL: Each architecture lights up as named, with peak RPS]**
 
-71 with PostgreSQL defaults. Solid for production.
+Food truck: 48 to 71 requests per second. Where everyone starts. Where most home users should stay.
 
-95 with PGTune optimization. Free improvement, no excuses.
+Restaurant: 266 to 280. The workhorse. Where most production deployments belong.
 
-266 with queue mode. The workhorse for serious scale.
+Franchise: high availability, multiple test kitchens. When uptime is everything.
 
-280 with queue mode tuned. Squeezing out every last drop.
-
-**[VISUAL: The full bar chart one more time, with the split queue conspicuously absent from the "recommended path"]**
+**[VISUAL: The full bar chart one final time, split queue crossed out, recommended path highlighted]**
 
 You don't need the biggest kitchen. You need the right kitchen for where you are today, with a clear path to the next one when you're ready.
 
-That's the framework. Stop guessing, start measuring, and scale with confidence.
+PGTune link in the description. CloudFormation templates for automated deployment coming in the next video.
 
-PGTune link in the description. CloudFormation templates for automated deployment are coming in the next video.
+And if there's something about your setup that doesn't make sense to you? Don't just live with it. Investigate. Break something. Run the numbers.
 
-Drop a comment — are you a food truck, a restaurant, or ready for franchise?
+Stay curious.
 
-Until next time.
+**[VISUAL: End card with links, subscribe button, "Stay Curious" text]**
 
 ---
 
@@ -395,36 +384,38 @@ Until next time.
 
 ## Titles
 
-1. **"n8n Scaling: Food Truck, Restaurant, or Franchise?"** ← Angel's preferred direction
-2. "The 3 Ways to Run n8n (Pick the Wrong One and Burn Money)"
-3. "How Do I Scale n8n Without Lighting Money on Fire?"
+1. **"n8n Scaling: Food Truck, Restaurant, or Franchise?"**  
+2. "The 3 Ways to Run n8n (Most People Pick Wrong)"  
+3. "I Work at n8n and Didn't Understand Our Own Architecture"  
 4. "From 48 to 280 RPS: Which n8n Architecture Do You Actually Need?"
 
 ## Thumbnails
 
-**Option 1: The Three Restaurants** ← Matches Angel's vision
-- Three panels: Food truck | Restaurant kitchen | Franchise map
-- Each labeled with peak RPS: 48 | 95 | 280
-- n8n logo centered
+**Option 1: The Three Restaurants** ← Matches the story  
+- Three panels: Food truck | Restaurant kitchen | Franchise map  
+- Each with peak RPS: 48 | 95 | 280  
 - Text: "WHICH ONE ARE YOU?"
 
-**Option 2: The Wrong Choice**
-- Left: beautiful franchise with $$$ burning
-- Right: efficient restaurant with green checkmarks
-- Text: "STOP OVERPAYING" or "DON'T DO THIS"
+**Option 2: The Confession**  
+- Angel with surprised/curious expression  
+- n8n logo  
+- Text: "I didn't understand our own architecture"
 
-**Option 3: The Performance Ladder**
-- Ascending steps: Food truck → Restaurant → Franchise
-- Numbers on each step: 48 → 95 → 280
-- Angel pointing at the restaurant step (where most people should be)
+**Option 3: The Performance Ladder**  
+- Three ascending steps with restaurant imagery  
+- 48 → 95 → 280 on each step  
+- Split queue shown falling off the side  
 
 ---
 
-# KEY STRUCTURAL CHANGES FROM V9
+# CURIOSITY THREAD THROUGHOUT
 
-1. **The three architectures ARE the story** — each gets a full segment explaining the concept (restaurant analogy), showing data, and defining who should use it
-2. **PGTune moved to end** — it's a bonus tip/optimization, not the central narrative
-3. **Split queue is a cautionary tale** — embedded in the franchise section as "what NOT to do"
-4. **Thumbnail-first thinking** — the three restaurants visual works for both the video structure and the thumbnail
-5. **Simpler flow** — Concept → Data → Who it's for, repeated three times, then decision framework + tips
-6. **Multi-main positioned honestly** — it's about HA/redundancy, not raw performance
+The "stay curious" tagline weaves through the script at key moments:
+
+1. **Cold open:** "I got curious. I broke things. I benchmarked everything."
+2. **PG Default surprise:** "That's what curiosity does — sometimes you find out the thing you were worried about was already handled."
+3. **Queue mode click:** "This was the moment... seeing the number jump? That's when the architecture clicked for me."
+4. **Split queue lesson:** "This is why you benchmark instead of assume. I would have deployed split queue at work and wasted money."
+5. **Closing:** "This whole video exists because I got curious about something I didn't understand... Stay curious."
+
+The hero's journey is Angel's own: didn't understand → got curious → investigated → broke things → came back with clarity → shares the framework so others don't have to guess.
