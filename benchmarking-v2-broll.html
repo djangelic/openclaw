@@ -1,615 +1,697 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>n8n Enterprise Benchmarking V2 - B-Roll Visualizations</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: #0d1117;
-            color: #c9d1d9;
-            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: #ff6b35;
-            margin-bottom: 10px;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .scene-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        select, button {
-            background: #161b22;
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-family: inherit;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #21262d;
-            border-color: #f0f6fc1a;
-        }
-
-        .auto-play-btn {
-            background: #ff6b35;
-            color: white;
-            font-weight: bold;
-        }
-
-        .auto-play-btn:hover {
-            background: #e5522b;
-        }
-
-        .counter {
-            background: #161b22;
-            border: 1px solid #30363d;
-            padding: 15px;
-            border-radius: 16px;
-            text-align: center;
-            min-width: 150px;
-        }
-
-        .counter .vu-count {
-            font-size: 24px;
-            font-weight: bold;
-            color: #58a6ff;
-        }
-
-        .counter .rps-count {
-            font-size: 18px;
-            color: #ff6b35;
-        }
-
-        .chart-container {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 16px;
-            padding: 20px;
-            margin: 20px 0;
-            position: relative;
-        }
-
-        .scene-title {
-            color: #ff6b35;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .scene-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .chart-wrapper {
-            position: relative;
-            height: 500px;
-            margin: 20px 0;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .stat-card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.5s ease;
-        }
-
-        .stat-card.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #8b949e;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .loading {
-            text-align: center;
-            color: #8b949e;
-            font-style: italic;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>n8n Benchmark V2 — B-Roll Visualizations</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',system-ui,sans-serif;padding:20px;overflow-x:hidden}
+.controls{text-align:center;margin-bottom:20px;position:sticky;top:0;z-index:100;background:#0d1117;padding:10px 0;border-bottom:1px solid #21262d}
+button{background:#ff6b35;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:1em;cursor:pointer;margin:0 6px;font-weight:600}
+button:hover{background:#e55a25}
+button.secondary{background:#21262d;color:#8b949e}
+button.secondary:hover{background:#30363d}
+select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12px;border-radius:6px;font-size:.9em;margin:0 6px}
+.scene{display:none;justify-content:center;align-items:center;min-height:80vh;flex-direction:column}
+.scene.active{display:flex}
+.chart-container{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:30px;width:900px;max-width:95vw}
+.chart-container canvas{height:450px!important}
+.scene-title{font-size:1.8em;color:#ff6b35;margin-bottom:8px;font-weight:700}
+.scene-subtitle{font-size:1em;color:#8b949e;margin-bottom:24px}
+.counter{position:fixed;top:80px;right:30px;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px 20px;text-align:center;z-index:50}
+.counter .vu{font-size:2.2em;font-weight:800;color:#ff6b35}
+.counter .vu-label{font-size:.75em;color:#8b949e}
+.counter .rps{font-size:1.6em;font-weight:700;color:#3fb950;margin-top:4px}
+.counter .rps-label{font-size:.75em;color:#8b949e}
+.pulse{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3fb950;margin-right:6px}
+.status-bar{text-align:center;margin-top:12px;font-size:.85em;color:#8b949e}
+.hero-stat{display:flex;gap:20px;justify-content:center;margin-bottom:30px;flex-wrap:wrap}
+.stat-card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px 32px;text-align:center;min-width:200px;transform:scale(0);transition:transform .6s cubic-bezier(.34,1.56,.64,1)}
+.stat-card.show{transform:scale(1)}
+.stat-card .num{font-size:2.8em;font-weight:800;color:#ff6b35}
+.stat-card .lbl{font-size:.9em;color:#8b949e;margin-top:4px}
+.annotation{font-size:1.3em;color:#ff6b35;font-weight:700;text-align:center;margin-top:16px;opacity:0;transition:opacity .8s}
+.annotation.show{opacity:1}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>n8n Enterprise Benchmarking V2</h1>
-            <p>Interactive B-Roll Data Visualizations</p>
-        </div>
 
-        <div class="controls">
-            <div class="scene-selector">
-                <label for="sceneSelect">Scene:</label>
-                <select id="sceneSelect">
-                    <option value="1">1. SQLite Flat Line</option>
-                    <option value="2">2. PostgreSQL Default Scaling</option>
-                    <option value="3">3. SQLite vs PG Comparison</option>
-                    <option value="4">4. PGTune Improvement (+34%)</option>
-                    <option value="5">5. The Big Jump (Queue Mode)</option>
-                    <option value="6">6. Queue Mode Line Chart</option>
-                    <option value="7">7. Queue Tuning Barely Matters</option>
-                    <option value="8">8. Split Queue Surprise</option>
-                    <option value="9">9. The Full Scaling Ladder</option>
-                    <option value="10">10. Binary Data Reality</option>
-                    <option value="11">11. Hero Stats Reveal</option>
-                </select>
-                <button onclick="playScene()">Play</button>
-                <button onclick="resetScene()">Reset</button>
-            </div>
-            
-            <button class="auto-play-btn" onclick="autoPlayAll()">Auto-Play All Scenes</button>
-            
-            <div class="counter">
-                <div class="vu-count" id="vuCount">0 VUs</div>
-                <div class="rps-count" id="rpsCount">0 RPS</div>
-            </div>
-        </div>
+<div class="controls">
+  <select id="sceneSelect">
+    <option value="0">1. SQLite Flat Line (~30s)</option>
+    <option value="1">2. PostgreSQL Scaling Curve (~35s)</option>
+    <option value="2">3. SQLite vs PG Default (~40s)</option>
+    <option value="3">4. PGTune +34% Improvement (~30s)</option>
+    <option value="4">5. The Big Jump — Queue Mode (~35s)</option>
+    <option value="5">6. Queue Mode Under Load (~35s)</option>
+    <option value="6">7. Queue Tuning = Only +5% (~30s)</option>
+    <option value="7">8. Split Queue Surprise (~35s)</option>
+    <option value="8">9. Full Scaling Ladder (~45s)</option>
+    <option value="9">10. Binary Data Reality (~30s)</option>
+    <option value="10">11. Hero Stats Reveal (~40s)</option>
+  </select>
+  <button onclick="playScene()">▶ Play</button>
+  <button class="secondary" onclick="resetScene()">↺ Reset</button>
+  <button onclick="autoPlayAll()">▶▶ Auto-Play All</button>
+  <span style="margin-left:12px;font-size:.8em;color:#484f58">Screen record with OBS for B-roll capture</span>
+</div>
 
-        <div class="chart-container">
-            <div class="scene-title" id="sceneTitle">Select a scene to begin</div>
-            <div class="chart-wrapper">
-                <canvas id="mainChart"></canvas>
-            </div>
-            <div class="stats-grid" id="statsGrid"></div>
-        </div>
-    </div>
+<div class="counter" id="counter" style="display:none">
+  <div><span class="status-dot pulse"></span><span style="font-size:.8em;color:#8b949e">BENCHMARK</span></div>
+  <div class="vu" id="vuCount">0</div>
+  <div class="vu-label">Virtual Users</div>
+  <div class="rps" id="rpsCount">0</div>
+  <div class="rps-label">req/sec</div>
+</div>
 
-    <script>
-        let chart = null;
-        let currentScene = 1;
-        let animationTimeout = null;
-        let autoPlayRunning = false;
+<!-- Scene 0: SQLite Flat Line -->
+<div class="scene active" id="scene0">
+  <div class="scene-title">SQLite — The Hard Ceiling</div>
+  <div class="scene-subtitle">Single Instance on c5.large (2 vCPU, 4GB RAM)</div>
+  <div class="chart-container"><canvas id="chart0"></canvas></div>
+  <div class="status-bar" id="status0"></div>
+  <div class="annotation" id="ann0">48 RPS — no matter what you throw at it</div>
+</div>
 
-        const colors = {
-            sqlite: '#484f58',      // gray
-            pgDefault: '#ff6b35',   // orange-light  
-            pgTuned: '#ff6b35',     // orange
-            splitQueue: '#f85149',  // red
-            queueDefault: '#58a6ff', // blue
-            queueTuned: '#3fb950',  // green
-            background: '#0d1117',
-            chartBg: '#161b22',
-            border: '#30363d',
-            text: '#c9d1d9'
-        };
+<!-- Scene 1: PG Default Scaling -->
+<div class="scene" id="scene1">
+  <div class="scene-title">PostgreSQL Default — Scales Under Load</div>
+  <div class="scene-subtitle">Same c5.large hardware, just PostgreSQL instead of SQLite</div>
+  <div class="chart-container"><canvas id="chart1"></canvas></div>
+  <div class="status-bar" id="status1"></div>
+  <div class="annotation" id="ann1">71 RPS at peak — 48% improvement, zero config</div>
+</div>
 
-        const sceneData = {
-            1: {
-                title: "Scene 1: SQLite Flat Line",
-                type: 'line',
-                data: {
-                    labels: ['3 VUs', '10 VUs', '50 VUs', '200 VUs'],
-                    datasets: [{
-                        label: 'SQLite RPS',
-                        data: [47, 47, 48, 48],
-                        borderColor: colors.sqlite,
-                        backgroundColor: colors.sqlite + '20',
-                        borderWidth: 3,
-                        fill: false
-                    }]
-                },
-                description: "SQLite hits its ceiling at ~48 RPS regardless of load"
-            },
-            2: {
-                title: "Scene 2: PostgreSQL Default Scaling",
-                type: 'line',
-                data: {
-                    labels: ['3 VUs', '10 VUs', '50 VUs', '100 VUs', '200 VUs'],
-                    datasets: [{
-                        label: 'PostgreSQL Default',
-                        data: [8, 18, 43, 59, 71],
-                        borderColor: colors.pgDefault,
-                        backgroundColor: colors.pgDefault + '20',
-                        borderWidth: 3,
-                        fill: false
-                    }]
-                },
-                description: "PostgreSQL scales with load, climbing past SQLite"
-            },
-            3: {
-                title: "Scene 3: SQLite vs PG Default Comparison",
-                type: 'line',
-                data: {
-                    labels: ['3 VUs', '10 VUs', '50 VUs', '100 VUs', '200 VUs'],
-                    datasets: [
-                        {
-                            label: 'SQLite',
-                            data: [47, 47, 48, 48, 48],
-                            borderColor: colors.sqlite,
-                            backgroundColor: colors.sqlite + '20',
-                            borderWidth: 3,
-                            fill: false
-                        },
-                        {
-                            label: 'PostgreSQL Default',
-                            data: [8, 18, 43, 59, 71],
-                            borderColor: colors.pgDefault,
-                            backgroundColor: colors.pgDefault + '20',
-                            borderWidth: 3,
-                            fill: false
-                        }
-                    ]
-                },
-                description: "Two different scaling patterns: flat vs climbing"
-            },
-            4: {
-                title: "Scene 4: PGTune Improvement (Food Truck)",
-                type: 'bar',
-                data: {
-                    labels: ['PG Default', 'PG Tuned'],
-                    datasets: [{
-                        label: 'RPS',
-                        data: [71, 95],
-                        backgroundColor: [colors.pgDefault + '80', colors.pgTuned],
-                        borderColor: [colors.pgDefault, colors.pgTuned],
-                        borderWidth: 2
-                    }]
-                },
-                description: "+34% FREE performance boost with PGTune"
-            },
-            5: {
-                title: "Scene 5: The Big Jump — Queue Mode",
-                type: 'bar',
-                data: {
-                    labels: ['PG Tuned', 'Queue Default'],
-                    datasets: [{
-                        label: 'RPS',
-                        data: [95, 266],
-                        backgroundColor: [colors.pgTuned + '80', colors.queueDefault],
-                        borderColor: [colors.pgTuned, colors.queueDefault],
-                        borderWidth: 2
-                    }]
-                },
-                description: "~3x performance jump to Queue Mode - DRAMATIC!"
-            },
-            6: {
-                title: "Scene 6: Queue Mode Line Chart",
-                type: 'line',
-                data: {
-                    labels: ['3 VUs', '10 VUs', '30 VUs', '100 VUs', '200 VUs'],
-                    datasets: [{
-                        label: 'Queue Default',
-                        data: [221, 266, 266, 255, 260],
-                        borderColor: colors.queueDefault,
-                        backgroundColor: colors.queueDefault + '20',
-                        borderWidth: 3,
-                        fill: false
-                    }]
-                },
-                description: "Queue mode maintains high performance across load levels"
-            },
-            7: {
-                title: "Scene 7: Queue Tuning Barely Matters",
-                type: 'bar',
-                data: {
-                    labels: ['Queue Default', 'Queue Tuned'],
-                    datasets: [{
-                        label: 'RPS',
-                        data: [266, 280],
-                        backgroundColor: [colors.queueDefault + '80', colors.queueTuned],
-                        borderColor: [colors.queueDefault, colors.queueTuned],
-                        borderWidth: 2
-                    }]
-                },
-                description: "Only +5% gain vs PGTune's +34%"
-            },
-            8: {
-                title: "Scene 8: Split Queue Surprise",
-                type: 'bar',
-                data: {
-                    labels: ['All-in-one Queue', 'Split Queue'],
-                    datasets: [{
-                        label: 'RPS',
-                        data: [266, 128],
-                        backgroundColor: [colors.queueDefault, colors.splitQueue + '80'],
-                        borderColor: [colors.queueDefault, colors.splitQueue],
-                        borderWidth: 2
-                    }]
-                },
-                description: "More $$, Less Performance - Split Queue FAILS"
-            },
-            9: {
-                title: "Scene 9: The Full Scaling Ladder",
-                type: 'bar',
-                data: {
-                    labels: ['SQLite', 'PG Default', 'PG Tuned', 'Split Queue', 'Queue Default', 'Queue Tuned'],
-                    datasets: [{
-                        label: 'Peak RPS',
-                        data: [48, 71, 95, 128, 266, 280],
-                        backgroundColor: [
-                            colors.sqlite,
-                            colors.pgDefault + '80',
-                            colors.pgTuned,
-                            colors.splitQueue + '40',
-                            colors.queueDefault,
-                            colors.queueTuned
-                        ],
-                        borderColor: [
-                            colors.sqlite,
-                            colors.pgDefault,
-                            colors.pgTuned,
-                            colors.splitQueue,
-                            colors.queueDefault,
-                            colors.queueTuned
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                indexAxis: 'y',
-                description: "Complete performance ranking - recommended path: 48→71→95→266→280"
-            },
-            10: {
-                title: "Scene 10: Binary Data Reality",
-                type: 'bar',
-                data: {
-                    labels: ['SQLite', 'PG Default', 'PG Tuned', 'Queue/Split'],
-                    datasets: [{
-                        label: 'RPS',
-                        data: [9, 9, 9, 0],
-                        backgroundColor: [
-                            colors.sqlite + '80',
-                            colors.pgDefault + '80',
-                            colors.pgTuned + '80',
-                            colors.splitQueue
-                        ],
-                        borderColor: [
-                            colors.sqlite,
-                            colors.pgDefault,
-                            colors.pgTuned,
-                            colors.splitQueue
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                description: "Binary data breaks most configurations - Queue/Split show 500 ERROR"
-            },
-            11: {
-                title: "Scene 11: Hero Stats Reveal",
-                type: 'stats',
-                stats: [
-                    { value: "48 → 280 RPS", label: "5.8x Scaling Through Architecture", color: colors.queueTuned },
-                    { value: "34%", label: "Free PGTune Gain", color: colors.pgTuned },
-                    { value: "266 RPS", label: "Queue Mode Default (No Tuning Needed)", color: colors.queueDefault },
-                    { value: "0%", label: "Failure Rate", color: colors.queueTuned },
-                    { value: "128 < 266", label: "Split Queue Warning", color: colors.splitQueue }
-                ],
-                description: "Key takeaways from the complete benchmark"
-            }
-        };
+<!-- Scene 2: SQLite vs PG -->
+<div class="scene" id="scene2">
+  <div class="scene-title">SQLite vs PostgreSQL Default</div>
+  <div class="scene-subtitle">Same hardware — different databases, different stories</div>
+  <div class="chart-container"><canvas id="chart2"></canvas></div>
+  <div class="status-bar" id="status2"></div>
+  <div class="annotation" id="ann2">PostgreSQL overtakes SQLite at 50 VUs and keeps climbing</div>
+</div>
 
-        function updateCounter(vu, rps) {
-            document.getElementById('vuCount').textContent = vu ? `${vu} VUs` : '0 VUs';
-            document.getElementById('rpsCount').textContent = rps ? `${rps} RPS` : '0 RPS';
-        }
+<!-- Scene 3: PGTune -->
+<div class="scene" id="scene3">
+  <div class="scene-title">PGTune — The Free Optimization</div>
+  <div class="scene-subtitle">Same c5.large, same PostgreSQL — just better config</div>
+  <div class="chart-container"><canvas id="chart3"></canvas></div>
+  <div class="status-bar" id="status3"></div>
+  <div class="annotation" id="ann3">+34% for $0 — PGTune link in description</div>
+</div>
 
-        function createChart(sceneNum) {
-            const scene = sceneData[sceneNum];
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            
-            if (chart) {
-                chart.destroy();
-            }
+<!-- Scene 4: The Big Jump -->
+<div class="scene" id="scene4">
+  <div class="scene-title">The Big Jump — Queue Mode</div>
+  <div class="scene-subtitle">From food truck (c5.large) to restaurant (c5.4xlarge)</div>
+  <div class="chart-container"><canvas id="chart4"></canvas></div>
+  <div class="status-bar" id="status4"></div>
+  <div class="annotation" id="ann4">95 → 266 RPS — nearly 3× with queue mode</div>
+</div>
 
-            document.getElementById('sceneTitle').textContent = scene.title;
-            document.getElementById('statsGrid').innerHTML = '';
+<!-- Scene 5: Queue Under Load -->
+<div class="scene" id="scene5">
+  <div class="scene-title">Queue Mode — Rock Solid Under Pressure</div>
+  <div class="scene-subtitle">c5.4xlarge with Redis + workers — single webhook test</div>
+  <div class="chart-container"><canvas id="chart5"></canvas></div>
+  <div class="status-bar" id="status5"></div>
+  <div class="annotation" id="ann5">266 RPS, zero failures — the workhorse architecture</div>
+</div>
 
-            if (scene.type === 'stats') {
-                document.getElementById('mainChart').style.display = 'none';
-                showStatsCards(scene.stats);
-                return;
-            }
+<!-- Scene 6: Queue Tuning -->
+<div class="scene" id="scene6">
+  <div class="scene-title">Queue Tuning — Barely Matters</div>
+  <div class="scene-subtitle">PGTune on queue mode: +5% vs +34% on single instance</div>
+  <div class="chart-container"><canvas id="chart6"></canvas></div>
+  <div class="status-bar" id="status6"></div>
+  <div class="annotation" id="ann6">Architecture > tuning — queue mode is robust by default</div>
+</div>
 
-            document.getElementById('mainChart').style.display = 'block';
+<!-- Scene 7: Split Queue -->
+<div class="scene" id="scene7">
+  <div class="scene-title">Split Queue — The Hallway Problem</div>
+  <div class="scene-subtitle">More hardware, LESS performance. Why?</div>
+  <div class="chart-container"><canvas id="chart7"></canvas></div>
+  <div class="status-bar" id="status7"></div>
+  <div class="annotation" id="ann7">Network latency kills it — don't split what works</div>
+</div>
 
-            const options = {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        labels: { color: colors.text }
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: { color: colors.text },
-                        grid: { color: colors.border }
-                    },
-                    y: {
-                        ticks: { color: colors.text },
-                        grid: { color: colors.border }
-                    }
-                },
-                animation: { duration: 0 }
-            };
+<!-- Scene 8: Full Ladder -->
+<div class="scene" id="scene8">
+  <div class="scene-title">The Complete Scaling Ladder</div>
+  <div class="scene-subtitle">Every configuration, ranked — recommended path highlighted</div>
+  <div class="chart-container"><canvas id="chart8"></canvas></div>
+  <div class="status-bar" id="status8"></div>
+  <div class="annotation" id="ann8">48 → 71 → 95 → 266 → 280 — skip split queue entirely</div>
+</div>
 
-            if (scene.indexAxis) {
-                options.indexAxis = scene.indexAxis;
-            }
+<!-- Scene 9: Binary -->
+<div class="scene" id="scene9">
+  <div class="scene-title">Binary Data — The Exception</div>
+  <div class="scene-subtitle">2MB file upload workflow — different bottleneck entirely</div>
+  <div class="chart-container"><canvas id="chart9"></canvas></div>
+  <div class="status-bar" id="status9"></div>
+  <div class="annotation" id="ann9">~9 RPS everywhere — queue mode fails entirely (500 errors)</div>
+</div>
 
-            chart = new Chart(ctx, {
-                type: scene.type,
-                data: JSON.parse(JSON.stringify(scene.data)),
-                options: options
-            });
+<!-- Scene 10: Hero Stats -->
+<div class="scene" id="scene10">
+  <div class="scene-title" style="margin-bottom:30px">The Results — What We Learned</div>
+  <div class="hero-stat">
+    <div class="stat-card" id="hs0"><div class="num">48→280</div><div class="lbl">RPS Through Architecture</div></div>
+    <div class="stat-card" id="hs1"><div class="num" style="color:#3fb950">+34%</div><div class="lbl">Free PGTune Gain</div></div>
+    <div class="stat-card" id="hs2"><div class="num" style="color:#58a6ff">266</div><div class="lbl">Queue Mode (No Tuning)</div></div>
+    <div class="stat-card" id="hs3"><div class="num" style="color:#3fb950">0%</div><div class="lbl">Failure Rate</div></div>
+    <div class="stat-card" id="hs4"><div class="num" style="color:#f85149">128&lt;266</div><div class="lbl">Split Queue = Bad Idea</div></div>
+  </div>
+  <div class="annotation" id="ann10" style="font-size:1.1em">These are baselines — every architecture scales higher with more hardware</div>
+</div>
 
-            // Clear data for animation
-            scene.data.datasets.forEach(dataset => {
-                dataset.data = dataset.data.map(() => 0);
-            });
-            chart.update('none');
-        }
+<script>
+const VUs = ['3','10','30','50','100','200'];
+const o='#ff6b35',g='#3fb950',r='#f85149',b='#58a6ff',gr='#484f58',lgr='#8b949e';
 
-        function showStatsCards(stats) {
-            const grid = document.getElementById('statsGrid');
-            stats.forEach((stat, index) => {
-                const card = document.createElement('div');
-                card.className = 'stat-card';
-                card.innerHTML = `
-                    <div class="stat-value" style="color: ${stat.color}">${stat.value}</div>
-                    <div class="stat-label">${stat.label}</div>
-                `;
-                grid.appendChild(card);
-                
-                setTimeout(() => {
-                    card.classList.add('visible');
-                }, index * 400);
-            });
-        }
+let charts = {};
+let animating = false;
+let currentScene = 0;
+let autoPlaying = false;
 
-        function animateChart(sceneNum) {
-            const scene = sceneData[sceneNum];
-            
-            if (scene.type === 'stats') {
-                return;
-            }
+function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
 
-            const originalData = JSON.parse(JSON.stringify(scene.data));
-            let dataIndex = 0;
-            
-            function animateNextPoint() {
-                if (dataIndex < originalData.labels.length) {
-                    originalData.datasets.forEach((dataset, dsIndex) => {
-                        chart.data.datasets[dsIndex].data[dataIndex] = dataset.data[dataIndex];
-                    });
-                    
-                    const currentLabel = originalData.labels[dataIndex];
-                    const rpsValues = originalData.datasets.map(ds => ds.data[dataIndex]);
-                    const maxRps = Math.max(...rpsValues);
-                    
-                    // Extract VU count from label
-                    const vuMatch = currentLabel.match(/(\d+)/);
-                    const vuCount = vuMatch ? vuMatch[1] : '0';
-                    
-                    updateCounter(vuCount, maxRps);
-                    
-                    chart.update('active');
-                    dataIndex++;
-                    animationTimeout = setTimeout(animateNextPoint, 800);
-                }
-            }
-            
-            animateNextPoint();
-        }
+function showScene(idx) {
+  document.querySelectorAll('.scene').forEach((s,i) => s.classList.toggle('active', i===idx));
+  currentScene = idx;
+}
 
-        function playScene() {
-            if (animationTimeout) {
-                clearTimeout(animationTimeout);
-            }
-            
-            const sceneNum = parseInt(document.getElementById('sceneSelect').value);
-            createChart(sceneNum);
-            setTimeout(() => animateChart(sceneNum), 100);
-        }
+document.getElementById('sceneSelect').addEventListener('change', e => {
+  showScene(parseInt(e.target.value));
+  resetScene();
+});
 
-        function resetScene() {
-            if (animationTimeout) {
-                clearTimeout(animationTimeout);
-            }
-            
-            const sceneNum = parseInt(document.getElementById('sceneSelect').value);
-            createChart(sceneNum);
-            updateCounter(0, 0);
-        }
+function updateCounter(vu, rps, show=true) {
+  const el = document.getElementById('counter');
+  el.style.display = show ? 'block' : 'none';
+  document.getElementById('vuCount').textContent = vu;
+  document.getElementById('rpsCount').textContent = rps + ' RPS';
+}
 
-        function autoPlayAll() {
-            if (autoPlayRunning) return;
-            
-            autoPlayRunning = true;
-            const button = document.querySelector('.auto-play-btn');
-            const originalText = button.textContent;
-            button.textContent = 'Playing All Scenes...';
-            button.disabled = true;
-            
-            let sceneNum = 1;
-            
-            function playNextScene() {
-                if (sceneNum <= 11) {
-                    document.getElementById('sceneSelect').value = sceneNum;
-                    createChart(sceneNum);
-                    
-                    setTimeout(() => {
-                        animateChart(sceneNum);
-                        sceneNum++;
-                        setTimeout(playNextScene, sceneData[sceneNum-1]?.type === 'stats' ? 4000 : 6000);
-                    }, 100);
-                } else {
-                    autoPlayRunning = false;
-                    button.textContent = originalText;
-                    button.disabled = false;
-                }
-            }
-            
-            playNextScene();
-        }
+function hideAnnotation(n) { document.getElementById('ann'+n).classList.remove('show'); }
+function showAnnotation(n) { document.getElementById('ann'+n).classList.add('show'); }
 
-        // Initialize
-        document.getElementById('sceneSelect').addEventListener('change', function() {
-            currentScene = parseInt(this.value);
-            resetScene();
-        });
+const chartOpts = (title, maxY=300) => ({
+  responsive:true, maintainAspectRatio:false,
+  animation:{duration:600,easing:'easeOutQuart'},
+  plugins:{
+    legend:{labels:{color:'#e6edf3',font:{size:14}}},
+    title:{display:true,text:title,color:'#e6edf3',font:{size:18}},
+    tooltip:{backgroundColor:'#161b22',borderColor:'#30363d',borderWidth:1}
+  },
+  scales:{
+    x:{ticks:{color:'#8b949e',font:{size:13}},grid:{color:'#21262d'},title:{display:true,text:'Virtual Users',color:'#8b949e'}},
+    y:{ticks:{color:'#8b949e'},grid:{color:'#21262d'},beginAtZero:true,max:maxY,title:{display:true,text:'Requests / sec',color:'#8b949e'}}
+  }
+});
 
-        // Load first scene
-        createChart(1);
-    </script>
+// ==================== SCENE PLAYERS ====================
+
+// Scene 0: SQLite Flat Line (~30s)
+async function play0() {
+  const ctx = document.getElementById('chart0');
+  if(charts[0]) charts[0].destroy();
+  const sqliteData = [47, 47, 48, 48, 48, 48];
+  
+  charts[0] = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: VUs,
+      datasets:[{label:'SQLite',data:Array(6).fill(null),borderColor:gr,backgroundColor:'rgba(72,79,88,0.15)',fill:true,tension:.1,pointRadius:8,pointBackgroundColor:gr,borderWidth:3,borderDash:[]}]
+    },
+    options:chartOpts('Single Webhook — SQLite on c5.large', 80)
+  });
+
+  document.getElementById('status0').innerHTML = '<span class="status-dot pulse" style="background:#484f58"></span> Running SQLite benchmark...';
+  
+  for(let i=0;i<6;i++){
+    if(!animating)return;
+    charts[0].data.datasets[0].data[i] = sqliteData[i];
+    charts[0].update();
+    updateCounter(VUs[i], sqliteData[i]);
+    await sleep(3000);
+  }
+  
+  await sleep(2000);
+  document.getElementById('status0').innerHTML = '⬛ SQLite ceiling: <strong style="color:#8b949e">48 RPS</strong> — single-threaded bottleneck';
+  showAnnotation(0);
+  await sleep(5000);
+}
+
+// Scene 1: PG Default Scaling (~35s)
+async function play1() {
+  const ctx = document.getElementById('chart1');
+  if(charts[1]) charts[1].destroy();
+  const pgData = [8, 18, 32, 43, 59, 71];
+  
+  charts[1] = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: VUs,
+      datasets:[{label:'PostgreSQL Default',data:Array(6).fill(null),borderColor:o,backgroundColor:'rgba(255,107,53,0.12)',fill:true,tension:.3,pointRadius:8,pointBackgroundColor:o,borderWidth:3}]
+    },
+    options:chartOpts('Single Webhook — PostgreSQL Default on c5.large', 100)
+  });
+
+  document.getElementById('status1').innerHTML = '<span class="status-dot pulse" style="background:#ff6b35"></span> Running PostgreSQL default benchmark...';
+  
+  for(let i=0;i<6;i++){
+    if(!animating)return;
+    charts[1].data.datasets[0].data[i] = pgData[i];
+    charts[1].update();
+    updateCounter(VUs[i], pgData[i]);
+    await sleep(3500);
+  }
+  
+  await sleep(3000);
+  document.getElementById('status1').innerHTML = '✅ PostgreSQL Default peak: <strong style="color:#ff6b35">71 RPS</strong> — scales up under load';
+  showAnnotation(1);
+  await sleep(5000);
+}
+
+// Scene 2: SQLite vs PG (~40s)
+async function play2() {
+  const ctx = document.getElementById('chart2');
+  if(charts[2]) charts[2].destroy();
+  const sqliteData = [47, 47, 48, 48, 48, 48];
+  const pgData = [8, 18, 32, 43, 59, 71];
+  
+  charts[2] = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: VUs,
+      datasets:[
+        {label:'SQLite',data:Array(6).fill(null),borderColor:gr,backgroundColor:'rgba(72,79,88,0.1)',fill:false,tension:.1,pointRadius:7,pointBackgroundColor:gr,borderWidth:3,borderDash:[8,4]},
+        {label:'PostgreSQL Default',data:Array(6).fill(null),borderColor:o,backgroundColor:'rgba(255,107,53,0.1)',fill:false,tension:.3,pointRadius:7,pointBackgroundColor:o,borderWidth:3}
+      ]
+    },
+    options:chartOpts('SQLite vs PostgreSQL Default — Same Hardware', 100)
+  });
+
+  // Phase 1: Draw SQLite
+  document.getElementById('status2').innerHTML = '<span class="status-dot pulse" style="background:#484f58"></span> SQLite baseline...';
+  for(let i=0;i<6;i++){
+    if(!animating)return;
+    charts[2].data.datasets[0].data[i] = sqliteData[i];
+    charts[2].update();
+    updateCounter(VUs[i], sqliteData[i]);
+    await sleep(2000);
+  }
+  
+  await sleep(3000);
+  
+  // Phase 2: Draw PG Default on top
+  document.getElementById('status2').innerHTML = '<span class="status-dot pulse" style="background:#ff6b35"></span> Now PostgreSQL Default...';
+  for(let i=0;i<6;i++){
+    if(!animating)return;
+    charts[2].data.datasets[1].data[i] = pgData[i];
+    charts[2].update();
+    updateCounter(VUs[i], pgData[i]);
+    await sleep(2500);
+  }
+  
+  await sleep(2000);
+  document.getElementById('status2').innerHTML = '✅ PostgreSQL <strong style="color:#ff6b35">71 RPS</strong> vs SQLite <strong style="color:#484f58">48 RPS</strong> — +48% from database swap alone';
+  showAnnotation(2);
+  await sleep(5000);
+}
+
+// Scene 3: PGTune Improvement (~30s)
+async function play3() {
+  const ctx = document.getElementById('chart3');
+  if(charts[3]) charts[3].destroy();
+  
+  charts[3] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['PG Default','PG Tuned (PGTune)'],
+      datasets:[{label:'Peak RPS',data:[0,0],backgroundColor:[o+'99',g],borderColor:[o,g],borderWidth:2,borderRadius:8,barPercentage:0.6}]
+    },
+    options:{
+      ...chartOpts('PGTune Optimization — Same c5.large Hardware', 120),
+      scales:{
+        ...chartOpts('',120).scales,
+        x:{...chartOpts('').scales.x, title:{display:false}}
+      }
+    }
+  });
+
+  document.getElementById('status3').innerHTML = '<span class="status-dot pulse" style="background:#ff6b35"></span> PostgreSQL Default result...';
+  await sleep(2000);
+  
+  // Animate bar 1 growing
+  if(!animating)return;
+  for(let v=0;v<=71;v+=3){
+    charts[3].data.datasets[0].data[0]=Math.min(v,71);
+    charts[3].update('none');
+    await sleep(50);
+  }
+  updateCounter('200', 71);
+  await sleep(4000);
+  
+  document.getElementById('status3').innerHTML = '<span class="status-dot pulse" style="background:#3fb950"></span> After PGTune (free, 5 minutes)...';
+  await sleep(2000);
+  
+  // Animate bar 2 growing
+  if(!animating)return;
+  for(let v=0;v<=95;v+=3){
+    charts[3].data.datasets[0].data[1]=Math.min(v,95);
+    charts[3].update('none');
+    await sleep(50);
+  }
+  updateCounter('200', 95);
+  
+  await sleep(3000);
+  document.getElementById('status3').innerHTML = '✅ <strong style="color:#3fb950">+34% improvement</strong> — $0 cost, 5 minutes of work';
+  showAnnotation(3);
+  await sleep(5000);
+}
+
+// Scene 4: The Big Jump (~35s)
+async function play4() {
+  const ctx = document.getElementById('chart4');
+  if(charts[4]) charts[4].destroy();
+  
+  charts[4] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['Food Truck\n(PG Tuned, c5.large)','Restaurant\n(Queue Default, c5.4xlarge)'],
+      datasets:[{label:'Peak RPS',data:[0,0],backgroundColor:[o,b],borderColor:[o,b],borderWidth:2,borderRadius:8,barPercentage:0.5}]
+    },
+    options:{
+      ...chartOpts('The Architecture Jump', 300),
+      scales:{
+        ...chartOpts('',300).scales,
+        x:{...chartOpts('').scales.x, title:{display:false}}
+      }
+    }
+  });
+
+  document.getElementById('status4').innerHTML = '<span class="status-dot pulse" style="background:#ff6b35"></span> Food truck baseline (tuned single instance)...';
+  await sleep(2000);
+  
+  if(!animating)return;
+  for(let v=0;v<=95;v+=4){
+    charts[4].data.datasets[0].data[0]=Math.min(v,95);
+    charts[4].update('none');
+    await sleep(40);
+  }
+  updateCounter('—', 95);
+  await sleep(5000);
+  
+  document.getElementById('status4').innerHTML = '<span class="status-dot pulse" style="background:#58a6ff"></span> Enabling queue mode...';
+  await sleep(3000);
+  
+  if(!animating)return;
+  for(let v=0;v<=266;v+=5){
+    charts[4].data.datasets[0].data[1]=Math.min(v,266);
+    charts[4].update('none');
+    await sleep(30);
+  }
+  updateCounter('—', 266);
+  
+  await sleep(3000);
+  document.getElementById('status4').innerHTML = '🚀 <strong style="color:#58a6ff">266 RPS</strong> — nearly <strong style="color:#ff6b35">3×</strong> the food truck';
+  showAnnotation(4);
+  await sleep(5000);
+}
+
+// Scene 5: Queue Under Load (~35s)
+async function play5() {
+  const ctx = document.getElementById('chart5');
+  if(charts[5]) charts[5].destroy();
+  const qData = [221, 266, 266, 263, 255, 260];
+  
+  charts[5] = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: VUs,
+      datasets:[{label:'Queue Default',data:Array(6).fill(null),borderColor:b,backgroundColor:'rgba(88,166,255,0.12)',fill:true,tension:.3,pointRadius:8,pointBackgroundColor:b,borderWidth:3}]
+    },
+    options:chartOpts('Queue Mode — Single Webhook on c5.4xlarge', 300)
+  });
+
+  document.getElementById('status5').innerHTML = '<span class="status-dot pulse" style="background:#58a6ff"></span> Running queue mode benchmark...';
+  
+  for(let i=0;i<6;i++){
+    if(!animating)return;
+    charts[5].data.datasets[0].data[i] = qData[i];
+    charts[5].update();
+    updateCounter(VUs[i], qData[i]);
+    await sleep(3500);
+  }
+  
+  await sleep(3000);
+  document.getElementById('status5').innerHTML = '✅ <strong style="color:#58a6ff">266 RPS peak</strong> — rock solid, zero failures at every load level';
+  showAnnotation(5);
+  await sleep(5000);
+}
+
+// Scene 6: Queue Tuning (~30s)
+async function play6() {
+  const ctx = document.getElementById('chart6');
+  if(charts[6]) charts[6].destroy();
+  
+  charts[6] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['Single Instance\nDefault → Tuned','Queue Mode\nDefault → Tuned'],
+      datasets:[
+        {label:'Default',data:[0,0],backgroundColor:[o+'77',b+'77'],borderColor:[o,b],borderWidth:2,borderRadius:8},
+        {label:'Tuned',data:[0,0],backgroundColor:[o,b],borderColor:[o,b],borderWidth:2,borderRadius:8}
+      ]
+    },
+    options:{
+      ...chartOpts('Tuning Impact: Single Instance vs Queue Mode', 300),
+      scales:{
+        ...chartOpts('',300).scales,
+        x:{...chartOpts('').scales.x, title:{display:false}}
+      }
+    }
+  });
+
+  document.getElementById('status6').innerHTML = '<span class="status-dot pulse" style="background:#ff6b35"></span> Single instance: default vs tuned...';
+  await sleep(2000);
+  
+  if(!animating)return;
+  for(let v=0;v<=71;v+=3){charts[6].data.datasets[0].data[0]=Math.min(v,71);charts[6].update('none');await sleep(40);}
+  await sleep(1500);
+  for(let v=0;v<=95;v+=3){charts[6].data.datasets[1].data[0]=Math.min(v,95);charts[6].update('none');await sleep(40);}
+  await sleep(3000);
+  
+  document.getElementById('status6').innerHTML = '<span class="status-dot pulse" style="background:#58a6ff"></span> Queue mode: default vs tuned...';
+  await sleep(2000);
+  
+  if(!animating)return;
+  for(let v=0;v<=266;v+=5){charts[6].data.datasets[0].data[1]=Math.min(v,266);charts[6].update('none');await sleep(25);}
+  await sleep(1500);
+  for(let v=0;v<=280;v+=5){charts[6].data.datasets[1].data[1]=Math.min(v,280);charts[6].update('none');await sleep(25);}
+  
+  await sleep(3000);
+  document.getElementById('status6').innerHTML = 'Single: <strong style="color:#ff6b35">+34%</strong> gain | Queue: <strong style="color:#58a6ff">+5%</strong> gain — architecture matters more than tuning';
+  showAnnotation(6);
+  await sleep(5000);
+}
+
+// Scene 7: Split Queue (~35s)
+async function play7() {
+  const ctx = document.getElementById('chart7');
+  if(charts[7]) charts[7].destroy();
+  
+  charts[7] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['All-in-One Queue\n(c5.4xlarge)','Split Queue\n(c5.xlarge + c5.4xlarge)'],
+      datasets:[{label:'Peak RPS',data:[0,0],backgroundColor:[b,r+'99'],borderColor:[b,r],borderWidth:3,borderRadius:8,barPercentage:0.5}]
+    },
+    options:{
+      ...chartOpts('Split Queue: More Hardware, Less Performance', 300),
+      scales:{
+        ...chartOpts('',300).scales,
+        x:{...chartOpts('').scales.x, title:{display:false}}
+      }
+    }
+  });
+
+  document.getElementById('status7').innerHTML = '<span class="status-dot pulse" style="background:#58a6ff"></span> All-in-one queue mode result...';
+  await sleep(2000);
+  
+  if(!animating)return;
+  for(let v=0;v<=266;v+=5){charts[7].data.datasets[0].data[0]=Math.min(v,266);charts[7].update('none');await sleep(30);}
+  updateCounter('—', 266);
+  await sleep(5000);
+  
+  document.getElementById('status7').innerHTML = '<span class="status-dot pulse" style="background:#f85149"></span> Split across two machines (more $$$)...';
+  await sleep(3000);
+  
+  if(!animating)return;
+  for(let v=0;v<=128;v+=3){charts[7].data.datasets[0].data[1]=Math.min(v,128);charts[7].update('none');await sleep(40);}
+  updateCounter('—', 128);
+  
+  await sleep(3000);
+  document.getElementById('status7').innerHTML = '❌ <strong style="color:#f85149">128 RPS</strong> vs <strong style="color:#58a6ff">266 RPS</strong> — network latency eats the gains';
+  showAnnotation(7);
+  await sleep(5000);
+}
+
+// Scene 8: Full Ladder (~45s)
+async function play8() {
+  const ctx = document.getElementById('chart8');
+  if(charts[8]) charts[8].destroy();
+  
+  const labels = ['SQLite\n(c5.large)','PG Default\n(c5.large)','PG Tuned\n(c5.large)','Split Queue ✗\n(c5.xl + c5.4xl)','Queue Default\n(c5.4xlarge)','Queue Tuned\n(c5.4xlarge)'];
+  const vals = [48, 71, 95, 128, 266, 280];
+  const colors = [gr, o+'99', o, r+'66', b, g];
+  const borders = [gr, o, o, r, b, g];
+  
+  charts[8] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: labels,
+      datasets:[{label:'Peak RPS',data:Array(6).fill(0),backgroundColor:colors,borderColor:borders,borderWidth:2,borderRadius:8}]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true, maintainAspectRatio:false,
+      animation:{duration:400},
+      plugins:{
+        legend:{display:false},
+        title:{display:true,text:'The Complete Scaling Ladder — Peak RPS',color:'#e6edf3',font:{size:18}},
+        tooltip:{backgroundColor:'#161b22',borderColor:'#30363d',borderWidth:1}
+      },
+      scales:{
+        x:{ticks:{color:'#8b949e'},grid:{color:'#21262d'},beginAtZero:true,max:310,title:{display:true,text:'Requests per Second',color:'#8b949e'}},
+        y:{ticks:{color:'#e6edf3',font:{size:13}},grid:{color:'#21262d'}}
+      }
+    }
+  });
+
+  const stepLabels = ['SQLite (tiny pantry)','PG Default (real pantry)','PG Tuned (optimized pantry)','Split Queue (the hallway problem)','Queue Default (restaurant)','Queue Tuned (restaurant+)'];
+  const stepColors = [gr, o, o, r, b, g];
+  
+  for(let i=0;i<6;i++){
+    if(!animating)return;
+    document.getElementById('status8').innerHTML = `<span class="status-dot pulse" style="background:${stepColors[i]}"></span> ${stepLabels[i]}...`;
+    
+    const target = vals[i];
+    const steps = 40;
+    for(let s=1;s<=steps;s++){
+      charts[8].data.datasets[0].data[i] = (target/steps)*s;
+      charts[8].update('none');
+      await sleep(30);
+    }
+    updateCounter('—', target);
+    await sleep(4000);
+  }
+  
+  await sleep(2000);
+  document.getElementById('status8').innerHTML = '✅ Recommended path: <strong style="color:#484f58">48</strong> → <strong style="color:#ff6b35">71</strong> → <strong style="color:#ff6b35">95</strong> → <strong style="color:#58a6ff">266</strong> → <strong style="color:#3fb950">280</strong>';
+  showAnnotation(8);
+  await sleep(5000);
+}
+
+// Scene 9: Binary (~30s)
+async function play9() {
+  const ctx = document.getElementById('chart9');
+  if(charts[9]) charts[9].destroy();
+  
+  charts[9] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['SQLite','PG Default','PG Tuned','Queue Default','Queue Tuned','Split Default','Split Tuned'],
+      datasets:[{label:'Binary Data RPS',data:Array(7).fill(0),backgroundColor:[gr+'99',o+'99',o+'99',r+'55',r+'55',r+'55',r+'55'],borderColor:[gr,o,o,r,r,r,r],borderWidth:2,borderRadius:8}]
+    },
+    options:{
+      ...chartOpts('Binary Data (2MB Upload) — The Exception', 15),
+      scales:{
+        ...chartOpts('',15).scales,
+        x:{...chartOpts('').scales.x, title:{display:false}}
+      }
+    }
+  });
+
+  document.getElementById('status9').innerHTML = '<span class="status-dot pulse"></span> Binary data results...';
+  await sleep(2000);
+  
+  const binaryData = [8.7, 8.5, 9.3, 0, 0, 0, 0];
+  const binaryLabels = ['SQLite: works','PG Default: works','PG Tuned: works','Queue: 500 ERROR','Queue Tuned: 500 ERROR','Split: 500 ERROR','Split Tuned: 500 ERROR'];
+  
+  for(let i=0;i<7;i++){
+    if(!animating)return;
+    document.getElementById('status9').innerHTML = `<span class="status-dot pulse" style="background:${i<3?g:r}"></span> ${binaryLabels[i]}`;
+    charts[9].data.datasets[0].data[i] = binaryData[i];
+    charts[9].update();
+    await sleep(2500);
+  }
+  
+  await sleep(2000);
+  document.getElementById('status9').innerHTML = '⚠️ ~9 RPS cap on single instance — <strong style="color:#f85149">Queue/Split = total failure</strong>';
+  showAnnotation(9);
+  await sleep(5000);
+}
+
+// Scene 10: Hero Stats (~40s)
+async function play10() {
+  document.getElementById('counter').style.display = 'none';
+  for(let i=0;i<5;i++) document.getElementById('hs'+i).classList.remove('show');
+  hideAnnotation(10);
+  
+  await sleep(2000);
+  for(let i=0;i<5;i++){
+    if(!animating)return;
+    document.getElementById('hs'+i).classList.add('show');
+    await sleep(5000);
+  }
+  await sleep(3000);
+  showAnnotation(10);
+  await sleep(5000);
+}
+
+const players = [play0,play1,play2,play3,play4,play5,play6,play7,play8,play9,play10];
+
+async function playScene() {
+  animating = true;
+  hideAnnotation(currentScene);
+  await players[currentScene]();
+  animating = false;
+}
+
+function resetScene() {
+  animating = false;
+  autoPlaying = false;
+  document.getElementById('counter').style.display = 'none';
+  if(charts[currentScene]){charts[currentScene].destroy();delete charts[currentScene];}
+  const st = document.getElementById('status'+currentScene);
+  if(st) st.innerHTML = '';
+  hideAnnotation(currentScene);
+  for(let i=0;i<5;i++){const el=document.getElementById('hs'+i);if(el)el.classList.remove('show');}
+}
+
+async function autoPlayAll() {
+  if(autoPlaying) return;
+  autoPlaying = true;
+  for(let i=0;i<11;i++){
+    if(!autoPlaying) break;
+    document.getElementById('sceneSelect').value = i;
+    showScene(i);
+    animating = true;
+    hideAnnotation(i);
+    await players[i]();
+    animating = false;
+    await sleep(3000);
+  }
+  autoPlaying = false;
+}
+</script>
 </body>
 </html>
