@@ -2,686 +2,641 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>n8n Scaling — Food Truck / Restaurant / Franchise</title>
+<title>n8n Benchmark — Retro Pixel Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',system-ui,sans-serif;overflow-x:hidden}
+body{background:#0f0f23;color:#cccccc;font-family:'Press Start 2P',monospace;font-size:10px;overflow-x:hidden;image-rendering:pixelated}
 
-.controls{text-align:center;padding:14px;position:sticky;top:0;z-index:100;background:#0d1117;border-bottom:1px solid #21262d}
-button{background:#ff6b35;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:1em;cursor:pointer;margin:0 6px;font-weight:600}
-button:hover{background:#e55a25}
-button.sec{background:#21262d;color:#8b949e}
-button.sec:hover{background:#30363d}
-select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12px;border-radius:6px;font-size:.9em;margin:0 6px}
+.controls{text-align:center;padding:12px;position:sticky;top:0;z-index:100;background:#0f0f23;border-bottom:3px solid #333}
+button{font-family:'Press Start 2P',monospace;background:#ff6b35;color:#fff;border:3px solid #cc5020;padding:8px 16px;font-size:9px;cursor:pointer;margin:0 4px;image-rendering:pixelated}
+button:hover{background:#ff8855;border-color:#ff6b35}
+button.sec{background:#333;color:#999;border-color:#555}
+button.sec:hover{background:#444}
+select{font-family:'Press Start 2P',monospace;background:#1a1a2e;color:#ccc;border:3px solid #333;padding:6px 8px;font-size:8px;margin:0 4px}
 
-.scene{display:none;min-height:85vh;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px}
+.scene{display:none;min-height:85vh;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px}
 .scene.active{display:flex}
 
-/* Stage */
-.stage{position:relative;width:900px;max-width:95vw;height:500px;background:#161b22;border:1px solid #30363d;border-radius:20px;overflow:hidden}
+/* Pixel Stage */
+.stage{position:relative;width:960px;max-width:95vw;height:520px;background:#1a1a2e;border:4px solid #333;overflow:hidden;image-rendering:pixelated}
+/* Scanline overlay */
+.stage::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;z-index:50}
 
-/* Ground / counter */
-.ground{position:absolute;bottom:0;width:100%;height:80px;background:linear-gradient(0deg,#1a1e24,#21262d)}
+/* Pixel ground */
+.ground{position:absolute;bottom:0;width:100%;height:80px;background:#2d5016;border-top:4px solid #4a8c28}
+.ground::before{content:'';position:absolute;top:-4px;width:100%;height:4px;background:repeating-linear-gradient(90deg,#4a8c28 0,#4a8c28 16px,#3d7020 16px,#3d7020 32px)}
 
-/* Title overlay */
-.stage-title{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:1.6em;font-weight:800;color:#ff6b35;text-shadow:0 2px 12px rgba(0,0,0,.8);z-index:10;white-space:nowrap}
-.stage-sub{position:absolute;top:54px;left:50%;transform:translateX(-50%);font-size:.9em;color:#8b949e;z-index:10;white-space:nowrap}
+/* Sky */
+.sky{position:absolute;top:0;width:100%;height:440px;background:linear-gradient(180deg,#0f0f23 0%,#1a1a3e 60%,#2a2040 100%)}
 
-/* Emoji actors */
-.actor{position:absolute;font-size:3em;transition:all .6s ease;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}
-.actor.bounce{animation:bounce 1s ease infinite}
-.actor.shake{animation:shake .3s ease infinite}
-.actor.spin{animation:spin 1s linear infinite}
-.actor.slide-in-left{animation:slideInLeft .8s ease forwards}
-.actor.slide-in-right{animation:slideInRight .8s ease forwards}
-.actor.pop{animation:pop .5s cubic-bezier(.34,1.56,.64,1) forwards}
-.actor.sweat{animation:sweat 1.5s ease infinite}
-.actor.float{animation:float 2s ease-in-out infinite}
-.actor.cook{animation:cook .6s ease infinite}
+/* Stars */
+.star{position:absolute;width:4px;height:4px;background:#fff;opacity:.6}
 
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
-@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
-@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-@keyframes slideInLeft{from{transform:translateX(-120px);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes slideInRight{from{transform:translateX(120px);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
-@keyframes sweat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(3deg)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@keyframes cook{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-5deg) translateY(-3px)}75%{transform:rotate(5deg) translateY(-3px)}}
+/* Pixel title */
+.ptitle{position:absolute;top:12px;left:50%;transform:translateX(-50%);text-align:center;z-index:10;text-shadow:2px 2px 0 #000}
+.ptitle h1{font-size:12px;color:#ff6b35;letter-spacing:1px}
+.ptitle p{font-size:7px;color:#888;margin-top:6px}
 
-/* Order bubbles */
-.order{position:absolute;font-size:1.4em;opacity:0;transition:all .4s ease}
-.order.fly{animation:flyUp 2s ease forwards}
-@keyframes flyUp{0%{opacity:1;transform:translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateY(-200px)}}
+/* Pixel sprites using canvas */
+.sprite{position:absolute;image-rendering:pixelated;transition:all .6s ease;opacity:0}
+.sprite.on{opacity:1}
 
-/* Speech bubble */
-.speech{position:absolute;background:#21262d;border:1px solid #30363d;border-radius:12px;padding:10px 16px;font-size:.85em;color:#e6edf3;opacity:0;transition:opacity .5s;max-width:220px;text-align:center;z-index:20}
-.speech::after{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #21262d}
-.speech.show{opacity:1}
+/* Pixel speech bubble */
+.pbubble{position:absolute;background:#1a1a2e;border:3px solid #ff6b35;padding:8px 12px;font-size:7px;color:#fff;opacity:0;transition:opacity .4s;max-width:220px;text-align:center;z-index:20;line-height:1.6}
+.pbubble.show{opacity:1}
+.pbubble::after{content:'▼';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);color:#ff6b35;font-size:10px}
 
-/* Stats bar */
-.stats-bar{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:20px;z-index:10}
-.stat{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:8px 16px;text-align:center}
-.stat .num{font-size:1.4em;font-weight:800}
-.stat .lbl{font-size:.65em;color:#8b949e}
+/* HUD / status bar */
+.hud{position:absolute;top:50px;right:16px;z-index:10;text-align:right}
+.hud-item{margin:4px 0;font-size:7px}
+.hud-label{color:#888}
+.hud-val{color:#ff6b35}
 
-/* Queue line */
-.queue-line{position:absolute;display:flex;gap:4px;align-items:center}
+/* Pixel gauge bars */
+.pgauge{display:none;background:#1a1a2e;border:3px solid #333;padding:10px 16px;margin-top:10px;width:960px;max-width:95vw}
+.pgauge-row{display:flex;align-items:center;gap:10px;margin:4px 0}
+.pgauge-label{font-size:7px;color:#888;min-width:100px;text-align:right}
+.pgauge-track{flex:1;height:16px;background:#0f0f23;border:2px solid #333;position:relative;overflow:hidden}
+.pgauge-fill{height:100%;transition:width .4s ease-out}
+.pgauge-fill.orders{background:repeating-linear-gradient(90deg,#ff6b35 0,#ff6b35 4px,#cc5020 4px,#cc5020 8px)}
+.pgauge-fill.stress{background:repeating-linear-gradient(90deg,#f85149 0,#f85149 4px,#cc2020 4px,#cc2020 8px)}
+.pgauge-fill.green{background:repeating-linear-gradient(90deg,#3fb950 0,#3fb950 4px,#2d8a3e 4px,#2d8a3e 8px)}
+.pgauge-fill.blue{background:repeating-linear-gradient(90deg,#58a6ff 0,#58a6ff 4px,#4080cc 4px,#4080cc 8px)}
+.pgauge-value{min-width:70px;font-size:8px;color:#ff6b35}
+.pgauge-value.g{color:#3fb950}.pgauge-value.r{color:#f85149}.pgauge-value.b{color:#58a6ff}
 
-/* Network cable */
-.cable{position:absolute;height:4px;background:repeating-linear-gradient(90deg,#ff6b35 0,#ff6b35 8px,transparent 8px,transparent 16px);opacity:.6}
-.cable.broken{background:repeating-linear-gradient(90deg,#f85149 0,#f85149 8px,transparent 8px,transparent 16px);animation:flicker 1s infinite}
-@keyframes flicker{0%,100%{opacity:.6}50%{opacity:.15}}
+/* Pixel status */
+.pstatus{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:7px;color:#888;z-index:10;white-space:nowrap;opacity:0;transition:opacity .4s;text-shadow:1px 1px 0 #000}
+.pstatus.show{opacity:1}
 
-/* Status text */
-.stage-status{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);font-size:1em;color:#8b949e;z-index:10;white-space:nowrap;opacity:0;transition:opacity .5s}
-.stage-status.show{opacity:1}
+/* Pixel annotation */
+.pann{text-align:center;margin-top:12px;font-size:9px;color:#ff6b35;opacity:0;transition:opacity .6s}
+.pann.show{opacity:1}
 
-/* Annotation */
-.scene-ann{text-align:center;margin-top:16px;font-size:1.3em;color:#ff6b35;font-weight:700;opacity:0;transition:opacity .8s}
-.scene-ann.show{opacity:1}
+/* Animations */
+@keyframes pixelBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pixelShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes pixelCook{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
+@keyframes pixelFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes pixelPop{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
 
-/* RPS gauge under stage */
-.gauge-bar{display:none;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:14px 24px;margin-top:12px;width:900px;max-width:95vw}
-.gauge-row{display:flex;align-items:center;gap:16px;margin:4px 0}
-.gauge-label{font-size:.8em;color:#8b949e;min-width:100px;text-align:right;font-weight:600}
-.gauge-track{flex:1;height:26px;background:#21262d;border-radius:13px;overflow:hidden;position:relative}
-.gauge-fill{height:100%;border-radius:13px;transition:width .5s ease-out;position:relative}
-.gauge-fill.rps{background:linear-gradient(90deg,#1a4d1a,#3fb950)}
-.gauge-fill.orders{background:linear-gradient(90deg,#4a2800,#ff6b35)}
-.gauge-fill.stress{background:linear-gradient(90deg,#4a1a1a,#f85149)}
-.gauge-fill::after{content:'';position:absolute;right:0;top:0;width:3px;height:100%;background:#fff;border-radius:2px;box-shadow:0 0 8px rgba(255,255,255,.6)}
-.gauge-value{min-width:70px;font-size:1.2em;font-weight:800}
-.gauge-value.g{color:#3fb950}.gauge-value.o{color:#ff6b35}.gauge-value.r{color:#f85149}
+.bounce{animation:pixelBounce .8s ease infinite}
+.shake{animation:pixelShake .3s ease infinite}
+.cook{animation:pixelCook .5s ease infinite}
+.pfloat{animation:pixelFloat 1.5s ease-in-out infinite}
+.blink{animation:blink 1s step-end infinite}
+.ppop{animation:pixelPop .4s ease forwards}
+
+/* Pixel order ticket */
+.ticket{position:absolute;font-size:16px;opacity:0;z-index:5}
+.ticket.fly{animation:ticketFly 1.5s ease forwards}
+@keyframes ticketFly{0%{opacity:1;transform:translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateY(-150px)}}
 </style>
 </head>
 <body>
 
 <div class="controls">
   <select id="sel">
-    <option value="0">1. 🚚 Food Truck — SQLite (~35s)</option>
-    <option value="1">2. 🚚 Food Truck — PGTune Upgrade (~30s)</option>
-    <option value="2">3. 🍽️ Restaurant — Queue Mode (~40s)</option>
-    <option value="3">4. 🍽️ Restaurant — Under Load (~35s)</option>
-    <option value="4">5. 🏢 Franchise — Split Queue (~40s)</option>
-    <option value="5">6. 📊 The Full Journey (~45s)</option>
+    <option value="0">1. FOOD TRUCK - SQLITE</option>
+    <option value="1">2. FOOD TRUCK - PGTUNE</option>
+    <option value="2">3. RESTAURANT - QUEUE</option>
+    <option value="3">4. RESTAURANT - RUSH</option>
+    <option value="4">5. FRANCHISE - SPLIT</option>
+    <option value="5">6. FULL JOURNEY</option>
   </select>
-  <button onclick="playScene()">▶ Play</button>
-  <button class="sec" onclick="resetScene()">↺ Reset</button>
-  <button onclick="autoPlayAll()">▶▶ Auto-Play All</button>
+  <button onclick="playScene()">&#9654; PLAY</button>
+  <button class="sec" onclick="resetScene()">&#8634; RESET</button>
+  <button onclick="autoPlayAll()">&#9654;&#9654; AUTO</button>
 </div>
 
-<!-- Scene 0: Food Truck SQLite -->
+<!-- Scenes -->
 <div class="scene active" id="scene0">
   <div style="position:relative">
-    <div class="stage" id="stage0">
-      <div class="stage-title">🚚 The Food Truck — SQLite Default</div>
-      <div class="stage-sub">One chef, one burner, one cutting board</div>
-      <div class="stage-status" id="st0"></div>
+    <div class="stage" id="stage0"><div class="sky"></div><div class="ground"></div>
+      <div class="ptitle"><h1>FOOD TRUCK - SQLITE</h1><p>ONE CHEF. ONE BURNER. ONE DREAM.</p></div>
+      <div class="pstatus" id="st0"></div>
     </div>
-    <div class="gauge-bar" id="gauge0">
-      <div class="gauge-row"><span class="gauge-label">📦 Orders/sec</span><div class="gauge-track"><div class="gauge-fill orders" id="ordFill0" style="width:0%"></div></div><span class="gauge-value o" id="ordVal0">0</span></div>
-      <div class="gauge-row"><span class="gauge-label">😰 Chef Stress</span><div class="gauge-track"><div class="gauge-fill stress" id="strFill0" style="width:0%"></div></div><span class="gauge-value r" id="strVal0">calm</span></div>
+    <div class="pgauge" id="gauge0">
+      <div class="pgauge-row"><span class="pgauge-label">ORDERS/SEC</span><div class="pgauge-track"><div class="pgauge-fill orders" id="ordFill0" style="width:0%"></div></div><span class="pgauge-value" id="ordVal0">0</span></div>
+      <div class="pgauge-row"><span class="pgauge-label">CHEF STRESS</span><div class="pgauge-track"><div class="pgauge-fill stress" id="strFill0" style="width:0%"></div></div><span class="pgauge-value r" id="strVal0">CALM</span></div>
     </div>
   </div>
-  <div class="scene-ann" id="ann0">48 orders/sec — the truck can only fit one cook</div>
+  <div class="pann" id="ann0">48 RPS - THE TRUCK CAN ONLY FIT ONE COOK</div>
 </div>
 
-<!-- Scene 1: Food Truck PGTune -->
 <div class="scene" id="scene1">
   <div style="position:relative">
-    <div class="stage" id="stage1">
-      <div class="stage-title">🚚 Food Truck + PGTune™ Kitchen Upgrade</div>
-      <div class="stage-sub">Same truck, sharper knives, organized shelves</div>
-      <div class="stage-status" id="st1"></div>
+    <div class="stage" id="stage1"><div class="sky"></div><div class="ground"></div>
+      <div class="ptitle"><h1>FOOD TRUCK + PGTUNE</h1><p>SAME TRUCK. SHARPER KNIVES.</p></div>
+      <div class="pstatus" id="st1"></div>
     </div>
-    <div class="gauge-bar" id="gauge1">
-      <div class="gauge-row"><span class="gauge-label">📦 Orders/sec</span><div class="gauge-track"><div class="gauge-fill orders" id="ordFill1" style="width:0%"></div></div><span class="gauge-value o" id="ordVal1">0</span></div>
-      <div class="gauge-row"><span class="gauge-label">🔧 Optimization</span><div class="gauge-track"><div class="gauge-fill rps" id="optFill1" style="width:0%"></div></div><span class="gauge-value g" id="optVal1">0%</span></div>
+    <div class="pgauge" id="gauge1">
+      <div class="pgauge-row"><span class="pgauge-label">ORDERS/SEC</span><div class="pgauge-track"><div class="pgauge-fill orders" id="ordFill1" style="width:0%"></div></div><span class="pgauge-value" id="ordVal1">0</span></div>
+      <div class="pgauge-row"><span class="pgauge-label">OPTIMIZE</span><div class="pgauge-track"><div class="pgauge-fill green" id="optFill1" style="width:0%"></div></div><span class="pgauge-value g" id="optVal1">0%</span></div>
     </div>
   </div>
-  <div class="scene-ann" id="ann1">71 → 95 orders/sec — +34% from a free 5-minute upgrade</div>
+  <div class="pann" id="ann1">71 &gt; 95 RPS - +34% FROM A FREE UPGRADE</div>
 </div>
 
-<!-- Scene 2: Restaurant Queue Mode -->
 <div class="scene" id="scene2">
   <div style="position:relative">
-    <div class="stage" id="stage2">
-      <div class="stage-title">🍽️ The Restaurant — Queue Mode</div>
-      <div class="stage-sub">Multiple chefs, a ticket system, industrial kitchen</div>
-      <div class="stage-status" id="st2"></div>
+    <div class="stage" id="stage2"><div class="sky"></div><div class="ground"></div>
+      <div class="ptitle"><h1>RESTAURANT - QUEUE MODE</h1><p>MULTIPLE CHEFS. TICKET SYSTEM.</p></div>
+      <div class="pstatus" id="st2"></div>
     </div>
-    <div class="gauge-bar" id="gauge2">
-      <div class="gauge-row"><span class="gauge-label">📦 Orders/sec</span><div class="gauge-track"><div class="gauge-fill orders" id="ordFill2" style="width:0%"></div></div><span class="gauge-value o" id="ordVal2">0</span></div>
-      <div class="gauge-row"><span class="gauge-label">👨‍🍳 Chefs Active</span><div class="gauge-track"><div class="gauge-fill rps" id="chefFill2" style="width:0%"></div></div><span class="gauge-value g" id="chefVal2">0</span></div>
+    <div class="pgauge" id="gauge2">
+      <div class="pgauge-row"><span class="pgauge-label">ORDERS/SEC</span><div class="pgauge-track"><div class="pgauge-fill orders" id="ordFill2" style="width:0%"></div></div><span class="pgauge-value" id="ordVal2">0</span></div>
+      <div class="pgauge-row"><span class="pgauge-label">CHEFS</span><div class="pgauge-track"><div class="pgauge-fill green" id="chefFill2" style="width:0%"></div></div><span class="pgauge-value g" id="chefVal2">0</span></div>
     </div>
   </div>
-  <div class="scene-ann" id="ann2">266 orders/sec — nearly 3× the food truck, zero dropped orders</div>
+  <div class="pann" id="ann2">266 RPS - 3X THE FOOD TRUCK. ZERO DROPS.</div>
 </div>
 
-<!-- Scene 3: Restaurant Under Load -->
 <div class="scene" id="scene3">
   <div style="position:relative">
-    <div class="stage" id="stage3">
-      <div class="stage-title">🍽️ Restaurant — Friday Night Rush</div>
-      <div class="stage-sub">200 customers hit at once — does it hold?</div>
-      <div class="stage-status" id="st3"></div>
+    <div class="stage" id="stage3"><div class="sky"></div><div class="ground"></div>
+      <div class="ptitle"><h1>RESTAURANT - FRIDAY RUSH</h1><p>200 CUSTOMERS. DOES IT HOLD?</p></div>
+      <div class="pstatus" id="st3"></div>
     </div>
-    <div class="gauge-bar" id="gauge3">
-      <div class="gauge-row"><span class="gauge-label">📦 Orders/sec</span><div class="gauge-track"><div class="gauge-fill orders" id="ordFill3" style="width:0%"></div></div><span class="gauge-value o" id="ordVal3">0</span></div>
-      <div class="gauge-row"><span class="gauge-label">👥 Customers</span><div class="gauge-track"><div class="gauge-fill rps" id="custFill3" style="width:0%"></div></div><span class="gauge-value g" id="custVal3">0</span></div>
+    <div class="pgauge" id="gauge3">
+      <div class="pgauge-row"><span class="pgauge-label">ORDERS/SEC</span><div class="pgauge-track"><div class="pgauge-fill orders" id="ordFill3" style="width:0%"></div></div><span class="pgauge-value" id="ordVal3">0</span></div>
+      <div class="pgauge-row"><span class="pgauge-label">CUSTOMERS</span><div class="pgauge-track"><div class="pgauge-fill blue" id="custFill3" style="width:0%"></div></div><span class="pgauge-value b" id="custVal3">0</span></div>
     </div>
   </div>
-  <div class="scene-ann" id="ann3">Rock solid — 260+ RPS even at 200 concurrent customers</div>
+  <div class="pann" id="ann3">ROCK SOLID. 260+ RPS AT 200 USERS.</div>
 </div>
 
-<!-- Scene 4: Franchise Split -->
 <div class="scene" id="scene4">
   <div style="position:relative">
-    <div class="stage" id="stage4">
-      <div class="stage-title">🏢 The Franchise — Split Queue</div>
-      <div class="stage-sub">Kitchen across the street... what could go wrong?</div>
-      <div class="stage-status" id="st4"></div>
+    <div class="stage" id="stage4"><div class="sky"></div><div class="ground"></div>
+      <div class="ptitle"><h1>SPLIT QUEUE - THE HALLWAY</h1><p>KITCHEN ACROSS THE STREET...</p></div>
+      <div class="pstatus" id="st4"></div>
     </div>
-    <div class="gauge-bar" id="gauge4">
-      <div class="gauge-row"><span class="gauge-label">📦 Orders/sec</span><div class="gauge-track"><div class="gauge-fill orders" id="ordFill4" style="width:0%"></div></div><span class="gauge-value o" id="ordVal4">0</span></div>
-      <div class="gauge-row"><span class="gauge-label">🔴 Latency</span><div class="gauge-track"><div class="gauge-fill stress" id="latFill4" style="width:0%"></div></div><span class="gauge-value r" id="latVal4">low</span></div>
+    <div class="pgauge" id="gauge4">
+      <div class="pgauge-row"><span class="pgauge-label">ORDERS/SEC</span><div class="pgauge-track"><div class="pgauge-fill orders" id="ordFill4" style="width:0%"></div></div><span class="pgauge-value" id="ordVal4">0</span></div>
+      <div class="pgauge-row"><span class="pgauge-label">LATENCY</span><div class="pgauge-track"><div class="pgauge-fill stress" id="latFill4" style="width:0%"></div></div><span class="pgauge-value r" id="latVal4">LOW</span></div>
     </div>
   </div>
-  <div class="scene-ann" id="ann4">128 vs 266 — more money, less performance. Don't split what works.</div>
+  <div class="pann" id="ann4">128 VS 266 - MORE MONEY. LESS SPEED.</div>
 </div>
 
-<!-- Scene 5: Full Journey -->
 <div class="scene" id="scene5">
   <div style="position:relative">
-    <div class="stage" id="stage5">
-      <div class="stage-title">📊 The Complete Journey</div>
-      <div class="stage-sub">From food truck to restaurant — the scaling path</div>
-      <div class="stage-status" id="st5"></div>
+    <div class="stage" id="stage5"><div class="sky"></div><div class="ground"></div>
+      <div class="ptitle"><h1>THE COMPLETE JOURNEY</h1><p>FROM FOOD TRUCK TO FRANCHISE</p></div>
+      <div class="pstatus" id="st5"></div>
     </div>
-    <div class="gauge-bar" id="gauge5">
-      <div class="gauge-row"><span class="gauge-label">⚡ Peak RPS</span><div class="gauge-track"><div class="gauge-fill rps" id="rpsFill5" style="width:0%"></div></div><span class="gauge-value g" id="rpsVal5">0</span></div>
+    <div class="pgauge" id="gauge5">
+      <div class="pgauge-row"><span class="pgauge-label">PEAK RPS</span><div class="pgauge-track"><div class="pgauge-fill green" id="rpsFill5" style="width:0%"></div></div><span class="pgauge-value g" id="rpsVal5">0</span></div>
     </div>
   </div>
-  <div class="scene-ann" id="ann5">48 → 95 → 266 → 280 — skip the franchise, stay in the restaurant</div>
+  <div class="pann" id="ann5">48 &gt; 95 &gt; 266 &gt; 280. SKIP SPLIT QUEUE.</div>
 </div>
 
 <script>
-let animating=false, currentScene=0, autoPlaying=false;
+let animating=false,currentScene=0,autoPlaying=false;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const S=n=>document.getElementById('stage'+n);
 
-function showScene(i){document.querySelectorAll('.scene').forEach((s,j)=>s.classList.toggle('active',j===i));currentScene=i}
-document.getElementById('sel').addEventListener('change',e=>{showScene(+e.target.value);resetScene()});
+// ===== Pixel Sprite System =====
+const SPRITES={
+  truck:[[0,0,0,1,1,1,1,0],[0,0,1,2,2,2,2,1],[0,1,2,2,2,2,2,2],[1,1,1,1,1,1,1,1],[1,3,3,1,1,1,3,3],[0,3,3,0,0,0,3,3]],
+  chef:[[0,0,1,1,1,0,0,0],[0,1,1,1,1,1,0,0],[0,0,4,5,4,0,0,0],[0,0,4,4,4,0,0,0],[0,1,1,1,1,1,0,0],[0,0,1,1,1,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
+  customer:[[0,0,3,3,3,0,0,0],[0,3,3,3,3,3,0,0],[0,0,4,5,4,0,0,0],[0,0,4,4,4,0,0,0],[0,6,6,6,6,6,0,0],[0,0,6,6,6,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
+  building:[[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,8],[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,8],[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,8],[7,7,7,7,7,7,7,7],[7,7,9,9,9,7,7,7]],
+  factory:[[0,0,7,7,7,7,0,0],[0,7,7,7,7,7,7,0],[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,7],[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,7],[7,7,7,7,7,7,7,7],[7,7,9,9,9,7,7,7]],
+  wrench:[[0,0,0,10,10,0,0,0],[0,0,10,10,10,10,0,0],[0,0,0,10,10,0,0,0],[0,0,0,10,10,0,0,0],[0,0,0,10,10,0,0,0],[0,0,0,10,10,0,0,0],[0,0,10,10,10,10,0,0],[0,0,0,10,10,0,0,0]],
+  pan:[[0,0,0,0,0,10,10,10],[0,7,7,7,7,0,0,0],[7,7,7,7,7,7,0,0],[7,7,7,7,7,7,0,0],[0,7,7,7,7,0,0,0]],
+  ticket:[[11,11,11,11],[11,0,0,11],[11,0,0,11],[11,11,11,11]],
+  star:[[0,12,0],[12,12,12],[0,12,0]],
+  heart:[[0,13,0,13,0],[13,13,13,13,13],[13,13,13,13,13],[0,13,13,13,0],[0,0,13,0,0]],
+  skull:[[0,1,1,1,0],[1,0,1,0,1],[1,1,1,1,1],[0,1,0,1,0],[0,0,1,0,0]],
+  runner:[[0,0,3,3,0,0],[0,0,4,4,0,0],[0,6,6,6,6,0],[6,0,6,6,0,0],[0,0,4,0,4,0],[0,4,0,0,0,4]]
+};
 
-function clearStage(n){
-  const s=document.getElementById('stage'+n);
-  s.querySelectorAll('.actor,.order,.speech,.queue-line,.cable,.stat').forEach(e=>e.remove());
-  const st=document.getElementById('st'+n);if(st){st.textContent='';st.classList.remove('show')}
-  document.getElementById('ann'+n).classList.remove('show');
-  const g=document.getElementById('gauge'+n);if(g)g.style.display='none';
+const PALETTE={
+  0:'transparent',
+  1:'#ffffff',  // white
+  2:'#ff6b35',  // orange (truck)
+  3:'#4488ff',  // blue (hat/hair)
+  4:'#ffcc88',  // skin
+  5:'#ff4444',  // mouth/accent
+  6:'#44aa44',  // green (clothes)
+  7:'#666688',  // building gray
+  8:'#ffff44',  // window yellow
+  9:'#885533',  // door brown
+  10:'#aaaacc', // metal
+  11:'#ffff88', // ticket yellow
+  12:'#ffffff', // star
+  13:'#ff4466'  // heart red
+};
+
+function drawSprite(data,scale=6){
+  const h=data.length,w=data[0].length;
+  const c=document.createElement('canvas');
+  c.width=w*scale;c.height=h*scale;c.style.imageRendering='pixelated';
+  const ctx=c.getContext('2d');
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    const clr=PALETTE[data[y][x]];
+    if(clr&&clr!=='transparent'){ctx.fillStyle=clr;ctx.fillRect(x*scale,y*scale,scale,scale)}
+  }
+  return c;
 }
 
-function addActor(stage,emoji,x,y,cls='',id=''){
-  const el=document.createElement('div');el.className='actor'+(cls?' '+cls:'');el.textContent=emoji;
-  el.style.left=x+'px';el.style.top=y+'px';if(id)el.id=id;
-  document.getElementById('stage'+stage).appendChild(el);return el;
+function addSprite(stageN,name,x,y,scale=6,id=''){
+  const c=drawSprite(SPRITES[name],scale);
+  c.className='sprite';c.style.left=x+'px';c.style.top=y+'px';
+  if(id)c.id=id;
+  S(stageN).appendChild(c);return c;
 }
 
-function addSpeech(stage,text,x,y,id=''){
-  const el=document.createElement('div');el.className='speech';el.innerHTML=text;
-  el.style.left=x+'px';el.style.top=y+'px';if(id)el.id=id;
-  document.getElementById('stage'+stage).appendChild(el);return el;
+function addText(stageN,text,x,y,color='#fff',size='8px'){
+  const d=document.createElement('div');
+  d.style.cssText=`position:absolute;left:${x}px;top:${y}px;font-size:${size};color:${color};z-index:10;text-shadow:1px 1px 0 #000;font-family:'Press Start 2P',monospace;white-space:nowrap;opacity:0;transition:opacity .4s`;
+  d.textContent=text;S(stageN).appendChild(d);return d;
 }
 
-function flyOrder(stage,emoji,x,y){
-  const el=document.createElement('div');el.className='order';el.textContent=emoji;
-  el.style.left=x+'px';el.style.top=y+'px';
-  document.getElementById('stage'+stage).appendChild(el);
-  requestAnimationFrame(()=>el.classList.add('fly'));
-  setTimeout(()=>el.remove(),2200);
+function addBubble(stageN,html,x,y){
+  const d=document.createElement('div');d.className='pbubble';d.innerHTML=html;
+  d.style.left=x+'px';d.style.top=y+'px';S(stageN).appendChild(d);return d;
 }
 
+function addStars(stageN,count=15){
+  for(let i=0;i<count;i++){
+    const s=document.createElement('div');s.className='star';
+    s.style.left=Math.random()*920+'px';s.style.top=Math.random()*300+'px';
+    s.style.opacity=.3+Math.random()*.5;
+    if(Math.random()>.7)s.style.animation='blink '+(2+Math.random()*3)+'s step-end infinite';
+    S(stageN).appendChild(s);
+  }
+}
+
+function flyTicket(stageN,x,y,emoji='🎫'){
+  const d=document.createElement('div');d.className='ticket';d.textContent=emoji;
+  d.style.left=x+'px';d.style.top=y+'px';S(stageN).appendChild(d);
+  requestAnimationFrame(()=>d.classList.add('fly'));
+  setTimeout(()=>d.remove(),1600);
+}
+
+function show(e,cls=''){e.style.opacity='1';e.classList.add('on');if(cls)e.classList.add(cls)}
+function hide(e){e.style.opacity='0';e.classList.remove('on')}
+function setStatus(n,t){const el=document.getElementById('st'+n);el.textContent=t;el.classList.add('show')}
 function setGauge(prefix,pct,val){
-  // HTML IDs are like ordFill0, ordVal0 — prefix="ord0" → split into name+number
-  const m=prefix.match(/^([a-zA-Z]+)(\d+)$/);
-  if(!m)return;
+  const m=prefix.match(/^([a-zA-Z]+)(\d+)$/);if(!m)return;
   const fill=document.getElementById(m[1]+'Fill'+m[2]);
   const valEl=document.getElementById(m[1]+'Val'+m[2]);
   if(fill)fill.style.width=Math.min(pct,100)+'%';
   if(valEl)valEl.textContent=val;
 }
 
-function showStatus(n,text){const el=document.getElementById('st'+n);el.textContent=text;el.classList.add('show')}
+function showScene(i){document.querySelectorAll('.scene').forEach((s,j)=>s.classList.toggle('active',j===i));currentScene=i}
+document.getElementById('sel').addEventListener('change',e=>{showScene(+e.target.value);resetScene()});
 
-// ============ SCENE 0: Food Truck SQLite ============
+function clearStage(n){
+  S(n).querySelectorAll('.sprite,.pbubble,.ticket,.star,div[style*="position:absolute"]').forEach(e=>{
+    if(!e.classList.contains('sky')&&!e.classList.contains('ground')&&!e.classList.contains('ptitle')&&!e.classList.contains('pstatus'))e.remove();
+  });
+  const st=document.getElementById('st'+n);if(st){st.textContent='';st.classList.remove('show')}
+  document.getElementById('ann'+n).classList.remove('show');
+  const g=document.getElementById('gauge'+n);if(g)g.style.display='none';
+}
+
+// ========== SCENE 0: Food Truck SQLite ==========
 async function play0(){
-  clearStage(0);
+  clearStage(0);addStars(0);
   document.getElementById('gauge0').style.display='block';
   
-  // Build the truck
-  const truck=addActor(0,'🚚',80,280,'','truck0');truck.style.fontSize='5em';
-  await sleep(800);
-  
-  // Chef appears
-  const chef=addActor(0,'👨‍🍳',220,240,'pop');
+  const truck=addSprite(0,'truck',60,340,10);show(truck,'ppop');
   await sleep(600);
-  
-  // Cutting board & burner
-  addActor(0,'🔪',290,260,'pop');
+  const chef=addSprite(0,'chef',220,320,7);show(chef,'ppop');
+  await sleep(400);
+  const pan=addSprite(0,'pan',310,360,6);show(pan,'ppop');
   await sleep(300);
-  addActor(0,'🍳',340,260,'pop');
-  await sleep(800);
   
-  const sp=addSpeech(0,"Just me and my<br>one burner!",200,170);
-  await sleep(500);sp.classList.add('show');
+  const lbl=addText(0,'c5.large',80,420,'#888','7px');show(lbl);
+  const lbl2=addText(0,'2 vCPU / 4GB',80,432,'#666','6px');show(lbl2);
+  await sleep(1000);
+  
+  const sp=addBubble(0,"JUST ME AND MY<br>ONE BURNER!",200,230);
+  await sleep(300);sp.classList.add('show');
   await sleep(2500);sp.classList.remove('show');
   
-  // Customers start arriving
-  showStatus(0,'☀️ Lunch rush starting...');
-  const customers=['🧑','👩','🧔','👦','👩‍🦰','🧑‍🦱','👴','👩‍🦳'];
+  setStatus(0,'LUNCH RUSH STARTING...');
   
-  // Smooth ramp: 0 → 48 over phases, stress climbs with it
   const rpsSteps=[5,12,22,30,36,40,44,47,48,48,48,48];
   const stressSteps=[5,10,18,28,40,52,65,78,85,88,90,90];
-  const stressLabels=['calm','calm','warming up','warming up','sweating','sweating','😰 stressed','😰 stressed','🔥 MAX','🔥 MAX','🔥 MAX','🔥 MAX'];
+  const stressLabels=['CALM','CALM','WARM','WARM','SWEAT','SWEAT','STRESS','STRESS','MAX!','MAX!','MAX!','MAX!'];
   
-  // Phase 1: Light orders — chef handles fine
-  for(let i=0;i<3;i++){
+  // Customers arrive
+  for(let i=0;i<4;i++){
     if(!animating)return;
-    const cx=500+i*55;
-    addActor(0,customers[i],cx,250,'slide-in-right');
-    await sleep(600);
-    flyOrder(0,'🍔',cx,230);
-    chef.className='actor cook';
+    const cx=addSprite(0,'customer',500+i*70,330,6);show(cx,'ppop');
+    await sleep(400);
+    flyTicket(0,500+i*70,310);
+    chef.classList.add('cook');
     setGauge('ord0',rpsSteps[i]/48*100,rpsSteps[i]);
+    setGauge('str0',stressSteps[i],stressLabels[i]);
+    await sleep(1000);
+  }
+  
+  await sleep(800);
+  const sp2=addBubble(0,"KEEPING UP! ★",200,230);
+  await sleep(300);sp2.classList.add('show');
+  await sleep(2000);sp2.classList.remove('show');
+  
+  setStatus(0,'CROWD GROWING...');
+  for(let i=4;i<8;i++){
+    if(!animating)return;
+    const cx=addSprite(0,'customer',480+i*55,330,5);show(cx,'ppop');
+    flyTicket(0,480+i*55,310);
+    setGauge('ord0',rpsSteps[i]/48*100,rpsSteps[i]);
+    setGauge('str0',stressSteps[i],stressLabels[i]);
+    await sleep(700);
+  }
+  
+  chef.classList.remove('cook');chef.classList.add('shake');
+  const sp3=addBubble(0,"I CAN'T GO<br>ANY FASTER!!",200,230);
+  await sleep(300);sp3.classList.add('show');
+  
+  setStatus(0,'!! SQLITE SINGLE-THREAD BOTTLENECK !!');
+  for(let i=8;i<12;i++){
+    if(!animating)return;
+    flyTicket(0,550,300);flyTicket(0,600,310);
+    setGauge('ord0',100,rpsSteps[i]);
     setGauge('str0',stressSteps[i],stressLabels[i]);
     await sleep(1200);
   }
   
-  await sleep(1000);
-  const sp2=addSpeech(0,"Keeping up! 💪",200,170);
-  await sleep(400);sp2.classList.add('show');
-  await sleep(2000);sp2.classList.remove('show');
-  
-  // Phase 2: More customers — chef starts struggling
-  showStatus(0,'📈 Crowd growing...');
-  for(let i=3;i<8;i++){
-    if(!animating)return;
-    const cx=500+(i-3)*50;
-    addActor(0,customers[i],cx,250,'slide-in-right');
-    await sleep(400);
-    flyOrder(0,'🍔',cx-20,230);
-    flyOrder(0,'🌮',cx+20,240);
-    setGauge('ord0',rpsSteps[i]/48*100,rpsSteps[i]);
-    setGauge('str0',stressSteps[i],stressLabels[i]);
-    await sleep(800);
-  }
-  
-  chef.className='actor sweat';
-  await sleep(1000);
-  
-  const sp3=addSpeech(0,"I can't go<br>any faster! 😰",200,170);
-  await sleep(400);sp3.classList.add('show');
-  
-  // Phase 3: Ceiling — orders fly but RPS stays flat at 48
-  showStatus(0,'⚠️ SQLite single-thread bottleneck...');
-  for(let i=8;i<12;i++){
-    if(!animating)return;
-    flyOrder(0,'🍔',550,200);
-    flyOrder(0,'🌮',600,210);
-    flyOrder(0,'🍕',650,220);
-    setGauge('ord0',100,rpsSteps[i]);
-    setGauge('str0',stressSteps[i],stressLabels[i]);
-    await sleep(1500);
-  }
-  
   sp3.classList.remove('show');
-  await sleep(1500);
-  chef.className='actor shake';
-  
-  showStatus(0,'⬛ Ceiling: 48 orders/sec — one thread, one chef');
-  await sleep(2000);
+  await sleep(1000);
+  setStatus(0,'CEILING: 48 RPS - ONE THREAD, ONE CHEF');
   document.getElementById('ann0').classList.add('show');
   await sleep(4000);
 }
 
-// ============ SCENE 1: Food Truck PGTune ============
+// ========== SCENE 1: PGTune ==========
 async function play1(){
-  clearStage(1);
+  clearStage(1);addStars(1);
   document.getElementById('gauge1').style.display='block';
   
-  // Struggling chef
-  const truck=addActor(1,'🚚',80,280,'');truck.style.fontSize='5em';
-  const chef=addActor(1,'👨‍🍳',220,240,'sweat');
-  addActor(1,'🔪',290,260,'');
-  addActor(1,'🍳',340,260,'');
+  const truck=addSprite(1,'truck',60,340,10);show(truck);
+  const chef=addSprite(1,'chef',220,320,7);show(chef,'shake');
+  show(addSprite(1,'pan',310,360,6));
   
-  setGauge('ord1',71/280*100,71);
-  setGauge('opt1',0,'0%');
+  setGauge('ord1',71/280*100,71);setGauge('opt1',0,'0%');
+  setStatus(1,'PG DEFAULT: 71 RPS...');
+  await sleep(2500);
   
-  showStatus(1,'PG Default: 71 orders/sec... not bad but...');
-  await sleep(3000);
-  
-  // PGTune arrives!
-  const sp=addSpeech(1,"What if we<br>organized this kitchen?",180,160);
-  await sleep(400);sp.classList.add('show');
+  const sp=addBubble(1,"WHAT IF WE<br>ORGANIZED THIS<br>KITCHEN?",180,220);
+  await sleep(300);sp.classList.add('show');
   await sleep(2500);sp.classList.remove('show');
   
-  // Wrench appears
   if(!animating)return;
-  const wrench=addActor(1,'🔧',400,200,'pop');wrench.style.fontSize='4em';
-  showStatus(1,'🔧 Applying PGTune — 5 minutes, $0...');
-  await sleep(2000);
+  const wrench=addSprite(1,'wrench',400,280,8);show(wrench,'ppop');
+  setStatus(1,'APPLYING PGTUNE... FREE!');
+  await sleep(1500);
   
-  // Upgrade animation — tools fly in
-  const upgrades=['📐','🗂️','⚡','🧹'];
-  const labels=['Shared buffers optimized','Work mem configured','WAL tuned','Connections pooled'];
+  const labels=['SHARED BUFFERS','WORK MEM','WAL TUNED','CONNECTIONS'];
   for(let i=0;i<4;i++){
     if(!animating)return;
-    const u=addActor(1,upgrades[i],380+i*30,180-i*20,'pop');
-    showStatus(1,'🔧 '+labels[i]);
+    const t=addText(1,labels[i],350,200-i*15,'#3fb950','7px');show(t);
     setGauge('opt1',(i+1)*25,(i+1)*25+'%');
-    await sleep(1800);
-    u.style.opacity='0';
-    await sleep(400);
+    setStatus(1,'>> '+labels[i]);
+    await sleep(1500);
+    hide(t);await sleep(200);
   }
   
-  wrench.style.opacity='0';
-  await sleep(800);
-  
-  // Chef is now happy and fast
+  hide(wrench);await sleep(500);
   if(!animating)return;
-  chef.className='actor cook';
-  addActor(1,'✨',260,220,'pop');
+  chef.classList.remove('shake');chef.classList.add('cook');
+  const sparkle=addSprite(1,'star',260,300,8);show(sparkle,'pfloat');
   
-  // RPS climbs
-  showStatus(1,'✅ Same truck, optimized kitchen!');
+  setStatus(1,'SAME TRUCK. OPTIMIZED KITCHEN!');
   for(let v=71;v<=95;v+=2){
     if(!animating)return;
     setGauge('ord1',v/280*100,v);
-    await sleep(150);
+    await sleep(120);
   }
-  setGauge('opt1',100,'100% — FREE');
+  setGauge('opt1',100,'FREE!');
   
-  await sleep(2000);
-  const sp2=addSpeech(1,"+34% faster!<br>Same truck! 🎉",180,160);
-  await sleep(400);sp2.classList.add('show');
-  
+  await sleep(1500);
+  const sp2=addBubble(1,"+34% FASTER!<br>SAME TRUCK!",180,220);
+  await sleep(300);sp2.classList.add('show');
   await sleep(3000);
   document.getElementById('ann1').classList.add('show');
-  await sleep(4000);
+  await sleep(3000);
 }
 
-// ============ SCENE 2: Restaurant Queue Mode ============
+// ========== SCENE 2: Restaurant Queue ==========
 async function play2(){
-  clearStage(2);
+  clearStage(2);addStars(2);
   document.getElementById('gauge2').style.display='block';
   
-  // Build restaurant
-  addActor(2,'🏪',60,200,'');document.querySelector('#stage2 .actor').style.fontSize='6em';
+  const bldg=addSprite(2,'building',80,280,10);show(bldg,'ppop');
+  await sleep(500);
   
-  // Ticket rail
-  const rail=addActor(2,'🎫',250,180,'pop');rail.style.fontSize='2em';
-  const sp=addSpeech(2,"Ticket rail —<br>Redis queue!",230,110);
-  await sleep(500);sp.classList.add('show');
-  await sleep(2500);sp.classList.remove('show');
+  const ticketRail=addText(2,'[TICKET RAIL]',250,300,'#ffff44','7px');show(ticketRail);
+  const sp=addBubble(2,"REDIS QUEUE!",230,220);
+  await sleep(400);sp.classList.add('show');
+  await sleep(2000);sp.classList.remove('show');
   
-  // Multiple chefs appear one by one
-  const chefPositions=[[320,250],[390,250],[460,250],[530,250]];
-  showStatus(2,'👨‍🍳 Hiring workers...');
-  
+  setStatus(2,'HIRING WORKERS...');
+  const chefXs=[340,420,500,580];
   for(let i=0;i<4;i++){
     if(!animating)return;
-    addActor(2,'👨‍🍳',chefPositions[i][0],chefPositions[i][1],'pop','chef2_'+i);
+    const c=addSprite(2,'chef',chefXs[i],330,6,'chef2_'+i);show(c,'ppop');
     setGauge('chef2',(i+1)*25,i+1);
+    await sleep(800);
+  }
+  
+  // Stations
+  for(let i=0;i<4;i++){show(addSprite(2,'pan',chefXs[i]+5,380,4));await sleep(200)}
+  await sleep(800);
+  
+  setStatus(2,'ORDERS FLOWING...');
+  if(!animating)return;
+  for(let i=0;i<4;i++){
+    const c=document.getElementById('chef2_'+i);if(c)c.classList.add('cook');
+  }
+  
+  const rpsRamp=[80,120,160,200,230,248,258,266];
+  for(let r=0;r<rpsRamp.length;r++){
+    if(!animating)return;
+    for(let i=0;i<4;i++)flyTicket(2,chefXs[i],310);
+    setGauge('ord2',rpsRamp[r]/280*100,rpsRamp[r]);
+    setGauge('chef2',100,4);
     await sleep(1000);
   }
   
-  // Each chef gets a station
-  const stations=['🍳','🔥','🥘','🍲'];
-  for(let i=0;i<4;i++){
-    addActor(2,stations[i],chefPositions[i][0]+10,chefPositions[i][1]+45,'pop');
-    await sleep(300);
-  }
+  const sp2=addBubble(2,"ALL WORKERS<br>IN PARALLEL!",380,220);
+  await sleep(300);sp2.classList.add('show');
+  setStatus(2,'266 RPS - ZERO FAILURES');
+  await sleep(3000);
+  document.getElementById('ann2').classList.add('show');
+  await sleep(3000);
+}
+
+// ========== SCENE 3: Restaurant Rush ==========
+async function play3(){
+  clearStage(3);addStars(3);
+  document.getElementById('gauge3').style.display='block';
   
-  await sleep(1000);
-  showStatus(2,'🎫 Orders flow through the ticket system...');
+  show(addSprite(3,'building',80,280,9));
+  for(let i=0;i<4;i++)show(addSprite(3,'chef',300+i*60,340,5),'cook');
   
-  // Orders fly through rapidly — all chefs cooking
-  if(!animating)return;
-  for(let i=0;i<4;i++){
-    const c=document.getElementById('chef2_'+i);
-    if(c)c.className='actor cook';
-  }
+  setStatus(3,'DOORS OPEN...');
+  setGauge('ord3',0,0);setGauge('cust3',0,0);
+  await sleep(1500);
   
-  // Smooth ramp from ~80 → 266
-  const rpsRamp=[80,120,160,200,230,248,258,266];
-  for(let round=0;round<rpsRamp.length;round++){
+  const waves=[
+    {vu:3,rps:221,label:'EARLY BIRDS...'},
+    {vu:10,rps:266,label:'GETTING BUSY...'},
+    {vu:30,rps:266,label:'TABLES FILLING!'},
+    {vu:50,rps:263,label:'FRIDAY RUSH!'},
+    {vu:100,rps:255,label:'LINE OUT THE DOOR!'},
+    {vu:200,rps:260,label:'PACKED HOUSE!'}
+  ];
+  
+  for(let w=0;w<waves.length;w++){
     if(!animating)return;
-    for(let i=0;i<4;i++){
-      flyOrder(2,['🍔','🌮','🍕','🥗'][i],chefPositions[i][0],chefPositions[i][1]-20);
+    setStatus(3,waves[w].label);
+    
+    const count=Math.min(w+2,5);
+    for(let i=0;i<count;i++){
+      const c=addSprite(3,'customer',550+i*45+(w%2)*20,300+Math.random()*60,4);show(c,'ppop');
+      await sleep(150);
     }
-    setGauge('ord2',rpsRamp[round]/280*100,rpsRamp[round]);
-    setGauge('chef2',100,4);
+    
+    const prevRps=w>0?waves[w-1].rps:0;
+    const prevVu=w>0?waves[w-1].vu:0;
+    for(let t=1;t<=5;t++){
+      const curRps=Math.round(prevRps+(waves[w].rps-prevRps)*t/5);
+      const curVu=Math.round(prevVu+(waves[w].vu-prevVu)*t/5);
+      setGauge('ord3',curRps/280*100,curRps);
+      setGauge('cust3',curVu/200*100,curVu);
+      if(t<=2)flyTicket(3,350+t*60,310);
+      await sleep(350);
+    }
     await sleep(1200);
   }
   
-  const sp2=addSpeech(2,"All workers cooking<br>in parallel! 🔥",350,120);
-  await sleep(400);sp2.classList.add('show');
-  
-  showStatus(2,'✅ 266 orders/sec — 0 failures');
-  await sleep(3000);
-  sp2.classList.remove('show');
-  document.getElementById('ann2').classList.add('show');
-  await sleep(4000);
-}
-
-// ============ SCENE 3: Restaurant Under Load ============
-async function play3(){
-  clearStage(3);
-  document.getElementById('gauge3').style.display='block';
-  
-  // Restaurant with chefs
-  addActor(3,'🏪',60,200,'');document.querySelector('#stage3 .actor').style.fontSize='5em';
-  for(let i=0;i<4;i++)addActor(3,'👨‍🍳',300+i*60,250,'cook');
-  
-  showStatus(3,'🕐 5:00 PM — Doors open...');
-  setGauge('ord3',0,0);setGauge('cust3',0,0);
-  await sleep(2000);
-  
-  // Waves of customers
-  const waves=[
-    {vu:3,rps:221,label:'Early birds...'},
-    {vu:10,rps:266,label:'Getting busy...'},
-    {vu:30,rps:266,label:'Tables filling up!'},
-    {vu:50,rps:263,label:'Friday night rush! 🔥'},
-    {vu:100,rps:255,label:'Line out the door!'},
-    {vu:200,rps:260,label:'PACKED HOUSE! 🎉'}
-  ];
-  
-  const ppl=['🧑','👩','🧔','👦','👩‍🦰','🧑‍🦱','👴','👩‍🦳','🧑‍🦲','👱'];
-  
-  // Smooth intermediate ticks between waves
-  for(let w=0;w<waves.length;w++){
-    if(!animating)return;
-    showStatus(3,waves[w].label);
-    
-    // Add customer cluster
-    const count=Math.min(w+2,6);
-    for(let i=0;i<count;i++){
-      const px=520+i*40+(w%2)*20;
-      const py=200+Math.random()*80;
-      const p=addActor(3,ppl[(w*3+i)%ppl.length],px,py,'slide-in-right');
-      p.style.fontSize='1.8em';
-    }
-    
-    // Smooth ramp between previous and current wave values
-    const prevRps=w>0?waves[w-1].rps:0;
-    const prevVu=w>0?waves[w-1].vu:0;
-    const ticks=5;
-    for(let t=1;t<=ticks;t++){
-      const curRps=Math.round(prevRps+(waves[w].rps-prevRps)*t/ticks);
-      const curVu=Math.round(prevVu+(waves[w].vu-prevVu)*t/ticks);
-      setGauge('ord3',curRps/280*100,curRps);
-      setGauge('cust3',curVu/200*100,curVu);
-      if(t<=3)flyOrder(3,['🍔','🌮','🍕'][t-1],350+(t-1)*60,230);
-      await sleep(400);
-    }
-    await sleep(1500);
-  }
-  
   if(!animating)return;
-  showStatus(3,'✅ 200 concurrent customers — ZERO failures, ~260 RPS');
-  
-  const sp=addSpeech(3,"Didn't even<br>break a sweat 😎",280,140);
-  await sleep(400);sp.classList.add('show');
-  
+  setStatus(3,'200 CUSTOMERS - ZERO FAILURES');
+  const sp=addBubble(3,"DIDN'T EVEN<br>BREAK A SWEAT",300,220);
+  await sleep(300);sp.classList.add('show');
   await sleep(3000);
   document.getElementById('ann3').classList.add('show');
-  await sleep(4000);
+  await sleep(3000);
 }
 
-// ============ SCENE 4: Franchise Split Queue ============
+// ========== SCENE 4: Split Queue ==========
 async function play4(){
-  clearStage(4);
+  clearStage(4);addStars(4);
   document.getElementById('gauge4').style.display='block';
   
-  // Two buildings
-  const bldg1=addActor(4,'🏢',100,200,'');bldg1.style.fontSize='5em';
-  const bldg2=addActor(4,'🏭',600,200,'');bldg2.style.fontSize='5em';
+  const bldg1=addSprite(4,'building',100,280,9);show(bldg1,'ppop');
+  const bldg2=addSprite(4,'factory',650,280,9);show(bldg2,'ppop');
+  await sleep(500);
   
-  const sp=addSpeech(4,"Front desk<br>HERE",80,130);
-  const sp2=addSpeech(4,"Kitchen<br>OVER THERE",580,130);
-  await sleep(400);sp.classList.add('show');sp2.classList.add('show');
-  await sleep(3000);sp.classList.remove('show');sp2.classList.remove('show');
+  const l1=addText(4,'FRONT DESK',100,265,'#58a6ff','6px');show(l1);
+  const l2=addText(4,'KITCHEN',665,265,'#ff6b35','6px');show(l2);
   
-  // Show the "hallway" / network cable
-  showStatus(4,'🔌 Connected by network cable...');
+  const sp=addBubble(4,"KITCHEN IS ACROSS<br>THE STREET!",350,160);
+  await sleep(400);sp.classList.add('show');
+  await sleep(3000);sp.classList.remove('show');
   
-  const cable=document.createElement('div');
-  cable.className='cable';cable.style.left='220px';cable.style.top='280px';cable.style.width='380px';
-  document.getElementById('stage4').appendChild(cable);
+  // Road between
+  const road=addText(4,'= = = = = = = = = = = =',260,370,'#555','8px');show(road);
+  setStatus(4,'CONNECTED BY NETWORK...');
   await sleep(2000);
   
-  // Runner carrying orders back and forth
-  const runner=addActor(4,'🏃',250,250,'');
+  if(!animating)return;
+  const runner=addSprite(4,'runner',300,340,7);show(runner);
   
-  showStatus(4,'Every order crosses the network...');
-  // Smooth ramp: RPS climbs to 128, latency climbs with it
-  const rpsSteps4=[30,55,80,95,108,118,125,128];
-  const latSteps4=[8,18,30,42,55,68,78,85];
-  const latLabels4=['low','low','medium','medium','HIGH','HIGH','🔴 CRITICAL','🔴 CRITICAL'];
+  setStatus(4,'EVERY ORDER CROSSES THE STREET...');
+  const rpsSteps=[30,55,80,95,108,118,125,128];
+  const latSteps=[8,18,30,42,55,68,78,85];
+  const latLabels=['LOW','LOW','MED','MED','HIGH','HIGH','CRIT!','CRIT!'];
   
-  for(let i=0;i<rpsSteps4.length;i++){
+  for(let i=0;i<rpsSteps.length;i++){
     if(!animating)return;
-    // Run to kitchen
-    runner.style.left='550px';runner.style.transition='left 1s linear';
-    flyOrder(4,'🍔',350,230);
-    setGauge('ord4',rpsSteps4[i]/280*100,rpsSteps4[i]);
-    setGauge('lat4',latSteps4[i],latLabels4[i]);
-    await sleep(1000);
-    // Run back
-    runner.style.left='250px';
-    flyOrder(4,'✅',400,240);
+    runner.style.left='580px';
+    flyTicket(4,400,330);
+    setGauge('ord4',rpsSteps[i]/280*100,rpsSteps[i]);
+    setGauge('lat4',latSteps[i],latLabels[i]);
     await sleep(800);
-    if(i===4) cable.className='cable broken';
+    runner.style.left='300px';
+    await sleep(600);
+    if(i===5)road.style.color='#f85149';
   }
   
   if(!animating)return;
-  showStatus(4,'❌ Network latency eats 52% of performance!');
-  runner.className='actor sweat';
+  runner.classList.add('shake');
+  setStatus(4,'!! NETWORK LATENCY KILLS PERFORMANCE !!');
   
-  // Comparison numbers appear
-  await sleep(2000);
-  const sp3=addSpeech(4,"128 RPS vs 266...<br>More $$$, less speed! 😤",300,120);
-  await sleep(400);sp3.classList.add('show');
-  
+  const sp2=addBubble(4,"128 VS 266 RPS<br>MORE $$$<br>LESS SPEED!",320,150);
+  await sleep(300);sp2.classList.add('show');
   await sleep(4000);
   document.getElementById('ann4').classList.add('show');
   await sleep(4000);
 }
 
-// ============ SCENE 5: Full Journey ============
+// ========== SCENE 5: Full Journey ==========
 async function play5(){
-  clearStage(5);
+  clearStage(5);addStars(5);
   document.getElementById('gauge5').style.display='block';
   
   const stages=[
-    {emoji:'🚚',label:'SQLite',rps:48,color:'#484f58',x:80},
-    {emoji:'🚚✨',label:'PG Tuned',rps:95,color:'#ff6b35',x:230},
-    {emoji:'🍽️',label:'Queue Default',rps:266,color:'#58a6ff',x:430},
-    {emoji:'🍽️⭐',label:'Queue Tuned',rps:280,color:'#3fb950',x:630}
+    {sprite:'truck',label:'SQLITE',rps:48,color:'#888',x:60,y:340,scale:8},
+    {sprite:'truck',label:'PG TUNED',rps:95,color:'#ff6b35',x:250,y:340,scale:8},
+    {sprite:'building',label:'QUEUE',rps:266,color:'#58a6ff',x:460,y:300,scale:8},
+    {sprite:'building',label:'Q TUNED',rps:280,color:'#3fb950',x:670,y:300,scale:8}
   ];
-  
-  const strikethrough={emoji:'🏢❌',label:'Split Queue',rps:128,color:'#f85149',x:430};
   
   for(let i=0;i<stages.length;i++){
     if(!animating)return;
     const s=stages[i];
-    const a=addActor(5,s.emoji,s.x,180,'pop');
-    a.style.fontSize='3.5em';
+    const sp=addSprite(5,s.sprite,s.x,s.y,s.scale);show(sp,'ppop');
+    const lbl=addText(5,s.label,s.x,s.y+s.scale*(s.sprite==='truck'?65:85),s.color,'7px');show(lbl);
+    const rpsLbl=addText(5,s.rps+' RPS',s.x,s.y+s.scale*(s.sprite==='truck'?65:85)+14,s.color,'9px');show(rpsLbl);
     
-    // Label below
-    const lbl=document.createElement('div');
-    lbl.className='actor';lbl.style.left=s.x+'px';lbl.style.top='260px';
-    lbl.style.fontSize='.9em';lbl.style.color=s.color;lbl.style.fontWeight='700';
-    lbl.textContent=s.label+'\n'+s.rps+' RPS';lbl.style.whiteSpace='pre';lbl.style.textAlign='center';
-    document.getElementById('stage5').appendChild(lbl);
-    
-    // Arrow if not first
     if(i>0){
-      const arrow=document.createElement('div');
-      arrow.className='actor';arrow.style.left=(s.x-80)+'px';arrow.style.top='210px';
-      arrow.style.fontSize='2.5em';arrow.style.color='#ff6b35';arrow.textContent='→';
-      document.getElementById('stage5').appendChild(arrow);
+      const arrow=addText(5,'>>',s.x-60,s.y+40,'#ff6b35','14px');show(arrow);
     }
     
-    // Smooth ramp to this tier's RPS
     const prevRps=i>0?stages[i-1].rps:0;
-    const ticks=20;
-    for(let t=1;t<=ticks;t++){
+    for(let t=1;t<=15;t++){
       if(!animating)return;
-      const cur=Math.round(prevRps+(s.rps-prevRps)*t/ticks);
+      const cur=Math.round(prevRps+(s.rps-prevRps)*t/15);
       setGauge('rps5',cur/300*100,cur+' RPS');
       await sleep(60);
     }
-    showStatus(5,s.label+': '+s.rps+' RPS');
+    setStatus(5,s.label+': '+s.rps+' RPS');
     await sleep(2500);
   }
   
-  // Flash the split queue as a crossed-out option
   if(!animating)return;
-  await sleep(2000);
-  showStatus(5,'⚠️ What about split queue?');
-  const strike=addActor(5,strikethrough.emoji,strikethrough.x,340,'pop');
-  strike.style.fontSize='2.5em';strike.style.opacity='.4';
+  // Crossed out split queue
+  const skull=addSprite(5,'skull',460,410,6);show(skull,'ppop');
+  const strikeLbl=addText(5,'SPLIT: 128',470,460,'#f85149','7px');show(strikeLbl);
+  strikeLbl.style.textDecoration='line-through';
   
-  const strikeLbl=document.createElement('div');
-  strikeLbl.className='actor';strikeLbl.style.left=strikethrough.x+'px';strikeLbl.style.top='380px';
-  strikeLbl.style.fontSize='.8em';strikeLbl.style.color='#f85149';strikeLbl.style.textDecoration='line-through';
-  strikeLbl.textContent='Split: 128 RPS';
-  document.getElementById('stage5').appendChild(strikeLbl);
-  
+  setStatus(5,'SKIP THE SPLIT. STAY IN THE RESTAURANT.');
   await sleep(3000);
-  showStatus(5,'✅ Skip the franchise — stay in the restaurant');
-  
-  setGauge('rps5',280/300*100,'280 RPS peak');
-  await sleep(2000);
   document.getElementById('ann5').classList.add('show');
-  await sleep(5000);
+  await sleep(4000);
 }
 
-// ============ CONTROLS ============
+// ========== CONTROLS ==========
 const players=[play0,play1,play2,play3,play4,play5];
 
 async function playScene(){
-  animating=true;
-  await players[currentScene]();
-  animating=false;
+  animating=true;await players[currentScene]();animating=false;
 }
 function resetScene(){
-  animating=false;autoPlaying=false;
-  clearStage(currentScene);
+  animating=false;autoPlaying=false;clearStage(currentScene);
 }
 async function autoPlayAll(){
   if(autoPlaying)return;autoPlaying=true;

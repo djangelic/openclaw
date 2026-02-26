@@ -2,263 +2,216 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PostgreSQL Default — The Messy Kitchen</title>
+<title>PG Default — The Messy Kitchen (Pixel Edition)</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0d1117;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',system-ui,sans-serif;flex-direction:column;gap:20px}
-.stage{position:relative;width:960px;height:540px;background:#161b22;border:1px solid #30363d;border-radius:20px;overflow:hidden}
-.ground{position:absolute;bottom:0;width:100%;height:90px;background:linear-gradient(0deg,#1a1e24,#21262d)}
-.counter-top{position:absolute;bottom:90px;left:60px;width:840px;height:6px;background:#30363d;border-radius:3px}
-
-.actor{position:absolute;font-size:3em;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));transition:all .6s ease;opacity:0}
-.actor.on{opacity:1}
-
-.speech{position:absolute;background:#21262d;border:1px solid #30363d;border-radius:12px;padding:10px 16px;font-size:.9em;color:#e6edf3;opacity:0;transition:opacity .5s;max-width:240px;text-align:center;z-index:20}
-.speech::after{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #21262d}
-.speech.show{opacity:1}
-
-.title-bar{position:absolute;top:16px;left:50%;transform:translateX(-50%);text-align:center;z-index:10}
-.title-bar h1{font-size:1.5em;color:#ff6b35;font-weight:800}
-.title-bar p{font-size:.85em;color:#8b949e;margin-top:2px}
-
-.label{position:absolute;font-size:.7em;color:#8b949e;text-align:center;opacity:0;transition:opacity .5s}
-.label.on{opacity:1}
-
-/* Animations */
-@keyframes cook{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-5deg) translateY(-3px)}75%{transform:rotate(5deg) translateY(-3px)}}
-@keyframes search{0%,100%{transform:translateX(0)}30%{transform:translateX(-15px)}70%{transform:translateX(15px)}}
-@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
-@keyframes sparkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
-@keyframes slideDown{from{transform:translateY(-30px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-.cooking{animation:cook .6s ease infinite}
-.searching{animation:search 1s ease infinite}
-.popping{animation:pop .5s cubic-bezier(.34,1.56,.64,1) forwards}
-.floating{animation:float 2s ease-in-out infinite}
-.shaking{animation:shake .4s ease infinite}
-.sparkling{animation:sparkle 1.5s ease infinite}
-
-/* Status bar */
-.status{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-size:.9em;color:#8b949e;z-index:10;white-space:nowrap;opacity:0;transition:opacity .5s}
+body{background:#0f0f23;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Press Start 2P',monospace;font-size:10px;flex-direction:column;gap:16px;image-rendering:pixelated}
+.stage{position:relative;width:960px;height:540px;background:#1a1a2e;border:4px solid #333;overflow:hidden}
+.stage::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;z-index:50}
+.sky{position:absolute;top:0;width:100%;height:460px;background:linear-gradient(180deg,#0f0f23,#1a1a3e,#2a2040)}
+.ground{position:absolute;bottom:0;width:100%;height:80px;background:#2d5016;border-top:4px solid #4a8c28}
+.ground::before{content:'';position:absolute;top:-4px;width:100%;height:4px;background:repeating-linear-gradient(90deg,#4a8c28 0,#4a8c28 16px,#3d7020 16px,#3d7020 32px)}
+.title-bar{position:absolute;top:12px;left:50%;transform:translateX(-50%);text-align:center;z-index:10;text-shadow:2px 2px 0 #000}
+.title-bar h1{font-size:11px;color:#ff6b35;letter-spacing:1px}
+.title-bar p{font-size:7px;color:#888;margin-top:6px}
+.sprite{position:absolute;image-rendering:pixelated;transition:all .7s ease;opacity:0}
+.sprite.on{opacity:1}
+.pbubble{position:absolute;background:#1a1a2e;border:3px solid #ff6b35;padding:8px 12px;font-size:7px;color:#fff;opacity:0;transition:opacity .4s;max-width:240px;text-align:center;z-index:20;line-height:1.6;font-family:'Press Start 2P',monospace}
+.pbubble.show{opacity:1}
+.pbubble::after{content:'V';position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);color:#ff6b35;font-size:8px}
+.status{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:7px;color:#888;z-index:10;white-space:nowrap;opacity:0;transition:opacity .4s;text-shadow:1px 1px 0 #000;font-family:'Press Start 2P',monospace}
 .status.show{opacity:1}
-
-/* Controls */
+.star{position:absolute;width:4px;height:4px;background:#fff;opacity:.5}
+@keyframes cook{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes search{0%,100%{transform:translateX(0)}30%{transform:translateX(-12px)}70%{transform:translateX(12px)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes ppop{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.cook{animation:cook .5s ease infinite}
+.shake{animation:shake .3s ease infinite}
+.search{animation:search 1s ease infinite}
+.ppop{animation:ppop .4s ease forwards}
 .controls{display:flex;gap:10px}
-button{background:#ff6b35;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:1em;cursor:pointer;font-weight:600}
-button:hover{background:#e55a25}
-button.sec{background:#21262d;color:#8b949e}
-button.sec:hover{background:#30363d}
+button{font-family:'Press Start 2P',monospace;background:#ff6b35;color:#fff;border:3px solid #cc5020;padding:8px 16px;font-size:9px;cursor:pointer}
+button:hover{background:#ff8855}
+button.sec{background:#333;color:#999;border-color:#555}
 </style>
 </head>
 <body>
 
 <div class="stage" id="stage">
-  <div class="title-bar">
-    <h1>🚚 Food Truck — PostgreSQL Default</h1>
-    <p>Bigger pantry than SQLite, but nobody organized the shelves</p>
-  </div>
-  <div class="ground"></div>
-  <div class="counter-top"></div>
+  <div class="sky"></div><div class="ground"></div>
+  <div class="title-bar"><h1>FOOD TRUCK - PG DEFAULT</h1><p>BIG PANTRY. NOBODY ORGANIZED IT.</p></div>
   <div class="status" id="status"></div>
 </div>
 
 <div class="controls">
-  <button onclick="play()">▶ Play</button>
-  <button class="sec" onclick="reset()">↺ Reset</button>
+  <button onclick="play()">&#9654; PLAY</button>
+  <button class="sec" onclick="reset()">&#8634; RESET</button>
 </div>
 
 <script>
-const stage=document.getElementById('stage');
-const statusEl=document.getElementById('status');
+const stage=document.getElementById('stage'),statusEl=document.getElementById('status');
 let animating=false;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-function el(emoji,x,y,size='3em',id=''){
-  const d=document.createElement('div');d.className='actor';d.textContent=emoji;
-  d.style.left=x+'px';d.style.top=y+'px';d.style.fontSize=size;
-  if(id)d.id=id;stage.appendChild(d);return d;
+const PALETTE={0:'transparent',1:'#ffffff',2:'#ff6b35',3:'#4488ff',4:'#ffcc88',5:'#ff4444',6:'#44aa44',7:'#666688',8:'#ffff44',9:'#885533',10:'#aaaacc',11:'#ffff88'};
+
+const SPRITES={
+  truck:[[0,0,0,1,1,1,1,0],[0,0,1,2,2,2,2,1],[0,1,2,2,2,2,2,2],[1,1,1,1,1,1,1,1],[1,3,3,1,1,1,3,3],[0,3,3,0,0,0,3,3]],
+  chef:[[0,0,1,1,1,0,0,0],[0,1,1,1,1,1,0,0],[0,0,4,5,4,0,0,0],[0,0,4,4,4,0,0,0],[0,1,1,1,1,1,0,0],[0,0,1,1,1,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
+  customer:[[0,0,3,3,3,0,0,0],[0,3,3,3,3,3,0,0],[0,0,4,5,4,0,0,0],[0,0,4,4,4,0,0,0],[0,6,6,6,6,6,0,0],[0,0,6,6,6,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
+  shelf:[[7,7,7,7,7,7],[7,8,7,8,7,8],[7,7,7,7,7,7],[7,8,7,8,7,8],[7,7,7,7,7,7],[9,9,9,9,9,9]],
+  pan:[[0,0,0,0,0,10,10,10],[0,7,7,7,7,0,0,0],[7,7,7,7,7,7,0,0],[7,7,7,7,7,7,0,0],[0,7,7,7,7,0,0,0]],
+  star:[[0,1,0],[1,1,1],[0,1,0]]
+};
+
+function drawSprite(data,scale=6){
+  const h=data.length,w=data[0].length;
+  const c=document.createElement('canvas');c.width=w*scale;c.height=h*scale;c.style.imageRendering='pixelated';
+  const ctx=c.getContext('2d');
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    const clr=PALETTE[data[y][x]];
+    if(clr&&clr!=='transparent'){ctx.fillStyle=clr;ctx.fillRect(x*scale,y*scale,scale,scale)}
+  }
+  return c;
 }
-function lbl(text,x,y,id=''){
-  const d=document.createElement('div');d.className='label';d.textContent=text;
-  d.style.left=x+'px';d.style.top=y+'px';if(id)d.id=id;stage.appendChild(d);return d;
+
+function addSprite(name,x,y,scale=6){
+  const c=drawSprite(SPRITES[name],scale);c.className='sprite';c.style.left=x+'px';c.style.top=y+'px';
+  stage.appendChild(c);return c;
 }
-function speech(text,x,y){
-  const d=document.createElement('div');d.className='speech';d.innerHTML=text;
-  d.style.left=x+'px';d.style.top=y+'px';stage.appendChild(d);return d;
+function addText(text,x,y,color='#fff',size='8px'){
+  const d=document.createElement('div');
+  d.style.cssText=`position:absolute;left:${x}px;top:${y}px;font-size:${size};color:${color};z-index:10;text-shadow:1px 1px 0 #000;font-family:'Press Start 2P',monospace;white-space:nowrap;opacity:0;transition:opacity .4s`;
+  d.textContent=text;stage.appendChild(d);return d;
 }
-function show(e,cls=''){e.classList.add('on');if(cls)e.classList.add(cls)}
-function hide(e){e.classList.remove('on')}
+function addBubble(html,x,y){
+  const d=document.createElement('div');d.className='pbubble';d.innerHTML=html;d.style.left=x+'px';d.style.top=y+'px';stage.appendChild(d);return d;
+}
+function show(e,cls=''){e.style.opacity='1';e.classList.add('on');if(cls)e.classList.add(cls)}
+function hide(e){e.style.opacity='0'}
 function setStatus(t){statusEl.textContent=t;statusEl.classList.add('show')}
+
+function addStars(){for(let i=0;i<15;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*920+'px';s.style.top=Math.random()*300+'px';if(Math.random()>.7)s.style.animation='blink '+(2+Math.random()*3)+'s step-end infinite';stage.appendChild(s)}}
 
 function reset(){
   animating=false;
-  stage.querySelectorAll('.actor,.speech,.label').forEach(e=>e.remove());
+  stage.querySelectorAll('.sprite,.pbubble,.star,div[style*="position:absolute"]').forEach(e=>{
+    if(!e.classList.contains('sky')&&!e.classList.contains('ground')&&!e.classList.contains('title-bar')&&!e.classList.contains('status'))e.remove();
+  });
   statusEl.classList.remove('show');statusEl.textContent='';
 }
 
 async function play(){
-  reset();
-  await sleep(200);
-  animating=true;
+  reset();await sleep(200);animating=true;addStars();
 
-  // === ACT 1: Set the scene — the truck with a messy kitchen ===
-  
-  // Truck body
-  const truck=el('🚚',30,300,'5em');
-  show(truck,'popping');
-  await sleep(800);
+  // Build scene
+  const truck=addSprite('truck',50,340,10);show(truck,'ppop');await sleep(500);
+  const chef=addSprite('chef',200,320,7);show(chef,'ppop');await sleep(400);
+  show(addSprite('pan',290,360,6),'ppop');await sleep(300);
 
-  // Chef appears
-  const chef=el('👨‍🍳',180,290,'3.5em','chef');
-  show(chef,'popping');
-  await sleep(600);
-
-  // Kitchen equipment — scattered messily
-  const pan=el('🍳',300,310,'2.2em');show(pan,'popping');await sleep(200);
-  const knife=el('🔪',370,320,'2em');show(knife,'popping');await sleep(200);
-  const pot=el('🥘',440,300,'2.2em');show(pot,'popping');await sleep(200);
-  const board=el('�cutting','0','0');// skip bad emoji
+  // Shelves (big pantry)
+  const shelves=[];
+  for(let i=0;i<3;i++){
+    const s=addSprite('shelf',520+i*80,290,8);show(s,'ppop');shelves.push(s);await sleep(300);
+  }
   
-  // The PANTRY — big but messy
-  const shelf1=el('🗄️',550,240,'3em');show(shelf1,'popping');await sleep(300);
-  const shelf2=el('🗄️',620,240,'3em');show(shelf2,'popping');await sleep(300);
-  const shelf3=el('🗄️',690,240,'3em');show(shelf3,'popping');await sleep(300);
+  const pLabel=addText('POSTGRESQL PANTRY','520',270,'#ffff44','6px');show(pLabel);
+  const pLabel2=addText('BIG BUT MESSY!','535',420,'#f85149','6px');show(pLabel2);
   
-  const pantryLbl=lbl('📦 PostgreSQL Pantry — BIG but messy',560,215);pantryLbl.classList.add('on');
-  
-  // Ingredients scattered randomly on shelves
-  const ingredients=[
-    el('🧅',555,280,'1.4em'),el('🥕',640,270,'1.4em'),el('🧄',710,285,'1.4em'),
-    el('🫑',575,290,'1.4em'),el('🥫',660,280,'1.4em'),el('🧂',695,270,'1.4em'),
-    el('🫒',560,270,'1.2em'),el('🥬',630,290,'1.2em'),el('🍅',700,275,'1.2em')
-  ];
-  for(const ing of ingredients){show(ing);await sleep(100);}
+  // Scattered ingredient labels
+  const ings=['SALT','GARLIC','ONION','OIL','PEPPER','HERBS'];
+  const ingEls=[];
+  for(let i=0;i<ings.length;i++){
+    const t=addText(ings[i],530+((i%3)*75),340+(Math.floor(i/3)*20),'#aaa','5px');
+    show(t);ingEls.push(t);await sleep(100);
+  }
   
   await sleep(1000);
   if(!animating)return;
   
-  const sp1=speech("Way more space than<br>SQLite's tiny shelf!<br>But where's the garlic...?",500,140);
+  const sp1=addBubble("WAY MORE SPACE THAN<br>SQLITE'S TINY SHELF!<br>BUT WHERE'S THE<br>GARLIC...?",450,150);
   await sleep(300);sp1.classList.add('show');
-  setStatus('PostgreSQL gives you a real database — but default config wastes its potential');
-  await sleep(4000);
-  sp1.classList.remove('show');
+  setStatus('POSTGRESQL: REAL DATABASE. DEFAULT CONFIG WASTES POTENTIAL.');
+  await sleep(4000);sp1.classList.remove('show');
 
-  // === ACT 2: Order comes in — chef starts cooking ===
+  // Order comes in
   if(!animating)return;
-  
-  // Customer arrives
-  const cust1=el('🧑',820,300,'2.5em');show(cust1,'popping');
+  const cust=addSprite('customer',830,340,7);show(cust,'ppop');
   await sleep(500);
-  const order1=el('🎫',780,260,'1.8em');show(order1,'floating');
-  setStatus('🎫 Order in: Pasta with garlic sauce');
+  const ticket=addText('[ORDER: PASTA]',740,300,'#ffff88','7px');show(ticket);
+  setStatus('ORDER IN: PASTA WITH GARLIC SAUCE');
   await sleep(2000);
   
-  // Chef goes to cook — but has to SEARCH for ingredients
+  // Chef searches
   if(!animating)return;
-  chef.classList.remove('popping');
-  chef.classList.add('searching');
-  
-  const sp2=speech("Okay, pasta...<br>where did I put<br>the garlic? 🤔",180,200);
+  chef.classList.add('search');
+  const sp2=addBubble("WHERE DID I<br>PUT THE GARLIC??",180,220);
   await sleep(300);sp2.classList.add('show');
-  setStatus('⏳ Chef searching messy shelves... (untuned shared_buffers = cache misses)');
-  await sleep(3000);
-  sp2.classList.remove('show');
+  setStatus('CHEF SEARCHING MESSY SHELVES... (UNTUNED SHARED_BUFFERS)');
+  await sleep(2500);sp2.classList.remove('show');
   
-  // Chef walks to shelves — wrong one first
+  // Walk to shelves
   if(!animating)return;
-  chef.style.left='550px';chef.style.top='290px';
-  setStatus('🔍 Checking shelf 1... nope, that\'s onions');
-  await sleep(2000);
+  chef.style.left='520px';chef.style.top='320px';
+  setStatus('CHECKING SHELF 1... NOPE, ONIONS');
+  await sleep(1800);
   
-  chef.style.left='620px';
-  setStatus('🔍 Checking shelf 2... carrots, peppers...');
-  await sleep(2000);
+  chef.style.left='600px';
+  setStatus('SHELF 2... PEPPER, OIL...');
+  await sleep(1800);
   
-  chef.style.left='690px';
-  setStatus('🔍 Shelf 3... found it! 🧄');
-  await sleep(1500);
+  chef.style.left='680px';
+  setStatus('SHELF 3... FOUND IT!');
+  await sleep(1200);
   
-  // Found it! Grabs garlic
   if(!animating)return;
-  const sparkle=el('✨',700,250,'2em');show(sparkle,'sparkling');
-  await sleep(800);hide(sparkle);
+  const sparkle=addSprite('star',690,310,8);show(sparkle);
+  await sleep(600);hide(sparkle);
   
-  // Chef goes back to cook
-  chef.style.left='300px';chef.style.top='290px';
-  chef.classList.remove('searching');
-  chef.classList.add('cooking');
-  setStatus('👨‍🍳 Finally cooking! But all that searching cost time...');
-  await sleep(3000);
-  
-  // Serve
-  if(!animating)return;
-  const plate=el('🍝',750,290,'2.5em');show(plate,'popping');
-  hide(order1);
-  setStatus('✅ Order served! But it took a while...');
+  // Cook
+  chef.style.left='290px';chef.style.top='320px';
+  chef.classList.remove('search');chef.classList.add('cook');
+  setStatus('FINALLY COOKING! ALL THAT SEARCHING COST TIME...');
   await sleep(2500);
-
-  // === ACT 3: Rush hits — the disorganization compounds ===
+  
   if(!animating)return;
+  hide(ticket);
+  const plate=addText('[SERVED]',750,340,'#3fb950','7px');show(plate);
+  setStatus('ORDER SERVED! BUT IT TOOK A WHILE...');
+  await sleep(2500);
   
-  const sp3=speech("Now imagine 50<br>customers at once...",180,200);
-  await sleep(300);sp3.classList.add('show');
-  await sleep(3000);
-  sp3.classList.remove('show');
+  // Rush
+  if(!animating)return;
+  const sp3=addBubble("NOW IMAGINE 50<br>CUSTOMERS AT ONCE...",180,220);
+  await sleep(300);sp3.classList.add('show');await sleep(3000);sp3.classList.remove('show');
   
-  // Crowd arrives
-  const crowd=['👩','🧔','👦','👩‍🦰','🧑‍🦱','👴'];
-  for(let i=0;i<crowd.length;i++){
-    if(!animating)return;
-    const c=el(crowd[i],760+((i%3)*35),280+(Math.floor(i/3)*35),'2em');
-    show(c,'popping');
-    await sleep(300);
-  }
-  
-  // Orders pile up
-  const tickets=[];
-  for(let i=0;i<4;i++){
-    const t=el('🎫',250+i*30,220-i*12,'1.5em');show(t,'popping');tickets.push(t);
+  for(let i=0;i<5;i++){
+    const c=addSprite('customer',760+((i%3)*30),320+(Math.floor(i/3)*30),5);show(c,'ppop');
     await sleep(200);
   }
   
-  setStatus('📈 Orders piling up — chef keeps searching those messy shelves');
-  chef.classList.remove('cooking');
-  chef.classList.add('searching');
+  setStatus('ORDERS PILING UP - CHEF SEARCHING THOSE MESSY SHELVES');
+  chef.classList.remove('cook');chef.classList.add('search');
   await sleep(3000);
   
-  // Chef bouncing between shelves frantically  
+  // Verdict
   if(!animating)return;
-  for(let trip=0;trip<3;trip++){
-    chef.style.left=(550+Math.random()*150)+'px';
-    await sleep(800);
-    chef.style.left='300px';
-    const t=tickets.pop();if(t)hide(t);
-    const served=el(['🍝','🍔','🥗','🌮'][trip],730,300+trip*15,'1.5em');
-    show(served,'popping');
-    await sleep(800);
-  }
+  chef.classList.remove('search');chef.classList.add('shake');
   
-  // === ACT 4: The verdict ===
-  if(!animating)return;
-  chef.classList.remove('searching');
-  chef.classList.add('shaking');
-  
-  const sp4=speech("I've got the space...<br>but everything's a mess!<br>71 orders is my limit 😤",350,140);
+  const sp4=addBubble("I'VE GOT THE SPACE<br>BUT EVERYTHING IS<br>A MESS! 71 RPS IS<br>MY LIMIT!",340,140);
   await sleep(300);sp4.classList.add('show');
+  setStatus('PG DEFAULT: 71 RPS - BETTER THAN SQLITE (48) BUT UNTUNED CONFIG HOLDS IT BACK');
+  await sleep(5000);sp4.classList.remove('show');
   
-  setStatus('🚚 PostgreSQL Default: 71 RPS — better than SQLite (48), but the untuned config holds it back');
-  await sleep(5000);
-  sp4.classList.remove('show');
-  
-  // Comparison callout
   if(!animating)return;
-  const sp5=speech("SQLite had a tiny shelf: 48/sec<br>I have a big pantry: 71/sec<br><span style='color:#3fb950'>But imagine if someone<br>ORGANIZED these shelves... 🔧</span>",350,120);
+  const sp5=addBubble("WHAT IF SOMEONE<br>ORGANIZED THESE<br>SHELVES...?",400,160);
+  sp5.style.borderColor='#3fb950';
   await sleep(300);sp5.classList.add('show');
-  setStatus('💡 PGTune can organize this kitchen for free — that\'s the next scene...');
-  
-  await sleep(6000);
+  setStatus('>> PGTUNE CAN ORGANIZE THIS KITCHEN FOR FREE...');
+  await sleep(5000);
   animating=false;
 }
 </script>
