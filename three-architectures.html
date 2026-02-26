@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Three Architectures</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',system-ui,sans-serif}
+.card{display:flex;gap:40px;padding:60px 80px;background:#161b22;border:1px solid #30363d;border-radius:24px}
+.arch{text-align:center;width:260px}
+.emoji{font-size:5em;margin-bottom:12px;display:block}
+.title{font-size:1.4em;font-weight:800;margin-bottom:4px}
+.subtitle{font-size:.85em;color:#8b949e;margin-bottom:16px}
+.rps{font-size:2.2em;font-weight:900;margin-bottom:2px}
+.rps-label{font-size:.75em;color:#8b949e}
+.divider{width:2px;background:#21262d;align-self:stretch;border-radius:1px}
+.t1 .title{color:#ff6b35}
+.t1 .rps{color:#ff6b35}
+.t2 .title{color:#58a6ff}
+.t2 .rps{color:#58a6ff}
+.t3 .title{color:#f85149}
+.t3 .rps{color:#f85149}
+.tag{display:inline-block;font-size:.7em;padding:3px 10px;border-radius:20px;margin-top:8px;font-weight:600}
+.t1 .tag{background:#ff6b3522;color:#ff6b35;border:1px solid #ff6b3544}
+.t2 .tag{background:#58a6ff22;color:#58a6ff;border:1px solid #58a6ff44}
+.t3 .tag{background:#f8514922;color:#f85149;border:1px solid #f8514944}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="arch t1">
+    <span class="emoji">🚚</span>
+    <div class="title">Food Truck</div>
+    <div class="subtitle">Single Instance + SQLite/PG</div>
+    <div class="rps">48–95</div>
+    <div class="rps-label">requests / sec</div>
+    <div class="tag">Start Here</div>
+  </div>
+  <div class="divider"></div>
+  <div class="arch t2">
+    <span class="emoji">🍽️</span>
+    <div class="title">Restaurant</div>
+    <div class="subtitle">Queue Mode + Redis + Workers</div>
+    <div class="rps">266–280</div>
+    <div class="rps-label">requests / sec</div>
+    <div class="tag">⭐ Recommended</div>
+  </div>
+  <div class="divider"></div>
+  <div class="arch t3">
+    <span class="emoji">🏢</span>
+    <div class="title">Franchise</div>
+    <div class="subtitle">Split Queue (Separate Machines)</div>
+    <div class="rps">128</div>
+    <div class="rps-label">requests / sec</div>
+    <div class="tag">⚠️ Caution</div>
+  </div>
+</div>
+</body>
+</html>
