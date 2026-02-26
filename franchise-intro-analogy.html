@@ -2,68 +2,55 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Franchise Mode — The Split Queue Problem</title>
+<title>Franchise Mode — Multi-Main Enterprise</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0d1117;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',system-ui,sans-serif;flex-direction:column;gap:20px}
 .stage{position:relative;width:960px;height:540px;background:#161b22;border:1px solid #30363d;border-radius:20px;overflow:hidden}
-.ground{position:absolute;bottom:0;width:100%;height:80px;background:linear-gradient(0deg,#1a1e24,#21262d)}
+.ground{position:absolute;bottom:0;width:100%;height:70px;background:linear-gradient(0deg,#1a1e24,#21262d)}
 
-.title-bar{position:absolute;top:16px;left:50%;transform:translateX(-50%);text-align:center;z-index:10}
-.title-bar h1{font-size:1.5em;color:#f85149;font-weight:800}
-.title-bar p{font-size:.85em;color:#8b949e;margin-top:2px}
+.title-bar{position:absolute;top:14px;left:50%;transform:translateX(-50%);text-align:center;z-index:10}
+.title-bar h1{font-size:1.4em;color:#a371f7;font-weight:800}
+.title-bar p{font-size:.82em;color:#8b949e;margin-top:2px}
 
-.actor{position:absolute;font-size:3em;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));transition:all .8s ease;opacity:0}
+.actor{position:absolute;font-size:3em;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));transition:all .7s ease;opacity:0}
 .actor.on{opacity:1}
-
-.speech{position:absolute;background:#21262d;border:1px solid #30363d;border-radius:12px;padding:10px 16px;font-size:.9em;color:#e6edf3;opacity:0;transition:opacity .5s;max-width:260px;text-align:center;z-index:20}
+.speech{position:absolute;background:#21262d;border:1px solid #30363d;border-radius:12px;padding:10px 16px;font-size:.85em;color:#e6edf3;opacity:0;transition:opacity .5s;max-width:280px;text-align:center;z-index:20}
 .speech::after{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #21262d}
 .speech.show{opacity:1}
-
-.label{position:absolute;font-size:.75em;color:#8b949e;text-align:center;opacity:0;transition:opacity .5s}
+.label{position:absolute;font-size:.7em;color:#8b949e;text-align:center;opacity:0;transition:opacity .5s;white-space:pre-line}
 .label.on{opacity:1}
-
-.status{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-size:.9em;color:#8b949e;z-index:10;white-space:nowrap;opacity:0;transition:opacity .5s}
+.status{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:.85em;color:#8b949e;z-index:10;white-space:nowrap;opacity:0;transition:opacity .5s}
 .status.show{opacity:1}
 
-/* Road / street between buildings */
-.road{position:absolute;background:repeating-linear-gradient(90deg,#30363d 0,#30363d 20px,transparent 20px,transparent 40px);height:6px;opacity:0;transition:opacity .5s}
-.road.on{opacity:.7}
+/* Shared infra bar */
+.infra-bar{position:absolute;bottom:75px;left:50%;transform:translateX(-50%);display:flex;gap:16px;align-items:center;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:8px 20px;opacity:0;transition:opacity .5s;z-index:5}
+.infra-bar.on{opacity:1}
+.infra-bar span{font-size:.8em;color:#8b949e}
+.infra-bar .icon{font-size:1.3em}
+
+/* Connection lines */
+.conn{position:absolute;height:3px;background:linear-gradient(90deg,#a371f744,#a371f7,#a371f744);border-radius:2px;opacity:0;transition:opacity .5s}
+.conn.on{opacity:.5}
 
 /* Animations */
-@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
-@keyframes run-right{0%{transform:translateX(0)}100%{transform:translateX(280px)}}
-@keyframes run-left{0%{transform:translateX(0)}100%{transform:translateX(-280px)}}
-@keyframes sweat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-4px) rotate(2deg)}}
-@keyframes cook{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-4deg) translateY(-2px)}75%{transform:rotate(4deg) translateY(-2px)}}
-@keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(248,81,73,0)}50%{box-shadow:0 0 20px 8px rgba(248,81,73,.3)}}
-@keyframes flicker{0%,100%{opacity:.7}50%{opacity:.15}}
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes cook{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 4px rgba(163,113,247,.3))}50%{filter:drop-shadow(0 0 12px rgba(163,113,247,.6))}}
+@keyframes fadeDown{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes crossFade{0%{opacity:1}40%{opacity:1}50%{opacity:.2}60%{opacity:1}100%{opacity:1}}
 
 .popping{animation:pop .5s cubic-bezier(.34,1.56,.64,1) forwards}
 .floating{animation:float 2s ease-in-out infinite}
-.shaking{animation:shake .4s ease infinite}
-.sweating{animation:sweat 1.5s ease infinite}
 .cooking{animation:cook .6s ease infinite}
-
-/* Network cable */
-.cable{position:absolute;height:4px;border-radius:2px;opacity:0;transition:opacity .5s}
-.cable.on{opacity:.8}
-.cable.healthy{background:repeating-linear-gradient(90deg,#3fb950 0,#3fb950 10px,transparent 10px,transparent 20px)}
-.cable.stressed{background:repeating-linear-gradient(90deg,#ff6b35 0,#ff6b35 10px,transparent 10px,transparent 20px)}
-.cable.broken{background:repeating-linear-gradient(90deg,#f85149 0,#f85149 10px,transparent 10px,transparent 20px);animation:flicker 1s infinite}
-
-/* Packet dots traveling the cable */
-.packet{position:absolute;width:10px;height:10px;border-radius:50%;opacity:0;z-index:5}
-.packet.go-right{animation:travel-right 1.5s linear forwards}
-.packet.go-left{animation:travel-left 1.5s linear forwards}
-@keyframes travel-right{0%{opacity:1;left:310px}100%{opacity:0;left:590px}}
-@keyframes travel-left{0%{opacity:1;left:590px}100%{opacity:0;left:310px}}
+.pulsing{animation:pulse 1.5s ease infinite}
+.glowing{animation:glow 2s ease-in-out infinite}
 
 .controls{display:flex;gap:10px}
-button{background:#ff6b35;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:1em;cursor:pointer;font-weight:600}
-button:hover{background:#e55a25}
+button{background:#a371f7;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:1em;cursor:pointer;font-weight:600}
+button:hover{background:#8957e5}
 button.sec{background:#21262d;color:#8b949e}
 button.sec:hover{background:#30363d}
 </style>
@@ -72,15 +59,15 @@ button.sec:hover{background:#30363d}
 
 <div class="stage" id="stage">
   <div class="title-bar">
-    <h1>🏢 The Franchise — Split Queue Mode</h1>
-    <p>"What if we put the kitchen... across the street?"</p>
+    <h1>🏢 The Franchise — Multi-Main Mode</h1>
+    <p>Multiple locations, multiple kitchens, multiple front entrances — one brand</p>
   </div>
   <div class="ground"></div>
   <div class="status" id="status"></div>
 </div>
 
 <div class="controls">
-  <button onclick="play()">▶ Play</button>
+  <button onclick="play()">▶ Play (~45s)</button>
   <button class="sec" onclick="reset()">↺ Reset</button>
 </div>
 
@@ -89,189 +76,200 @@ const stage=document.getElementById('stage'),statusEl=document.getElementById('s
 let animating=false;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-function mk(tag,cls,props={}){const d=document.createElement('div');d.className=cls;Object.assign(d.style,props);return d}
-function actor(emoji,x,y,size='3em',id=''){const d=mk('div','actor',{left:x+'px',top:y+'px',fontSize:size});d.textContent=emoji;if(id)d.id=id;stage.appendChild(d);return d}
-function label(text,x,y){const d=mk('div','label',{left:x+'px',top:y+'px'});d.textContent=text;stage.appendChild(d);return d}
-function bubble(html,x,y){const d=mk('div','speech',{left:x+'px',top:y+'px'});d.innerHTML=html;stage.appendChild(d);return d}
+function actor(emoji,x,y,size='3em'){const d=document.createElement('div');d.className='actor';d.textContent=emoji;d.style.left=x+'px';d.style.top=y+'px';d.style.fontSize=size;stage.appendChild(d);return d}
+function label(text,x,y){const d=document.createElement('div');d.className='label';d.textContent=text;d.style.left=x+'px';d.style.top=y+'px';stage.appendChild(d);return d}
+function bubble(html,x,y){const d=document.createElement('div');d.className='speech';d.innerHTML=html;d.style.left=x+'px';d.style.top=y+'px';stage.appendChild(d);return d}
+function conn(x,y,w,angle=0){const d=document.createElement('div');d.className='conn';d.style.left=x+'px';d.style.top=y+'px';d.style.width=w+'px';d.style.transform='rotate('+angle+'deg)';stage.appendChild(d);return d}
 function show(e,cls=''){e.classList.add('on');if(cls)e.classList.add(cls)}
 function hide(e){e.classList.remove('on','show')}
 function setStatus(t){statusEl.textContent=t;statusEl.classList.add('show')}
-function sendPacket(color,dir){const d=mk('div','packet '+dir,{top:'308px',background:color});stage.appendChild(d);setTimeout(()=>d.remove(),1600)}
 
 function reset(){
   animating=false;
-  stage.querySelectorAll('.actor,.speech,.label,.road,.cable,.packet').forEach(e=>e.remove());
+  stage.querySelectorAll('.actor,.speech,.label,.conn,.infra-bar').forEach(e=>e.remove());
   statusEl.classList.remove('show');statusEl.textContent='';
 }
 
 async function play(){
   reset();await sleep(200);animating=true;
 
-  // ═══════ ACT 1: The Idea — "Let's expand!" ═══════
+  // ═══ ACT 1: Three locations appear ═══
+  const bldgs=[
+    {emoji:'🏢',x:80, y:160,lx:75, ly:138,name:'Location A'},
+    {emoji:'🏢',x:390,y:160,lx:385,ly:138,name:'Location B'},
+    {emoji:'🏢',x:700,y:160,lx:695,ly:138,name:'Location C'}
+  ];
   
-  // Start with the successful restaurant
-  const restaurant=actor('🍽️',100,220,'5em');show(restaurant,'popping');
-  await sleep(600);
-  const chefs=[];
-  for(let i=0;i<3;i++){chefs.push(actor('👨‍🍳',180+i*45,300,'2em'));show(chefs[i],'popping');await sleep(200)}
-  
-  const lbl1=label('The Restaurant (Queue Mode)',80,195);lbl1.classList.add('on');
-  setStatus('🍽️ Restaurant doing great — 266 RPS, zero failures');
-  await sleep(3000);
-  
-  const sp1=bubble("Business is booming!<br>Let's open a<br>second location! 🤩",60,100);
-  await sleep(300);sp1.classList.add('show');
-  await sleep(4000);
-  sp1.classList.remove('show');
-
-  // ═══════ ACT 2: The Split — Building across the street ═══════
-  if(!animating)return;
-  
-  // New building appears on the right
-  const factory=actor('🏭',680,220,'5em');show(factory,'popping');
-  await sleep(600);
-  
-  const lbl2=label('The Kitchen (Workers)',680,195);lbl2.classList.add('on');
-  
-  // Chefs walk over to the new building
-  setStatus('💡 "Move the kitchen to its own building — more space!"');
-  await sleep(2000);
-  
-  const sp2=bubble("We'll put the chefs<br>in a bigger kitchen<br>across the street!",600,100);
-  await sleep(300);sp2.classList.add('show');
-  await sleep(3000);
-  sp2.classList.remove('show');
-  
-  if(!animating)return;
-  // Move chefs to the factory
-  for(const c of chefs){c.style.left='720px';c.style.top='300px';await sleep(400)}
-  await sleep(1000);
-  
-  // Restaurant becomes just front-of-house
-  const host=actor('💁',200,300,'2.5em');show(host,'popping');
-  const lbl3=label('Front of House Only\n(Main Instance)',85,340);lbl3.classList.add('on');
-  const lbl4=label('Kitchen Staff\n(Worker Instance)',695,340);lbl4.classList.add('on');
-  
-  setStatus('Split: Main takes orders → sends to workers across the network');
-  await sleep(3000);
-
-  // ═══════ ACT 3: The Street — Network connection ═══════
-  if(!animating)return;
-  
-  // Draw the road between them
-  const road=mk('div','road on',{left:'300px',top:'330px',width:'300px'});stage.appendChild(road);
-  
-  // Network cable
-  const cable=mk('div','cable healthy on',{left:'300px',top:'310px',width:'300px'});stage.appendChild(cable);
-  const cableLbl=label('🔌 Network Connection',380,290);cableLbl.classList.add('on');
-  
-  await sleep(2000);
-  
-  const sp3=bubble("Easy! Orders go over<br>the network to<br>the kitchen!",380,80);
-  await sleep(300);sp3.classList.add('show');
-  setStatus('Sounds great in theory...');
-  await sleep(4000);
-  sp3.classList.remove('show');
-
-  // ═══════ ACT 4: Reality — Every order crosses the street ═══════
-  if(!animating)return;
-  
-  setStatus('🎫 First orders come in...');
-  await sleep(1500);
-  
-  // Customer orders — packet travels across
-  const customers=['🧑','👩','🧔','👦','👩‍🦰','🧑‍🦱'];
-  
-  // A few orders — seems fine at first
-  for(let i=0;i<2;i++){
+  for(const b of bldgs){
     if(!animating)return;
-    const c=actor(customers[i],30,280+i*25,'2em');show(c,'popping');
-    await sleep(400);
-    
-    // Order ticket travels to kitchen
-    sendPacket('#3fb950','go-right');
-    setStatus('📤 Order sent across the network...');
-    await sleep(1500);
-    
-    // Food comes back
-    sendPacket('#58a6ff','go-left');
-    setStatus('📥 Food comes back...');
-    await sleep(1500);
-    
-    const plate=actor(['🍝','🍔'][i],50+i*30,260,'1.5em');show(plate,'popping');
+    const a=actor(b.emoji,b.x,b.y,'4.5em');show(a,'popping');
+    const l=label(b.name,b.lx,b.ly);l.classList.add('on');
+    await sleep(600);
   }
   
-  setStatus('Seems okay so far... but watch what happens under load');
+  setStatus('🏢 Multiple locations — same menu, same experience');
   await sleep(3000);
-  
-  // ═══════ ACT 5: The Rush — Network becomes bottleneck ═══════
+
+  // ═══ ACT 2: Each has its own kitchen + front entrance ═══
   if(!animating)return;
   
-  // Crowd arrives
-  const sp4=bubble("Friday night<br>rush! 🔥",30,180);
-  await sleep(300);sp4.classList.add('show');
-  
-  for(let i=2;i<6;i++){
-    const c=actor(customers[i],20+i*20,270+((i%2)*25),'1.8em');show(c,'popping');
+  // Doors (front entrances)
+  const doors=[];
+  for(let i=0;i<3;i++){
+    const x=bldgs[i].x-15;
+    const d=actor('🚪',x,260,'2em');show(d,'popping');doors.push(d);
     await sleep(200);
   }
-  await sleep(1500);
-  sp4.classList.remove('show');
   
-  // Packets flying back and forth — cable turns orange
-  cable.classList.remove('healthy');cable.classList.add('stressed');
-  setStatus('⚠️ Every single order has to cross the street and come back...');
-  
-  for(let i=0;i<6;i++){
-    if(!animating)return;
-    sendPacket('#ff6b35','go-right');
-    await sleep(300);
-    sendPacket('#ff6b35','go-right');
-    await sleep(300);
-    sendPacket('#58a6ff','go-left');
-    await sleep(400);
+  // Chefs in each
+  const chefGroups=[];
+  for(let i=0;i<3;i++){
+    const group=[];
+    for(let j=0;j<2;j++){
+      const c=actor('👨‍🍳',bldgs[i].x+35+j*35,270,'1.8em');show(c,'cooking');group.push(c);
+      await sleep(150);
+    }
+    chefGroups.push(group);
   }
   
-  await sleep(1000);
-  
-  // ═══════ ACT 6: The Problem Revealed ═══════
+  setStatus('Each location has its own kitchen staff and front entrance');
+  await sleep(3000);
+
+  // ═══ ACT 3: Customers walk into ANY location ═══
   if(!animating)return;
   
-  // Cable turns red / broken
-  cable.classList.remove('stressed');cable.classList.add('broken');
+  const custs=['🧑','👩','🧔','👦','👩‍🦰','🧑‍🦱'];
   
-  // Host is overwhelmed
-  host.classList.add('shaking');
+  // Customer walks into location A
+  const c1=actor(custs[0],30,270,'2.2em');show(c1,'popping');
+  await sleep(400);c1.style.left=(bldgs[0].x-10)+'px';
+  setStatus('🧑 Customer walks into Location A...');
+  await sleep(1800);
   
-  // Runner between buildings is exhausted
-  const runner=actor('🏃',420,290,'2.5em');show(runner,'sweating');
+  // Customer walks into location B
+  const c2=actor(custs[1],360,270,'2.2em');show(c2,'popping');
+  await sleep(400);c2.style.left=(bldgs[1].x-10)+'px';
+  setStatus('👩 Another customer walks into Location B — same menu!');
+  await sleep(1800);
   
-  const sp5=bubble("Every. Single. Order.<br>Crosses. The. Street.<br>And comes back! 😰",350,70);
+  // Customer walks into location C
+  const c3=actor(custs[2],750,270,'2.2em');show(c3,'popping');
+  await sleep(400);c3.style.left=(bldgs[2].x-10)+'px';
+  setStatus('🧔 And Location C — same experience everywhere');
+  await sleep(2500);
+
+  // ═══ ACT 4: One goes down — others keep running ═══
+  if(!animating)return;
+  
+  // Location B gets a big X — "down for maintenance"
+  const bldgB=stage.querySelectorAll('.actor')[1]; // second building
+  
+  const sp1=bubble("Location B goes down<br>for maintenance...",340,85);
+  await sleep(300);sp1.classList.add('show');
+  
+  // Flash Location B
+  const downX=actor('🔧',420,180,'2.5em');show(downX,'pulsing');
+  chefGroups[1].forEach(c=>{c.style.opacity='.3'});
+  
+  setStatus('⚠️ Location B is down — but the others keep running!');
+  await sleep(3500);
+  sp1.classList.remove('show');
+  
+  // Customers at B walk to A and C
+  if(!animating)return;
+  c2.style.left=(bldgs[0].x+20)+'px';
+  
+  const sp2=bubble("Customers just walk<br>to another location 🚶",60,85);
+  await sleep(300);sp2.classList.add('show');
+  setStatus('✅ True high availability — if one goes down, the others keep serving');
+  await sleep(4000);
+  sp2.classList.remove('show');
+  
+  // B comes back
+  hide(downX);
+  chefGroups[1].forEach(c=>{c.style.opacity='1'});
+
+  // ═══ ACT 5: The Test Kitchens — devs can work from any location ═══
+  if(!animating)return;
+  
+  // Test kitchen icons appear in each building
+  const testKitchens=[];
+  for(let i=0;i<3;i++){
+    const tk=actor('🧪',bldgs[i].x+55,200,'1.8em');show(tk,'popping');testKitchens.push(tk);
+    await sleep(300);
+  }
+  
+  const tkLabels=[];
+  for(let i=0;i<3;i++){
+    const l=label('Test Kitchen',bldgs[i].x+35,225);l.classList.add('on');tkLabels.push(l);
+    await sleep(100);
+  }
+  
+  setStatus('🧪 Every location has its own test kitchen — recipe testing area');
+  await sleep(3000);
+  
+  // Developer appears
+  if(!animating)return;
+  const dev=actor('👩‍💻',bldgs[0].x+55,250,'2.2em');show(dev,'popping');
+  
+  const sp3=bubble("Developers can build<br>and edit recipes from<br><b>any location</b> 👩‍💻",50,85);
+  await sleep(300);sp3.classList.add('show');
+  setStatus('👩‍💻 Your developers work from any location — multiple UI instances');
+  await sleep(4000);
+  sp3.classList.remove('show');
+  
+  // Dev walks to location B's test kitchen
+  if(!animating)return;
+  
+  // Location A test kitchen "closes"
+  testKitchens[0].style.opacity='.3';
+  const closed=actor('🚧',bldgs[0].x+55,195,'1.2em');show(closed,'popping');
+  
+  const sp4=bubble("Test kitchen A closed<br>for renovation?<br>Walk to B! 🚶‍♀️",200,85);
+  await sleep(300);sp4.classList.add('show');
+  
+  dev.style.left=(bldgs[1].x+55)+'px';
+  setStatus('🚶‍♀️ Test kitchen closed? Walk to another location and keep creating');
+  await sleep(4000);
+  sp4.classList.remove('show');
+
+  // ═══ ACT 6: The Shared Infrastructure ═══
+  if(!animating)return;
+  
+  // Shared infra bar at bottom
+  const infra=document.createElement('div');
+  infra.className='infra-bar';
+  infra.innerHTML='<span class="icon">🔴</span><span>Shared Redis Queue</span><span style="color:#30363d">│</span><span class="icon">🐘</span><span>Shared Database</span><span style="color:#30363d">│</span><span class="icon">🔄</span><span>Synced State</span>';
+  stage.appendChild(infra);
+  await sleep(300);infra.classList.add('on');
+  
+  // Connection lines from each building down to infra bar
+  const lines=[];
+  for(let i=0;i<3;i++){
+    const l=conn(bldgs[i].x+50,320,3,90);l.style.height='3px';l.style.width='3px';
+    // Actually make vertical lines
+    l.style.width='80px';l.style.height='3px';l.style.left=(bldgs[i].x+40)+'px';l.style.top='380px';
+    l.style.transform='rotate(90deg)';
+    show(l);lines.push(l);
+    await sleep(200);
+  }
+  
+  setStatus('All locations share the same Redis queue + database — true sync');
+  await sleep(3500);
+  
+  // ═══ ACT 7: The Label ═══
+  if(!animating)return;
+  
+  const sp5=bubble("<span style='color:#a371f7;font-weight:700;font-size:1.1em'>Multi-Main Mode</span><br><span style='color:#8b949e'>Enterprise License</span><br><br>Multiple UI instances<br>Multiple build environments<br>One shared brain<br><span style='color:#3fb950;font-weight:600'>True High Availability</span>",340,60);
   await sleep(300);sp5.classList.add('show');
-  setStatus('🔴 Network latency on EVERY request — the street becomes the bottleneck');
-  await sleep(5000);
-  sp5.classList.remove('show');
   
-  // ═══════ ACT 7: The Verdict ═══════
-  if(!animating)return;
+  // All buildings glow
+  testKitchens[0].style.opacity='1';
+  hide(closed);
   
-  // Comparison appears
-  const sp6=bubble("<span style='color:#58a6ff;font-weight:700'>Restaurant (all-in-one):<br>266 RPS ✅</span><br><br><span style='color:#f85149;font-weight:700'>Franchise (split):<br>128 RPS ❌</span><br><br><span style='color:#8b949e'>More machines.<br>More money.<br>LESS performance.</span>",340,60);
-  await sleep(300);sp6.classList.add('show');
-  
-  // Big red X over the cable
-  const bigX=actor('❌',420,300,'3em');show(bigX,'popping');
-  
-  setStatus('🏢 Split Queue: 128 RPS — more money, more hardware, 52% LESS throughput than all-in-one');
+  setStatus('🏢 Multi-Main: multiple locations, same menu, same recipes, true HA — enterprise license');
   await sleep(6000);
-  sp6.classList.remove('show');
   
-  if(!animating)return;
-  const sp7=bubble("Don't put your kitchen<br>across the street.<br><span style='color:#3fb950;font-weight:700'>Keep it in the building.</span> 🍽️",340,100);
-  await sleep(300);sp7.classList.add('show');
-  setStatus('💡 The lesson: split queue adds latency. Scale UP (bigger instance), not OUT (more machines)');
-  
-  await sleep(6000);
   animating=false;
 }
 </script>
