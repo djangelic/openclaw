@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Three Architectures — Pixel Edition</title>
+<title>Three Architectures</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0f0f23;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Press Start 2P',monospace;image-rendering:pixelated}
+body{background:#0f0f23;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Press Start 2P',monospace}
 .card{display:flex;gap:0;background:#1a1a2e;border:4px solid #333;position:relative}
-.card::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.1) 2px,rgba(0,0,0,.1) 4px);pointer-events:none}
-.arch{text-align:center;padding:40px 50px;width:280px;position:relative}
-.arch canvas{margin-bottom:12px}
-.title{font-size:11px;font-weight:800;margin-bottom:6px}
-.subtitle{font-size:6px;color:#888;margin-bottom:16px;line-height:1.6}
-.rps{font-size:16px;font-weight:900;margin-bottom:4px}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);pointer-events:none}
+.arch{text-align:center;padding:30px 40px;width:300px;position:relative}
+.arch img{height:160px;margin-bottom:12px;image-rendering:auto}
+.title{font-size:12px;font-weight:800;margin-bottom:6px}
+.subtitle{font-size:6px;color:#888;margin-bottom:16px;line-height:1.8}
+.rps{font-size:18px;font-weight:900;margin-bottom:4px}
 .rps-label{font-size:6px;color:#888}
 .divider{width:4px;background:#333;align-self:stretch}
-.tag{display:inline-block;font-size:6px;padding:4px 10px;border:2px solid;margin-top:12px}
+.tag{display:inline-block;font-size:6px;padding:4px 12px;border:2px solid;margin-top:12px}
 .t1 .title{color:#ff6b35}.t1 .rps{color:#ff6b35}.t1 .tag{border-color:#ff6b35;color:#ff6b35;background:#ff6b3522}
 .t2 .title{color:#58a6ff}.t2 .rps{color:#58a6ff}.t2 .tag{border-color:#58a6ff;color:#58a6ff;background:#58a6ff22}
 .t3 .title{color:#a371f7}.t3 .rps{color:#a371f7}.t3 .tag{border-color:#a371f7;color:#a371f7;background:#a371f722}
@@ -25,7 +25,7 @@ body{background:#0f0f23;display:flex;align-items:center;justify-content:center;m
 <body>
 <div class="card">
   <div class="arch t1">
-    <img src="https://djangelic.github.io/openclaw/pixel-sprites/food-truck.png" style="width:128px;height:96px;image-rendering:pixelated">
+    <img src="https://djangelic.github.io/openclaw/pixel-sprites/food-truck.png">
     <div class="title">FOOD TRUCK</div>
     <div class="subtitle">SINGLE INSTANCE<br>SQLITE / POSTGRESQL</div>
     <div class="rps">48-95</div>
@@ -34,7 +34,7 @@ body{background:#0f0f23;display:flex;align-items:center;justify-content:center;m
   </div>
   <div class="divider"></div>
   <div class="arch t2">
-    <img src="https://djangelic.github.io/openclaw/pixel-sprites/restaurant.png" style="width:128px;height:128px;image-rendering:pixelated">
+    <img src="https://djangelic.github.io/openclaw/pixel-sprites/restaurant.png">
     <div class="title">RESTAURANT</div>
     <div class="subtitle">QUEUE MODE<br>REDIS + WORKERS</div>
     <div class="rps">266-280</div>
@@ -43,7 +43,7 @@ body{background:#0f0f23;display:flex;align-items:center;justify-content:center;m
   </div>
   <div class="divider"></div>
   <div class="arch t3">
-    <img src="https://djangelic.github.io/openclaw/pixel-sprites/franchise-building.png" style="width:128px;height:128px;image-rendering:pixelated">
+    <img src="https://djangelic.github.io/openclaw/pixel-sprites/franchise-building.png">
     <div class="title">FRANCHISE</div>
     <div class="subtitle">MULTI-MAIN MODE<br>ENTERPRISE LICENSE</div>
     <div class="rps">HA</div>
@@ -51,6 +51,5 @@ body{background:#0f0f23;display:flex;align-items:center;justify-content:center;m
     <div class="tag">ENTERPRISE</div>
   </div>
 </div>
-<!-- No script needed - using PNG images directly -->
 </body>
 </html>

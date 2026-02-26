@@ -2,235 +2,120 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PG Default — The Messy Kitchen (Pixel Edition)</title>
+<title>PG Default — The Messy Kitchen</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0f0f23;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Press Start 2P',monospace;font-size:10px;flex-direction:column;gap:16px;image-rendering:pixelated}
+body{background:#0f0f23;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Press Start 2P',monospace;font-size:10px;flex-direction:column;gap:16px}
 .stage{position:relative;width:960px;height:540px;background:#1a1a2e;border:4px solid #333;overflow:hidden}
-.stage::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;z-index:50}
-.sky{position:absolute;top:0;width:100%;height:460px;background:linear-gradient(180deg,#0f0f23,#1a1a3e,#2a2040)}
-.ground{position:absolute;bottom:0;width:100%;height:80px;background:#2d5016;border-top:4px solid #4a8c28}
-.ground::before{content:'';position:absolute;top:-4px;width:100%;height:4px;background:repeating-linear-gradient(90deg,#4a8c28 0,#4a8c28 16px,#3d7020 16px,#3d7020 32px)}
-.title-bar{position:absolute;top:12px;left:50%;transform:translateX(-50%);text-align:center;z-index:10;text-shadow:2px 2px 0 #000}
-.title-bar h1{font-size:11px;color:#ff6b35;letter-spacing:1px}
-.title-bar p{font-size:7px;color:#888;margin-top:6px}
-.sprite{position:absolute;image-rendering:pixelated;transition:all .7s ease;opacity:0}
-.sprite.on{opacity:1}
-.pbubble{position:absolute;background:#1a1a2e;border:3px solid #ff6b35;padding:8px 12px;font-size:7px;color:#fff;opacity:0;transition:opacity .4s;max-width:240px;text-align:center;z-index:20;line-height:1.6;font-family:'Press Start 2P',monospace}
-.pbubble.show{opacity:1}
-.pbubble::after{content:'V';position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);color:#ff6b35;font-size:8px}
-.status{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:7px;color:#888;z-index:10;white-space:nowrap;opacity:0;transition:opacity .4s;text-shadow:1px 1px 0 #000;font-family:'Press Start 2P',monospace}
+.stage::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px);pointer-events:none;z-index:50}
+.title-bar{position:absolute;top:10px;left:50%;transform:translateX(-50%);text-align:center;z-index:20;text-shadow:2px 2px 0 #000}
+.title-bar h1{font-size:11px;color:#ff6b35}.title-bar p{font-size:7px;color:#aaa;margin-top:6px}
+.sprite{position:absolute;transition:all .7s ease;opacity:0;z-index:5}.sprite.on{opacity:1}
+.bg-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:0;transition:opacity .5s}.bg-img.on{opacity:1}
+.pbubble{position:absolute;background:rgba(15,15,35,.92);border:3px solid #ff6b35;padding:8px 14px;font-size:7px;color:#fff;opacity:0;transition:opacity .4s;max-width:250px;text-align:center;z-index:20;line-height:1.8;font-family:'Press Start 2P',monospace;backdrop-filter:blur(4px)}
+.pbubble.show{opacity:1}.pbubble::after{content:'▼';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);color:#ff6b35;font-size:10px}
+.status{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:7px;color:#aaa;z-index:20;white-space:nowrap;opacity:0;transition:opacity .4s;text-shadow:2px 2px 0 #000;background:rgba(15,15,35,.7);padding:4px 12px;border-radius:4px}
 .status.show{opacity:1}
-.star{position:absolute;width:4px;height:4px;background:#fff;opacity:.5}
-@keyframes cook{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-@keyframes search{0%,100%{transform:translateX(0)}30%{transform:translateX(-12px)}70%{transform:translateX(12px)}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes ppop{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
-.cook{animation:cook .5s ease infinite}
-.shake{animation:shake .3s ease infinite}
-.search{animation:search 1s ease infinite}
-.ppop{animation:ppop .4s ease forwards}
+@keyframes bounceIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes search{0%,100%{transform:translateX(0)}30%{transform:translateX(-15px)}70%{transform:translateX(15px)}}
+@keyframes cook{0%,100%{transform:rotate(0)}50%{transform:rotate(-5deg)}}
+.bounce{animation:bounceIn .5s ease forwards}.shake{animation:shake .3s ease infinite}
+.search{animation:search 1s ease infinite}.cook{animation:cook .6s ease infinite}
 .controls{display:flex;gap:10px}
 button{font-family:'Press Start 2P',monospace;background:#ff6b35;color:#fff;border:3px solid #cc5020;padding:8px 16px;font-size:9px;cursor:pointer}
-button:hover{background:#ff8855}
-button.sec{background:#333;color:#999;border-color:#555}
+button:hover{background:#ff8855}button.sec{background:#333;color:#999;border-color:#555}
 </style>
 </head>
 <body>
-
 <div class="stage" id="stage">
-  <div class="sky"></div><div class="ground"></div>
-  <div class="title-bar"><h1>FOOD TRUCK - PG DEFAULT</h1><p>BIG PANTRY. NOBODY ORGANIZED IT.</p></div>
+  <div class="title-bar"><h1>FOOD TRUCK — PG DEFAULT</h1><p>BIG PANTRY. NOBODY ORGANIZED IT.</p></div>
   <div class="status" id="status"></div>
 </div>
-
-<div class="controls">
-  <button onclick="play()">&#9654; PLAY</button>
-  <button class="sec" onclick="reset()">&#8634; RESET</button>
-</div>
+<div class="controls"><button onclick="play()">&#9654; PLAY</button><button class="sec" onclick="reset()">&#8634; RESET</button></div>
 
 <script>
+const B='https://djangelic.github.io/openclaw/pixel-sprites/';
+const IMG={truck:B+'food-truck.png',chef:B+'chef.png',chefStress:B+'chef-stressed.png',chefCook:B+'chef-cooking.png',cust:B+'customer.png',cust2:B+'customer-2.png',cust3:B+'customer-3.png',messy:B+'kitchen-shelf-messy.png',clean:B+'kitchen-shelf-organized.png',pan:B+'frying-pan.png',bgKit:B+'bg-kitchen-interior.png'};
+Object.values(IMG).forEach(s=>{new Image().src=s});
+
 const stage=document.getElementById('stage'),statusEl=document.getElementById('status');
-let animating=false;
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let animating=false;const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-const SPRITE_BASE='https://djangelic.github.io/openclaw/pixel-sprites/';
-const SPRITE_MAP={
-  truck:'food-truck.png',
-  chef:'chef.png',
-  customer:'customer.png',
-  shelf:'kitchen-shelf-messy.png',
-  pan:null,
-  star:null
-};
-const SPRITE_SIZES={truck:[80,48],chef:[48,48],customer:[48,48],shelf:[64,64],pan:[48,30],star:[24,24]};
-
-// Fallback pixel data for sprites without PNGs
-const PALETTE={0:'transparent',1:'#ffffff',3:'#4488ff',7:'#666688',10:'#aaaacc'};
-const PIXEL_SPRITES={
-  pan:[[0,0,0,0,0,10,10,10],[0,7,7,7,7,0,0,0],[7,7,7,7,7,7,0,0],[7,7,7,7,7,7,0,0],[0,7,7,7,7,0,0,0]],
-  star:[[0,1,0],[1,1,1],[0,1,0]]
-};
-
-function drawPixelSprite(data,scale=6){
-  const h=data.length,w=data[0].length;
-  const c=document.createElement('canvas');c.width=w*scale;c.height=h*scale;c.style.imageRendering='pixelated';
-  const ctx=c.getContext('2d');
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
-    const clr=PALETTE[data[y][x]];
-    if(clr&&clr!=='transparent'){ctx.fillStyle=clr;ctx.fillRect(x*scale,y*scale,scale,scale)}
-  }
-  return c;
-}
-
-function addSprite(name,x,y,scale=6){
-  let el;
-  if(SPRITE_MAP[name]){
-    el=document.createElement('img');
-    el.src=SPRITE_BASE+SPRITE_MAP[name];
-    const sz=SPRITE_SIZES[name]||[48,48];
-    el.style.width=sz[0]+'px';el.style.height=sz[1]+'px';
-    el.style.imageRendering='pixelated';
-    el.draggable=false;
-  }else{
-    el=drawPixelSprite(PIXEL_SPRITES[name],scale);
-  }
-  el.className='sprite';el.style.left=x+'px';el.style.top=y+'px';
-  stage.appendChild(el);return el;
-}
-function addText(text,x,y,color='#fff',size='8px'){
-  const d=document.createElement('div');
-  d.style.cssText=`position:absolute;left:${x}px;top:${y}px;font-size:${size};color:${color};z-index:10;text-shadow:1px 1px 0 #000;font-family:'Press Start 2P',monospace;white-space:nowrap;opacity:0;transition:opacity .4s`;
-  d.textContent=text;stage.appendChild(d);return d;
-}
-function addBubble(html,x,y){
-  const d=document.createElement('div');d.className='pbubble';d.innerHTML=html;d.style.left=x+'px';d.style.top=y+'px';stage.appendChild(d);return d;
-}
+function addBg(src){const i=document.createElement('img');i.className='bg-img';i.src=src;stage.insertBefore(i,stage.firstChild);return i}
+function addImg(src,x,y,w){const i=document.createElement('img');i.className='sprite';i.src=src;i.style.cssText=`left:${x}px;top:${y}px;width:${w}px`;stage.appendChild(i);return i}
+function bubble(html,x,y){const d=document.createElement('div');d.className='pbubble';d.innerHTML=html;d.style.left=x+'px';d.style.top=y+'px';stage.appendChild(d);return d}
 function show(e,cls=''){e.style.opacity='1';e.classList.add('on');if(cls)e.classList.add(cls)}
 function hide(e){e.style.opacity='0'}
 function setStatus(t){statusEl.textContent=t;statusEl.classList.add('show')}
 
-function addStars(){for(let i=0;i<15;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*920+'px';s.style.top=Math.random()*300+'px';if(Math.random()>.7)s.style.animation='blink '+(2+Math.random()*3)+'s step-end infinite';stage.appendChild(s)}}
-
 function reset(){
   animating=false;
-  stage.querySelectorAll('.sprite,.pbubble,.star,div[style*="position:absolute"]').forEach(e=>{
-    if(!e.classList.contains('sky')&&!e.classList.contains('ground')&&!e.classList.contains('title-bar')&&!e.classList.contains('status'))e.remove();
-  });
+  stage.querySelectorAll('.sprite,.bg-img,.pbubble').forEach(e=>e.remove());
   statusEl.classList.remove('show');statusEl.textContent='';
 }
 
 async function play(){
-  reset();await sleep(200);animating=true;addStars();
-
-  // Build scene
-  const truck=addSprite('truck',50,340,10);show(truck,'ppop');await sleep(500);
-  const chef=addSprite('chef',200,320,7);show(chef,'ppop');await sleep(400);
-  show(addSprite('pan',290,360,6),'ppop');await sleep(300);
-
-  // Shelves (big pantry)
-  const shelves=[];
-  for(let i=0;i<3;i++){
-    const s=addSprite('shelf',520+i*80,290,8);show(s,'ppop');shelves.push(s);await sleep(300);
-  }
+  reset();await sleep(200);animating=true;
+  const bg=addBg(IMG.bgKit);show(bg);await sleep(300);
   
-  const pLabel=addText('POSTGRESQL PANTRY','520',270,'#ffff44','6px');show(pLabel);
-  const pLabel2=addText('BIG BUT MESSY!','535',420,'#f85149','6px');show(pLabel2);
+  const truck=addImg(IMG.truck,20,260,200);show(truck,'bounce');await sleep(500);
+  const chef=addImg(IMG.chef,240,300,100);show(chef,'bounce');await sleep(400);
+  show(addImg(IMG.pan,350,350,70),'bounce');
   
-  // Scattered ingredient labels
-  const ings=['SALT','GARLIC','ONION','OIL','PEPPER','HERBS'];
-  const ingEls=[];
-  for(let i=0;i<ings.length;i++){
-    const t=addText(ings[i],530+((i%3)*75),340+(Math.floor(i/3)*20),'#aaa','5px');
-    show(t);ingEls.push(t);await sleep(100);
-  }
+  const messy=addImg(IMG.messy,530,200,320);show(messy,'bounce');await sleep(600);
   
-  await sleep(1000);
-  if(!animating)return;
-  
-  const sp1=addBubble("WAY MORE SPACE THAN<br>SQLITE'S TINY SHELF!<br>BUT WHERE'S THE<br>GARLIC...?",450,150);
+  const sp1=bubble("WAY MORE SPACE THAN<br>SQLITE'S TINY SHELF!<br>BUT WHERE'S THE<br>GARLIC...?",480,80);
   await sleep(300);sp1.classList.add('show');
   setStatus('POSTGRESQL: REAL DATABASE. DEFAULT CONFIG WASTES POTENTIAL.');
   await sleep(4000);sp1.classList.remove('show');
-
-  // Order comes in
-  if(!animating)return;
-  const cust=addSprite('customer',830,340,7);show(cust,'ppop');
-  await sleep(500);
-  const ticket=addText('[ORDER: PASTA]',740,300,'#ffff88','7px');show(ticket);
-  setStatus('ORDER IN: PASTA WITH GARLIC SAUCE');
-  await sleep(2000);
   
-  // Chef searches
+  if(!animating)return;
+  const cust=addImg(IMG.cust,830,310,90);show(cust,'bounce');await sleep(500);
+  setStatus('ORDER IN: PASTA WITH GARLIC SAUCE');await sleep(2000);
+  
   if(!animating)return;
   chef.classList.add('search');
-  const sp2=addBubble("WHERE DID I<br>PUT THE GARLIC??",180,220);
+  const sp2=bubble("WHERE DID I<br>PUT THE GARLIC??",220,200);
   await sleep(300);sp2.classList.add('show');
   setStatus('CHEF SEARCHING MESSY SHELVES... (UNTUNED SHARED_BUFFERS)');
-  await sleep(2500);sp2.classList.remove('show');
-  
-  // Walk to shelves
-  if(!animating)return;
-  chef.style.left='520px';chef.style.top='320px';
-  setStatus('CHECKING SHELF 1... NOPE, ONIONS');
-  await sleep(1800);
-  
-  chef.style.left='600px';
-  setStatus('SHELF 2... PEPPER, OIL...');
-  await sleep(1800);
-  
-  chef.style.left='680px';
-  setStatus('SHELF 3... FOUND IT!');
-  await sleep(1200);
+  await sleep(3000);sp2.classList.remove('show');
   
   if(!animating)return;
-  const sparkle=addSprite('star',690,310,8);show(sparkle);
-  await sleep(600);hide(sparkle);
+  chef.style.left='530px';setStatus('CHECKING SHELF 1... NOPE');await sleep(1800);
+  chef.style.left='650px';setStatus('SHELF 2... NOT HERE...');await sleep(1800);
+  chef.style.left='750px';setStatus('SHELF 3... FOUND IT!');await sleep(1200);
   
-  // Cook
-  chef.style.left='290px';chef.style.top='320px';
-  chef.classList.remove('search');chef.classList.add('cook');
-  setStatus('FINALLY COOKING! ALL THAT SEARCHING COST TIME...');
-  await sleep(2500);
+  chef.style.left='300px';chef.classList.remove('search');
+  chef.src=IMG.chefCook;chef.classList.add('cook');
+  setStatus('FINALLY COOKING! ALL THAT SEARCHING COST TIME...');await sleep(2500);
   
   if(!animating)return;
-  hide(ticket);
-  const plate=addText('[SERVED]',750,340,'#3fb950','7px');show(plate);
-  setStatus('ORDER SERVED! BUT IT TOOK A WHILE...');
-  await sleep(2500);
+  setStatus('ORDER SERVED! BUT IT TOOK A WHILE...');await sleep(2500);
   
-  // Rush
-  if(!animating)return;
-  const sp3=addBubble("NOW IMAGINE 50<br>CUSTOMERS AT ONCE...",180,220);
+  const sp3=bubble("NOW IMAGINE 50<br>CUSTOMERS AT ONCE...",220,200);
   await sleep(300);sp3.classList.add('show');await sleep(3000);sp3.classList.remove('show');
   
-  for(let i=0;i<5;i++){
-    const c=addSprite('customer',760+((i%3)*30),320+(Math.floor(i/3)*30),5);show(c,'ppop');
-    await sleep(200);
-  }
+  const custImgs=[IMG.cust2,IMG.cust3,IMG.cust,IMG.cust2,IMG.cust3];
+  for(let i=0;i<5;i++){show(addImg(custImgs[i],760+((i%3)*35),290+(Math.floor(i/3)*35),60),'bounce');await sleep(200)}
   
-  setStatus('ORDERS PILING UP - CHEF SEARCHING THOSE MESSY SHELVES');
-  chef.classList.remove('cook');chef.classList.add('search');
+  setStatus('ORDERS PILING UP — CHEF SEARCHING MESSY SHELVES');
+  chef.src=IMG.chefStress;chef.classList.remove('cook');chef.classList.add('shake');
   await sleep(3000);
   
-  // Verdict
   if(!animating)return;
-  chef.classList.remove('search');chef.classList.add('shake');
-  
-  const sp4=addBubble("I'VE GOT THE SPACE<br>BUT EVERYTHING IS<br>A MESS! 71 RPS IS<br>MY LIMIT!",340,140);
+  const sp4=bubble("I'VE GOT THE SPACE<br>BUT EVERYTHING IS<br>A MESS! 71 RPS<br>IS MY LIMIT!",380,80);
   await sleep(300);sp4.classList.add('show');
-  setStatus('PG DEFAULT: 71 RPS - BETTER THAN SQLITE (48) BUT UNTUNED CONFIG HOLDS IT BACK');
+  setStatus('PG DEFAULT: 71 RPS — BETTER THAN SQLITE (48) BUT UNTUNED');
   await sleep(5000);sp4.classList.remove('show');
   
   if(!animating)return;
-  const sp5=addBubble("WHAT IF SOMEONE<br>ORGANIZED THESE<br>SHELVES...?",400,160);
+  const sp5=bubble("WHAT IF SOMEONE<br>ORGANIZED THESE<br>SHELVES...?",420,100);
   sp5.style.borderColor='#3fb950';
   await sleep(300);sp5.classList.add('show');
   setStatus('>> PGTUNE CAN ORGANIZE THIS KITCHEN FOR FREE...');
-  await sleep(5000);
-  animating=false;
+  await sleep(5000);animating=false;
 }
 </script>
 </body>

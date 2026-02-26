@@ -2,217 +2,142 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Franchise — Multi-Main Mode (Pixel Edition)</title>
+<title>Franchise — Multi-Main Mode</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0f0f23;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Press Start 2P',monospace;font-size:10px;flex-direction:column;gap:16px;image-rendering:pixelated}
+body{background:#0f0f23;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Press Start 2P',monospace;font-size:10px;flex-direction:column;gap:16px}
 .stage{position:relative;width:960px;height:540px;background:#1a1a2e;border:4px solid #333;overflow:hidden}
-.stage::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;z-index:50}
-.sky{position:absolute;top:0;width:100%;height:460px;background:linear-gradient(180deg,#0f0f23,#15152e,#201a3a)}
-.ground{position:absolute;bottom:0;width:100%;height:80px;background:#2d5016;border-top:4px solid #4a8c28}
-.ground::before{content:'';position:absolute;top:-4px;width:100%;height:4px;background:repeating-linear-gradient(90deg,#4a8c28 0,#4a8c28 16px,#3d7020 16px,#3d7020 32px)}
-.title-bar{position:absolute;top:12px;left:50%;transform:translateX(-50%);text-align:center;z-index:10;text-shadow:2px 2px 0 #000}
-.title-bar h1{font-size:11px;color:#a371f7;letter-spacing:1px}
-.title-bar p{font-size:7px;color:#888;margin-top:6px}
-.sprite{position:absolute;image-rendering:pixelated;transition:all .7s ease;opacity:0}
-.sprite.on{opacity:1}
-.pbubble{position:absolute;background:#1a1a2e;border:3px solid #a371f7;padding:8px 12px;font-size:7px;color:#fff;opacity:0;transition:opacity .4s;max-width:260px;text-align:center;z-index:20;line-height:1.6;font-family:'Press Start 2P',monospace}
-.pbubble.show{opacity:1}
-.pbubble::after{content:'V';position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);color:#a371f7;font-size:8px}
-.status{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:7px;color:#888;z-index:10;white-space:nowrap;opacity:0;transition:opacity .4s;text-shadow:1px 1px 0 #000;font-family:'Press Start 2P',monospace}
+.stage::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px);pointer-events:none;z-index:50}
+.title-bar{position:absolute;top:10px;left:50%;transform:translateX(-50%);text-align:center;z-index:20;text-shadow:2px 2px 0 #000}
+.title-bar h1{font-size:11px;color:#a371f7}.title-bar p{font-size:7px;color:#aaa;margin-top:6px}
+.sprite{position:absolute;transition:all .7s ease;opacity:0;z-index:5}.sprite.on{opacity:1}
+.bg-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:0;transition:opacity .5s}.bg-img.on{opacity:1}
+.pbubble{position:absolute;background:rgba(15,15,35,.92);border:3px solid #a371f7;padding:8px 14px;font-size:7px;color:#fff;opacity:0;transition:opacity .4s;max-width:260px;text-align:center;z-index:20;line-height:1.8;font-family:'Press Start 2P',monospace;backdrop-filter:blur(4px)}
+.pbubble.show{opacity:1}.pbubble::after{content:'▼';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);color:#a371f7;font-size:10px}
+.status{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:7px;color:#aaa;z-index:20;white-space:nowrap;opacity:0;transition:opacity .4s;text-shadow:2px 2px 0 #000;background:rgba(15,15,35,.7);padding:4px 12px;border-radius:4px}
 .status.show{opacity:1}
-.star{position:absolute;width:4px;height:4px;background:#fff;opacity:.5}
-/* Shared infra bar */
-.infra{position:absolute;bottom:85px;left:50%;transform:translateX(-50%);display:flex;gap:12px;background:#0f0f23;border:3px solid #a371f7;padding:6px 16px;z-index:5;opacity:0;transition:opacity .4s}
-.infra.on{opacity:1}
-.infra span{font-size:6px;color:#ccc}
-.infra .sep{color:#333}
-/* Connection lines */
-.conn{position:absolute;width:3px;background:#a371f7;opacity:0;transition:opacity .4s}
-.conn.on{opacity:.5}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes ppop{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
-@keyframes cook{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
+.infra{position:absolute;bottom:70px;left:50%;transform:translateX(-50%);display:flex;gap:12px;background:rgba(15,15,35,.9);border:3px solid #a371f7;padding:8px 18px;z-index:10;opacity:0;transition:opacity .4s;backdrop-filter:blur(4px)}
+.infra.on{opacity:1}.infra span{font-size:6px;color:#ddd}.infra .sep{color:#444}
+.conn{position:absolute;width:3px;background:#a371f7;opacity:0;transition:opacity .4s;z-index:4}.conn.on{opacity:.5}
+@keyframes bounceIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes cook{0%,100%{transform:rotate(0)}50%{transform:rotate(-5deg)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.ppop{animation:ppop .4s ease forwards}
-.cook{animation:cook .5s ease infinite}
-.pulse{animation:pulse 1.5s ease infinite}
+@keyframes slide{from{transform:translateX(80px);opacity:0}to{transform:translateX(0);opacity:1}}
+.bounce{animation:bounceIn .5s ease forwards}.cook{animation:cook .6s ease infinite}
+.pulse{animation:pulse 1.5s ease infinite}.slide{animation:slide .5s ease forwards}
 .controls{display:flex;gap:10px}
 button{font-family:'Press Start 2P',monospace;background:#a371f7;color:#fff;border:3px solid #8957e5;padding:8px 16px;font-size:9px;cursor:pointer}
-button:hover{background:#b888ff}
-button.sec{background:#333;color:#999;border-color:#555}
+button:hover{background:#b888ff}button.sec{background:#333;color:#999;border-color:#555}
 </style>
 </head>
 <body>
-
 <div class="stage" id="stage">
-  <div class="sky"></div><div class="ground"></div>
-  <div class="title-bar"><h1>FRANCHISE - MULTI-MAIN</h1><p>MULTIPLE LOCATIONS. ONE BRAND.</p></div>
+  <div class="title-bar"><h1>FRANCHISE — MULTI-MAIN</h1><p>MULTIPLE LOCATIONS. ONE BRAND.</p></div>
   <div class="status" id="status"></div>
 </div>
-
-<div class="controls">
-  <button onclick="play()">&#9654; PLAY (~45s)</button>
-  <button class="sec" onclick="reset()">&#8634; RESET</button>
-</div>
+<div class="controls"><button onclick="play()">&#9654; PLAY (~45s)</button><button class="sec" onclick="reset()">&#8634; RESET</button></div>
 
 <script>
+const B='https://djangelic.github.io/openclaw/pixel-sprites/';
+const IMG={franchise:B+'franchise-building.png',chef:B+'chef-cooking.png',cust:B+'customer.png',cust2:B+'customer-2.png',cust3:B+'customer-3.png',dev:B+'developer.png',testKit:B+'test-kitchen.png',wrench:B+'wrench-tool.png',bgStreet:B+'bg-street-night.png'};
+Object.values(IMG).forEach(s=>{new Image().src=s});
+
 const stage=document.getElementById('stage'),statusEl=document.getElementById('status');
-let animating=false;
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let animating=false;const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-const SPRITE_BASE='https://djangelic.github.io/openclaw/pixel-sprites/';
-const SPRITE_MAP={
-  building:'franchise-building.png',
-  chef:'chef.png',
-  customer:'customer.png',
-  dev:'chef-stressed.png',
-  flask:'test-kitchen.png',
-  wrench:'wrench-tool.png'
-};
-const SPRITE_SIZES={building:[72,72],chef:[48,48],customer:[48,48],dev:[48,48],flask:[48,48],wrench:[48,48]};
-
-function addSprite(name,x,y,scale=6,id=''){
-  const img=document.createElement('img');
-  img.src=SPRITE_BASE+SPRITE_MAP[name];
-  img.className='sprite';
-  const sz=SPRITE_SIZES[name]||[48,48];
-  img.style.width=sz[0]+'px';img.style.height=sz[1]+'px';
-  img.style.left=x+'px';img.style.top=y+'px';
-  img.style.imageRendering='pixelated';
-  img.draggable=false;
-  if(id)img.id=id;stage.appendChild(img);return img;
-}
-function addText(text,x,y,color='#fff',size='7px'){
-  const d=document.createElement('div');
-  d.style.cssText=`position:absolute;left:${x}px;top:${y}px;font-size:${size};color:${color};z-index:10;text-shadow:1px 1px 0 #000;font-family:'Press Start 2P',monospace;white-space:nowrap;opacity:0;transition:opacity .4s`;
-  d.textContent=text;stage.appendChild(d);return d;
-}
-function addBubble(html,x,y){
-  const d=document.createElement('div');d.className='pbubble';d.innerHTML=html;d.style.left=x+'px';d.style.top=y+'px';stage.appendChild(d);return d;
-}
+function addBg(src){const i=document.createElement('img');i.className='bg-img';i.src=src;stage.insertBefore(i,stage.firstChild);return i}
+function addImg(src,x,y,w){const i=document.createElement('img');i.className='sprite';i.src=src;i.style.cssText=`left:${x}px;top:${y}px;width:${w}px`;stage.appendChild(i);return i}
+function bubble(html,x,y){const d=document.createElement('div');d.className='pbubble';d.innerHTML=html;d.style.left=x+'px';d.style.top=y+'px';stage.appendChild(d);return d}
 function show(e,cls=''){e.style.opacity='1';e.classList.add('on');if(cls)e.classList.add(cls)}
 function hide(e){e.style.opacity='0';e.classList.remove('on')}
 function setStatus(t){statusEl.textContent=t;statusEl.classList.add('show')}
 
-function addStars(){for(let i=0;i<15;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*920+'px';s.style.top=Math.random()*280+'px';if(Math.random()>.7)s.style.animation='blink '+(2+Math.random()*3)+'s step-end infinite';stage.appendChild(s)}}
-
 function reset(){
   animating=false;
-  stage.querySelectorAll('.sprite,.pbubble,.star,.infra,.conn,div[style*="position:absolute"]').forEach(e=>{
-    if(!e.classList.contains('sky')&&!e.classList.contains('ground')&&!e.classList.contains('title-bar')&&!e.classList.contains('status'))e.remove();
-  });
+  stage.querySelectorAll('.sprite,.bg-img,.pbubble,.infra,.conn').forEach(e=>e.remove());
   statusEl.classList.remove('show');statusEl.textContent='';
 }
 
 async function play(){
-  reset();await sleep(200);animating=true;addStars();
+  reset();await sleep(200);animating=true;
+  const bg=addBg(IMG.bgStreet);show(bg);await sleep(300);
 
-  // Three buildings
-  const bx=[80,380,680];
-  const bldgs=[];
+  const bx=[50,350,650],bldgs=[];
   for(let i=0;i<3;i++){
-    const b=addSprite('building',bx[i],260,9);show(b,'ppop');bldgs.push(b);
-    const l=addText('LOCATION '+'ABC'[i],bx[i]-5,245,'#a371f7','7px');show(l);
-    await sleep(500);
+    const b=addImg(IMG.franchise,bx[i],140,210);show(b,'bounce');bldgs.push(b);
+    const lbl=document.createElement('div');
+    lbl.style.cssText=`position:absolute;left:${bx[i]+40}px;top:120px;font-size:8px;color:#a371f7;z-index:10;text-shadow:2px 2px 0 #000;font-family:'Press Start 2P',monospace`;
+    lbl.textContent='LOCATION '+'ABC'[i];stage.appendChild(lbl);lbl.style.opacity='0';
+    await sleep(200);lbl.style.opacity='1';lbl.style.transition='opacity .4s';
+    await sleep(400);
   }
-  setStatus('MULTIPLE LOCATIONS - SAME MENU, SAME EXPERIENCE');
-  await sleep(2500);
+  setStatus('MULTIPLE LOCATIONS — SAME MENU, SAME EXPERIENCE');
 
-  // Chefs in each
+  for(let i=0;i<3;i++){for(let j=0;j<2;j++){show(addImg(IMG.chef,bx[i]+50+j*50,380,60),'cook');await sleep(100)}}
+  await sleep(1000);
+
+  if(!animating)return;
+  const custs=[IMG.cust,IMG.cust2,IMG.cust3];
   for(let i=0;i<3;i++){
-    for(let j=0;j<2;j++){
-      const c=addSprite('chef',bx[i]+45+j*30,350,5);show(c,'cook');
-      await sleep(100);
-    }
+    const c=addImg(custs[i],bx[i]+20,370,65);show(c,'slide');
+    setStatus('CUSTOMER WALKS INTO LOCATION '+'ABC'[i]+'...');await sleep(1500);
   }
   await sleep(1000);
 
-  // Customers walk in
   if(!animating)return;
-  const c1=addSprite('customer',30,350,6);show(c1,'ppop');
-  await sleep(400);c1.style.left=(bx[0]+10)+'px';
-  setStatus('CUSTOMER WALKS INTO LOCATION A...');
-  await sleep(1500);
-
-  const c2=addSprite('customer',350,350,6);show(c2,'ppop');
-  await sleep(400);c2.style.left=(bx[1]+10)+'px';
-  setStatus('ANOTHER INTO B - SAME MENU!');
-  await sleep(1500);
-
-  const c3=addSprite('customer',730,350,6);show(c3,'ppop');
-  await sleep(400);c3.style.left=(bx[2]+10)+'px';
-  setStatus('AND C - SAME EXPERIENCE EVERYWHERE');
-  await sleep(2500);
-
-  // Location B goes down
-  if(!animating)return;
-  const wrench=addSprite('wrench',420,280,7);show(wrench,'pulse');
-  const sp1=addBubble("LOCATION B DOWN<br>FOR MAINTENANCE...",320,155);
-  await sleep(300);sp1.classList.add('show');
+  const wrench=addImg(IMG.wrench,400,250,70);show(wrench,'pulse');
   bldgs[1].style.opacity='.3';
-  setStatus('LOCATION B IS DOWN - BUT OTHERS KEEP RUNNING!');
+  const sp1=bubble("LOCATION B DOWN<br>FOR MAINTENANCE...",310,70);
+  await sleep(300);sp1.classList.add('show');
+  setStatus('LOCATION B IS DOWN — BUT OTHERS KEEP RUNNING!');
   await sleep(3500);sp1.classList.remove('show');
 
   if(!animating)return;
-  c2.style.left=(bx[0]+30)+'px';
-  const sp2=addBubble("CUSTOMERS JUST WALK<br>TO ANOTHER LOCATION",50,155);
+  const sp2=bubble("CUSTOMERS JUST WALK<br>TO ANOTHER LOCATION",40,70);
   await sleep(300);sp2.classList.add('show');
-  setStatus('TRUE HIGH AVAILABILITY - ONE DOWN, OTHERS SERVE');
+  setStatus('TRUE HIGH AVAILABILITY — ONE DOWN, OTHERS SERVE');
   await sleep(3500);sp2.classList.remove('show');
   hide(wrench);bldgs[1].style.opacity='1';
 
-  // Test kitchens
   if(!animating)return;
-  for(let i=0;i<3;i++){
-    const f=addSprite('flask',bx[i]+55,310,5);show(f,'ppop');
-    const tl=addText('TEST KITCHEN',bx[i]+20,340,'#3fb950','5px');show(tl);
-    await sleep(300);
-  }
-  setStatus('EVERY LOCATION HAS ITS OWN TEST KITCHEN');
-  await sleep(2500);
+  for(let i=0;i<3;i++){show(addImg(IMG.testKit,bx[i]+70,310,80),'bounce');await sleep(300)}
+  setStatus('EVERY LOCATION HAS ITS OWN TEST KITCHEN');await sleep(2500);
 
-  // Developer
   if(!animating)return;
-  const dev=addSprite('dev',bx[0]+55,330,6);show(dev,'ppop');
-  const sp3=addBubble("DEVS CAN BUILD<br>FROM ANY LOCATION!",40,155);
+  const dev=addImg(IMG.dev,bx[0]+70,340,70);show(dev,'bounce');
+  const sp3=bubble("DEVS CAN BUILD<br>FROM ANY LOCATION!",30,70);
   await sleep(300);sp3.classList.add('show');
-  setStatus('MULTIPLE UI INSTANCES - BUILD FROM ANYWHERE');
-  await sleep(3500);sp3.classList.remove('show');
+  setStatus('MULTIPLE UI INSTANCES — BUILD FROM ANYWHERE');await sleep(3500);sp3.classList.remove('show');
 
-  // Dev moves when test kitchen closes
   if(!animating)return;
-  const closed=addText('[CLOSED]',bx[0]+25,345,'#f85149','5px');show(closed);
-  const sp4=addBubble("KITCHEN A CLOSED?<br>WALK TO B!",200,155);
+  const closed=document.createElement('div');
+  closed.style.cssText=`position:absolute;left:${bx[0]+80}px;top:340px;font-size:6px;color:#f85149;z-index:10;font-family:'Press Start 2P',monospace;text-shadow:1px 1px 0 #000`;
+  closed.textContent='[CLOSED]';stage.appendChild(closed);
+  const sp4=bubble("KITCHEN A CLOSED?<br>WALK TO B!",180,70);
   await sleep(300);sp4.classList.add('show');
-  dev.style.left=(bx[1]+55)+'px';
+  dev.style.left=(bx[1]+70)+'px';
   setStatus('TEST KITCHEN CLOSED? WALK TO ANOTHER. KEEP CREATING.');
   await sleep(3500);sp4.classList.remove('show');
 
-  // Shared infra
   if(!animating)return;
   const infra=document.createElement('div');infra.className='infra';
   infra.innerHTML='<span>REDIS QUEUE</span><span class="sep">|</span><span>SHARED DB</span><span class="sep">|</span><span>SYNCED STATE</span>';
   stage.appendChild(infra);await sleep(200);infra.classList.add('on');
 
-  // Connection lines
   for(let i=0;i<3;i++){
-    const conn=document.createElement('div');conn.className='conn';
-    conn.style.left=(bx[i]+35)+'px';conn.style.top='390px';conn.style.height='50px';
-    stage.appendChild(conn);await sleep(200);conn.classList.add('on');
+    const c=document.createElement('div');c.className='conn';
+    c.style.cssText=`left:${bx[i]+105}px;top:400px;height:55px`;
+    stage.appendChild(c);await sleep(200);c.classList.add('on');
   }
-  setStatus('ALL LOCATIONS SHARE REDIS + DATABASE - TRUE SYNC');
-  await sleep(3000);
+  setStatus('ALL LOCATIONS SHARE REDIS + DATABASE — TRUE SYNC');await sleep(3000);
 
-  // Final card
   if(!animating)return;
-  const sp5=addBubble("<span style='color:#a371f7'>MULTI-MAIN MODE</span><br><span style='color:#888'>ENTERPRISE LICENSE</span><br><br>MULTIPLE UI INSTANCES<br>MULTIPLE BUILD ENVS<br>ONE SHARED BRAIN<br><span style='color:#3fb950'>TRUE HIGH AVAILABILITY</span>",320,70);
+  closed.remove();
+  const sp5=bubble("<span style='color:#a371f7'>MULTI-MAIN MODE</span><br><span style='color:#888'>ENTERPRISE LICENSE</span><br><br>MULTIPLE UI INSTANCES<br>MULTIPLE BUILD ENVS<br>ONE SHARED BRAIN<br><span style='color:#3fb950'>TRUE HIGH AVAILABILITY</span>",310,40);
   await sleep(300);sp5.classList.add('show');
-  hide(closed);
   setStatus('MULTI-MAIN: MULTIPLE LOCATIONS, SAME RECIPES, TRUE HA');
-  await sleep(6000);
-  animating=false;
+  await sleep(6000);animating=false;
 }
 </script>
 </body>
