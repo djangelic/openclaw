@@ -277,6 +277,11 @@ async function play0(){
   showStatus(0,'☀️ Lunch rush starting...');
   const customers=['🧑','👩','🧔','👦','👩‍🦰','🧑‍🦱','👴','👩‍🦳'];
   
+  // Smooth ramp: 0 → 48 over phases, stress climbs with it
+  const rpsSteps=[5,12,22,30,36,40,44,47,48,48,48,48];
+  const stressSteps=[5,10,18,28,40,52,65,78,85,88,90,90];
+  const stressLabels=['calm','calm','warming up','warming up','sweating','sweating','😰 stressed','😰 stressed','🔥 MAX','🔥 MAX','🔥 MAX','🔥 MAX'];
+  
   // Phase 1: Light orders — chef handles fine
   for(let i=0;i<3;i++){
     if(!animating)return;
@@ -285,8 +290,8 @@ async function play0(){
     await sleep(600);
     flyOrder(0,'🍔',cx,230);
     chef.className='actor cook';
-    setGauge('ord0',(15+i*12)/100*100,15+i*12);
-    setGauge('str0',10+i*10,(10+i*10)<30?'calm':'warming up');
+    setGauge('ord0',rpsSteps[i]/48*100,rpsSteps[i]);
+    setGauge('str0',stressSteps[i],stressLabels[i]);
     await sleep(1200);
   }
   
@@ -297,15 +302,15 @@ async function play0(){
   
   // Phase 2: More customers — chef starts struggling
   showStatus(0,'📈 Crowd growing...');
-  for(let i=3;i<7;i++){
+  for(let i=3;i<8;i++){
     if(!animating)return;
-    const cx=500+i*50;
+    const cx=500+(i-3)*50;
     addActor(0,customers[i],cx,250,'slide-in-right');
     await sleep(400);
     flyOrder(0,'🍔',cx-20,230);
     flyOrder(0,'🌮',cx+20,240);
-    setGauge('ord0',Math.min((30+i*5)/100*100,50),30+i*5);
-    setGauge('str0',40+i*10,i<5?'sweating':'😰 stressed');
+    setGauge('ord0',rpsSteps[i]/48*100,rpsSteps[i]);
+    setGauge('str0',stressSteps[i],stressLabels[i]);
     await sleep(800);
   }
   
@@ -315,15 +320,15 @@ async function play0(){
   const sp3=addSpeech(0,"I can't go<br>any faster! 😰",200,170);
   await sleep(400);sp3.classList.add('show');
   
-  // Phase 3: Ceiling — orders fly but RPS stays flat
+  // Phase 3: Ceiling — orders fly but RPS stays flat at 48
   showStatus(0,'⚠️ SQLite single-thread bottleneck...');
-  for(let i=0;i<4;i++){
+  for(let i=8;i<12;i++){
     if(!animating)return;
     flyOrder(0,'🍔',550,200);
     flyOrder(0,'🌮',600,210);
     flyOrder(0,'🍕',650,220);
-    setGauge('ord0',48/280*100,48);
-    setGauge('str0',90,'🔥 MAX');
+    setGauge('ord0',100,rpsSteps[i]);
+    setGauge('str0',stressSteps[i],stressLabels[i]);
     await sleep(1500);
   }
   
@@ -446,18 +451,17 @@ async function play2(){
     if(c)c.className='actor cook';
   }
   
-  for(let round=0;round<5;round++){
+  // Smooth ramp from ~80 → 266
+  const rpsRamp=[80,120,160,200,230,248,258,266];
+  for(let round=0;round<rpsRamp.length;round++){
     if(!animating)return;
     for(let i=0;i<4;i++){
-      flyOrder(2,'🍔',chefPositions[i][0],chefPositions[i][1]-20);
+      flyOrder(2,['🍔','🌮','🍕','🥗'][i],chefPositions[i][0],chefPositions[i][1]-20);
     }
-    const rps=Math.min(150+round*30,266);
-    setGauge('ord2',rps/280*100,rps);
-    await sleep(1500);
+    setGauge('ord2',rpsRamp[round]/280*100,rpsRamp[round]);
+    setGauge('chef2',100,4);
+    await sleep(1200);
   }
-  
-  setGauge('ord2',266/280*100,266);
-  setGauge('chef2',100,4);
   
   const sp2=addSpeech(2,"All workers cooking<br>in parallel! 🔥",350,120);
   await sleep(400);sp2.classList.add('show');
@@ -494,6 +498,7 @@ async function play3(){
   
   const ppl=['🧑','👩','🧔','👦','👩‍🦰','🧑‍🦱','👴','👩‍🦳','🧑‍🦲','👱'];
   
+  // Smooth intermediate ticks between waves
   for(let w=0;w<waves.length;w++){
     if(!animating)return;
     showStatus(3,waves[w].label);
@@ -507,15 +512,19 @@ async function play3(){
       p.style.fontSize='1.8em';
     }
     
-    setGauge('ord3',waves[w].rps/280*100,waves[w].rps);
-    setGauge('cust3',waves[w].vu/200*100,waves[w].vu);
-    
-    // Orders flying
-    for(let i=0;i<3;i++){
-      flyOrder(3,['🍔','🌮','🍕','🥗'][i%4],350+i*60,230);
-      await sleep(300);
+    // Smooth ramp between previous and current wave values
+    const prevRps=w>0?waves[w-1].rps:0;
+    const prevVu=w>0?waves[w-1].vu:0;
+    const ticks=5;
+    for(let t=1;t<=ticks;t++){
+      const curRps=Math.round(prevRps+(waves[w].rps-prevRps)*t/ticks);
+      const curVu=Math.round(prevVu+(waves[w].vu-prevVu)*t/ticks);
+      setGauge('ord3',curRps/280*100,curRps);
+      setGauge('cust3',curVu/200*100,curVu);
+      if(t<=3)flyOrder(3,['🍔','🌮','🍕'][t-1],350+(t-1)*60,230);
+      await sleep(400);
     }
-    await sleep(3000);
+    await sleep(1500);
   }
   
   if(!animating)return;
@@ -555,25 +564,25 @@ async function play4(){
   const runner=addActor(4,'🏃',250,250,'');
   
   showStatus(4,'Every order crosses the network...');
-  for(let i=0;i<4;i++){
+  // Smooth ramp: RPS climbs to 128, latency climbs with it
+  const rpsSteps4=[30,55,80,95,108,118,125,128];
+  const latSteps4=[8,18,30,42,55,68,78,85];
+  const latLabels4=['low','low','medium','medium','HIGH','HIGH','🔴 CRITICAL','🔴 CRITICAL'];
+  
+  for(let i=0;i<rpsSteps4.length;i++){
     if(!animating)return;
     // Run to kitchen
     runner.style.left='550px';runner.style.transition='left 1s linear';
     flyOrder(4,'🍔',350,230);
-    await sleep(1200);
+    setGauge('ord4',rpsSteps4[i]/280*100,rpsSteps4[i]);
+    setGauge('lat4',latSteps4[i],latLabels4[i]);
+    await sleep(1000);
     // Run back
     runner.style.left='250px';
     flyOrder(4,'✅',400,240);
-    
-    const rps=80+i*15;
-    setGauge('ord4',rps/280*100,rps);
-    setGauge('lat4',(i+1)*25,['low','medium','HIGH','🔥 KILLING IT'][i]);
-    await sleep(1200);
+    await sleep(800);
+    if(i===4) cable.className='cable broken';
   }
-  
-  setGauge('ord4',128/280*100,128);
-  setGauge('lat4',85,'🔴 CRITICAL');
-  cable.className='cable broken';
   
   if(!animating)return;
   showStatus(4,'❌ Network latency eats 52% of performance!');
@@ -624,9 +633,17 @@ async function play5(){
       document.getElementById('stage5').appendChild(arrow);
     }
     
-    setGauge('rps5',s.rps/300*100,s.rps+' RPS');
+    // Smooth ramp to this tier's RPS
+    const prevRps=i>0?stages[i-1].rps:0;
+    const ticks=20;
+    for(let t=1;t<=ticks;t++){
+      if(!animating)return;
+      const cur=Math.round(prevRps+(s.rps-prevRps)*t/ticks);
+      setGauge('rps5',cur/300*100,cur+' RPS');
+      await sleep(60);
+    }
     showStatus(5,s.label+': '+s.rps+' RPS');
-    await sleep(4000);
+    await sleep(2500);
   }
   
   // Flash the split queue as a crossed-out option
