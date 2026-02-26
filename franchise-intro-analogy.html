@@ -62,32 +62,27 @@ const stage=document.getElementById('stage'),statusEl=document.getElementById('s
 let animating=false;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-const PALETTE={0:'transparent',1:'#ffffff',2:'#ff6b35',3:'#4488ff',4:'#ffcc88',5:'#ff4444',6:'#44aa44',7:'#666688',8:'#ffff44',9:'#885533',10:'#aaaacc',11:'#a371f7',12:'#3fb950'};
-
-const SPRITES={
-  building:[[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,8],[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,8],[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,8],[7,7,7,7,7,7,7,7],[7,7,9,9,9,7,7,7]],
-  chef:[[0,0,1,1,1,0,0,0],[0,1,1,1,1,1,0,0],[0,0,4,5,4,0,0,0],[0,0,4,4,4,0,0,0],[0,1,1,1,1,1,0,0],[0,0,1,1,1,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
-  customer:[[0,0,3,3,3,0,0,0],[0,3,3,3,3,3,0,0],[0,0,4,5,4,0,0,0],[0,0,4,4,4,0,0,0],[0,6,6,6,6,6,0,0],[0,0,6,6,6,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
-  dev:[[0,0,3,3,3,0,0,0],[0,3,3,3,3,3,0,0],[0,0,11,5,11,0,0,0],[0,0,4,4,4,0,0,0],[0,11,11,11,11,11,0,0],[0,0,11,11,11,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
-  flask:[[0,0,1,1,0,0],[0,0,1,1,0,0],[0,1,1,1,1,0],[1,12,12,12,12,1],[1,12,12,12,12,1],[0,1,1,1,1,0]],
-  wrench:[[0,0,0,10,10,0],[0,0,10,10,10,10],[0,0,0,10,10,0],[0,0,0,10,10,0],[0,0,0,10,10,0],[0,0,10,10,10,10]],
-  star:[[0,1,0],[1,1,1],[0,1,0]]
+const SPRITE_BASE='https://djangelic.github.io/openclaw/pixel-sprites/';
+const SPRITE_MAP={
+  building:'franchise-building.png',
+  chef:'chef.png',
+  customer:'customer.png',
+  dev:'chef-stressed.png',
+  flask:'test-kitchen.png',
+  wrench:'wrench-tool.png'
 };
-
-function drawSprite(data,scale=6){
-  const h=data.length,w=data[0].length;
-  const c=document.createElement('canvas');c.width=w*scale;c.height=h*scale;c.style.imageRendering='pixelated';
-  const ctx=c.getContext('2d');
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
-    const clr=PALETTE[data[y][x]];
-    if(clr&&clr!=='transparent'){ctx.fillStyle=clr;ctx.fillRect(x*scale,y*scale,scale,scale)}
-  }
-  return c;
-}
+const SPRITE_SIZES={building:[72,72],chef:[48,48],customer:[48,48],dev:[48,48],flask:[48,48],wrench:[48,48]};
 
 function addSprite(name,x,y,scale=6,id=''){
-  const c=drawSprite(SPRITES[name],scale);c.className='sprite';c.style.left=x+'px';c.style.top=y+'px';
-  if(id)c.id=id;stage.appendChild(c);return c;
+  const img=document.createElement('img');
+  img.src=SPRITE_BASE+SPRITE_MAP[name];
+  img.className='sprite';
+  const sz=SPRITE_SIZES[name]||[48,48];
+  img.style.width=sz[0]+'px';img.style.height=sz[1]+'px';
+  img.style.left=x+'px';img.style.top=y+'px';
+  img.style.imageRendering='pixelated';
+  img.draggable=false;
+  if(id)img.id=id;stage.appendChild(img);return img;
 }
 function addText(text,x,y,color='#fff',size='7px'){
   const d=document.createElement('div');

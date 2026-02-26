@@ -56,18 +56,25 @@ const stage=document.getElementById('stage'),statusEl=document.getElementById('s
 let animating=false;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-const PALETTE={0:'transparent',1:'#ffffff',2:'#ff6b35',3:'#4488ff',4:'#ffcc88',5:'#ff4444',6:'#44aa44',7:'#666688',8:'#ffff44',9:'#885533',10:'#aaaacc',11:'#ffff88'};
+const SPRITE_BASE='https://djangelic.github.io/openclaw/pixel-sprites/';
+const SPRITE_MAP={
+  truck:'food-truck.png',
+  chef:'chef.png',
+  customer:'customer.png',
+  shelf:'kitchen-shelf-messy.png',
+  pan:null,
+  star:null
+};
+const SPRITE_SIZES={truck:[80,48],chef:[48,48],customer:[48,48],shelf:[64,64],pan:[48,30],star:[24,24]};
 
-const SPRITES={
-  truck:[[0,0,0,1,1,1,1,0],[0,0,1,2,2,2,2,1],[0,1,2,2,2,2,2,2],[1,1,1,1,1,1,1,1],[1,3,3,1,1,1,3,3],[0,3,3,0,0,0,3,3]],
-  chef:[[0,0,1,1,1,0,0,0],[0,1,1,1,1,1,0,0],[0,0,4,5,4,0,0,0],[0,0,4,4,4,0,0,0],[0,1,1,1,1,1,0,0],[0,0,1,1,1,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
-  customer:[[0,0,3,3,3,0,0,0],[0,3,3,3,3,3,0,0],[0,0,4,5,4,0,0,0],[0,0,4,4,4,0,0,0],[0,6,6,6,6,6,0,0],[0,0,6,6,6,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
-  shelf:[[7,7,7,7,7,7],[7,8,7,8,7,8],[7,7,7,7,7,7],[7,8,7,8,7,8],[7,7,7,7,7,7],[9,9,9,9,9,9]],
+// Fallback pixel data for sprites without PNGs
+const PALETTE={0:'transparent',1:'#ffffff',3:'#4488ff',7:'#666688',10:'#aaaacc'};
+const PIXEL_SPRITES={
   pan:[[0,0,0,0,0,10,10,10],[0,7,7,7,7,0,0,0],[7,7,7,7,7,7,0,0],[7,7,7,7,7,7,0,0],[0,7,7,7,7,0,0,0]],
   star:[[0,1,0],[1,1,1],[0,1,0]]
 };
 
-function drawSprite(data,scale=6){
+function drawPixelSprite(data,scale=6){
   const h=data.length,w=data[0].length;
   const c=document.createElement('canvas');c.width=w*scale;c.height=h*scale;c.style.imageRendering='pixelated';
   const ctx=c.getContext('2d');
@@ -79,8 +86,19 @@ function drawSprite(data,scale=6){
 }
 
 function addSprite(name,x,y,scale=6){
-  const c=drawSprite(SPRITES[name],scale);c.className='sprite';c.style.left=x+'px';c.style.top=y+'px';
-  stage.appendChild(c);return c;
+  let el;
+  if(SPRITE_MAP[name]){
+    el=document.createElement('img');
+    el.src=SPRITE_BASE+SPRITE_MAP[name];
+    const sz=SPRITE_SIZES[name]||[48,48];
+    el.style.width=sz[0]+'px';el.style.height=sz[1]+'px';
+    el.style.imageRendering='pixelated';
+    el.draggable=false;
+  }else{
+    el=drawPixelSprite(PIXEL_SPRITES[name],scale);
+  }
+  el.className='sprite';el.style.left=x+'px';el.style.top=y+'px';
+  stage.appendChild(el);return el;
 }
 function addText(text,x,y,color='#fff',size='8px'){
   const d=document.createElement('div');

@@ -200,43 +200,29 @@ let animating=false,currentScene=0,autoPlaying=false;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const S=n=>document.getElementById('stage'+n);
 
-// ===== Pixel Sprite System =====
-const SPRITES={
-  truck:[[0,0,0,1,1,1,1,0],[0,0,1,2,2,2,2,1],[0,1,2,2,2,2,2,2],[1,1,1,1,1,1,1,1],[1,3,3,1,1,1,3,3],[0,3,3,0,0,0,3,3]],
-  chef:[[0,0,1,1,1,0,0,0],[0,1,1,1,1,1,0,0],[0,0,4,5,4,0,0,0],[0,0,4,4,4,0,0,0],[0,1,1,1,1,1,0,0],[0,0,1,1,1,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
-  customer:[[0,0,3,3,3,0,0,0],[0,3,3,3,3,3,0,0],[0,0,4,5,4,0,0,0],[0,0,4,4,4,0,0,0],[0,6,6,6,6,6,0,0],[0,0,6,6,6,0,0,0],[0,0,4,0,4,0,0,0],[0,0,4,0,4,0,0,0]],
-  building:[[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,8],[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,8],[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,8],[7,7,7,7,7,7,7,7],[7,7,9,9,9,7,7,7]],
-  factory:[[0,0,7,7,7,7,0,0],[0,7,7,7,7,7,7,0],[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,7],[7,7,7,7,7,7,7,7],[7,8,7,8,7,8,7,7],[7,7,7,7,7,7,7,7],[7,7,9,9,9,7,7,7]],
-  wrench:[[0,0,0,10,10,0,0,0],[0,0,10,10,10,10,0,0],[0,0,0,10,10,0,0,0],[0,0,0,10,10,0,0,0],[0,0,0,10,10,0,0,0],[0,0,0,10,10,0,0,0],[0,0,10,10,10,10,0,0],[0,0,0,10,10,0,0,0]],
+// ===== PNG Sprite System =====
+const SPRITE_BASE='https://djangelic.github.io/openclaw/pixel-sprites/';
+const SPRITE_PNG={
+  truck:'food-truck.png',chef:'chef.png',customer:'customer.png',
+  building:'restaurant.png',factory:'franchise-building.png',
+  wrench:'wrench-tool.png',runner:'runner-exhausted.png',
+  pan:null,ticket:null,star:null,heart:null,skull:null
+};
+const SPRITE_SIZES={truck:[80,48],chef:[48,48],customer:[48,48],building:[72,72],factory:[72,72],wrench:[48,48],runner:[48,48],pan:[48,30],ticket:[24,24],star:[24,24],heart:[30,30],skull:[30,30]};
+
+// Fallback pixel data for sprites without PNGs
+const PALETTE={0:'transparent',1:'#ffffff',7:'#666688',10:'#aaaacc',11:'#ffff88',12:'#ffffff',13:'#ff4466'};
+const PIXEL_SPRITES={
   pan:[[0,0,0,0,0,10,10,10],[0,7,7,7,7,0,0,0],[7,7,7,7,7,7,0,0],[7,7,7,7,7,7,0,0],[0,7,7,7,7,0,0,0]],
   ticket:[[11,11,11,11],[11,0,0,11],[11,0,0,11],[11,11,11,11]],
   star:[[0,12,0],[12,12,12],[0,12,0]],
   heart:[[0,13,0,13,0],[13,13,13,13,13],[13,13,13,13,13],[0,13,13,13,0],[0,0,13,0,0]],
-  skull:[[0,1,1,1,0],[1,0,1,0,1],[1,1,1,1,1],[0,1,0,1,0],[0,0,1,0,0]],
-  runner:[[0,0,3,3,0,0],[0,0,4,4,0,0],[0,6,6,6,6,0],[6,0,6,6,0,0],[0,0,4,0,4,0],[0,4,0,0,0,4]]
+  skull:[[0,1,1,1,0],[1,0,1,0,1],[1,1,1,1,1],[0,1,0,1,0],[0,0,1,0,0]]
 };
 
-const PALETTE={
-  0:'transparent',
-  1:'#ffffff',  // white
-  2:'#ff6b35',  // orange (truck)
-  3:'#4488ff',  // blue (hat/hair)
-  4:'#ffcc88',  // skin
-  5:'#ff4444',  // mouth/accent
-  6:'#44aa44',  // green (clothes)
-  7:'#666688',  // building gray
-  8:'#ffff44',  // window yellow
-  9:'#885533',  // door brown
-  10:'#aaaacc', // metal
-  11:'#ffff88', // ticket yellow
-  12:'#ffffff', // star
-  13:'#ff4466'  // heart red
-};
-
-function drawSprite(data,scale=6){
+function drawPixelSprite(data,scale=6){
   const h=data.length,w=data[0].length;
-  const c=document.createElement('canvas');
-  c.width=w*scale;c.height=h*scale;c.style.imageRendering='pixelated';
+  const c=document.createElement('canvas');c.width=w*scale;c.height=h*scale;c.style.imageRendering='pixelated';
   const ctx=c.getContext('2d');
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){
     const clr=PALETTE[data[y][x]];
@@ -246,10 +232,20 @@ function drawSprite(data,scale=6){
 }
 
 function addSprite(stageN,name,x,y,scale=6,id=''){
-  const c=drawSprite(SPRITES[name],scale);
-  c.className='sprite';c.style.left=x+'px';c.style.top=y+'px';
-  if(id)c.id=id;
-  S(stageN).appendChild(c);return c;
+  let el;
+  if(SPRITE_PNG[name]){
+    el=document.createElement('img');
+    el.src=SPRITE_BASE+SPRITE_PNG[name];
+    const sz=SPRITE_SIZES[name]||[48,48];
+    el.style.width=sz[0]+'px';el.style.height=sz[1]+'px';
+    el.style.imageRendering='pixelated';
+    el.draggable=false;
+  }else{
+    el=drawPixelSprite(PIXEL_SPRITES[name],scale);
+  }
+  el.className='sprite';el.style.left=x+'px';el.style.top=y+'px';
+  if(id)el.id=id;
+  S(stageN).appendChild(el);return el;
 }
 
 function addText(stageN,text,x,y,color='#fff',size='8px'){

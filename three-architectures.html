@@ -25,7 +25,7 @@ body{background:#0f0f23;display:flex;align-items:center;justify-content:center;m
 <body>
 <div class="card">
   <div class="arch t1">
-    <canvas id="c1" width="64" height="48" style="width:128px;height:96px"></canvas>
+    <img src="https://djangelic.github.io/openclaw/pixel-sprites/food-truck.png" style="width:128px;height:96px;image-rendering:pixelated">
     <div class="title">FOOD TRUCK</div>
     <div class="subtitle">SINGLE INSTANCE<br>SQLITE / POSTGRESQL</div>
     <div class="rps">48-95</div>
@@ -34,7 +34,7 @@ body{background:#0f0f23;display:flex;align-items:center;justify-content:center;m
   </div>
   <div class="divider"></div>
   <div class="arch t2">
-    <canvas id="c2" width="64" height="64" style="width:128px;height:128px"></canvas>
+    <img src="https://djangelic.github.io/openclaw/pixel-sprites/restaurant.png" style="width:128px;height:128px;image-rendering:pixelated">
     <div class="title">RESTAURANT</div>
     <div class="subtitle">QUEUE MODE<br>REDIS + WORKERS</div>
     <div class="rps">266-280</div>
@@ -43,7 +43,7 @@ body{background:#0f0f23;display:flex;align-items:center;justify-content:center;m
   </div>
   <div class="divider"></div>
   <div class="arch t3">
-    <canvas id="c3" width="64" height="64" style="width:128px;height:128px"></canvas>
+    <img src="https://djangelic.github.io/openclaw/pixel-sprites/franchise-building.png" style="width:128px;height:128px;image-rendering:pixelated">
     <div class="title">FRANCHISE</div>
     <div class="subtitle">MULTI-MAIN MODE<br>ENTERPRISE LICENSE</div>
     <div class="rps">HA</div>
@@ -51,48 +51,6 @@ body{background:#0f0f23;display:flex;align-items:center;justify-content:center;m
     <div class="tag">ENTERPRISE</div>
   </div>
 </div>
-<script>
-const P={0:'transparent',1:'#ffffff',2:'#ff6b35',3:'#4488ff',4:'#ffcc88',5:'#ff4444',6:'#44aa44',7:'#666688',8:'#ffff44',9:'#885533',10:'#aaaacc',11:'#a371f7'};
-function draw(canvasId,data,scale=8){
-  const c=document.getElementById(canvasId),ctx=c.getContext('2d');
-  c.style.imageRendering='pixelated';
-  for(let y=0;y<data.length;y++)for(let x=0;x<data[y].length;x++){
-    const clr=P[data[y][x]];
-    if(clr&&clr!=='transparent'){ctx.fillStyle=clr;ctx.fillRect(x,y,1,1)}
-  }
-}
-// Food truck
-draw('c1',[
-  [0,0,0,0,0,0,0,0],
-  [0,0,0,1,1,1,1,0],
-  [0,0,1,2,2,2,2,1],
-  [0,1,2,2,2,2,2,2],
-  [1,1,1,1,1,1,1,1],
-  [1,3,3,1,1,1,3,3],
-  [0,3,3,0,0,0,3,3]
-]);
-// Restaurant (building)
-draw('c2',[
-  [7,7,7,7,7,7,7,7],
-  [7,8,7,8,7,8,7,8],
-  [7,7,7,7,7,7,7,7],
-  [7,8,7,8,7,8,7,8],
-  [7,7,7,7,7,7,7,7],
-  [7,8,7,8,7,8,7,8],
-  [7,7,7,7,7,7,7,7],
-  [7,7,9,9,9,7,7,7]
-]);
-// Franchise (3 mini buildings)
-draw('c3',[
-  [7,7,7,0,7,7,7,0],
-  [7,8,7,0,7,8,7,0],
-  [7,7,7,0,7,7,7,0],
-  [7,9,7,0,7,9,7,0],
-  [0,0,0,0,0,0,0,0],
-  [0,0,7,7,7,7,0,0],
-  [0,0,7,8,7,8,0,0],
-  [0,0,7,7,9,7,0,0]
-]);
-</script>
+<!-- No script needed - using PNG images directly -->
 </body>
 </html>
