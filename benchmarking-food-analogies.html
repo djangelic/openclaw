@@ -241,9 +241,12 @@ function flyOrder(stage,emoji,x,y){
   setTimeout(()=>el.remove(),2200);
 }
 
-function setGauge(id,pct,val){
-  const fill=document.getElementById(id+'Fill');
-  const valEl=document.getElementById(id+'Val');
+function setGauge(prefix,pct,val){
+  // HTML IDs are like ordFill0, ordVal0 — prefix="ord0" → split into name+number
+  const m=prefix.match(/^([a-zA-Z]+)(\d+)$/);
+  if(!m)return;
+  const fill=document.getElementById(m[1]+'Fill'+m[2]);
+  const valEl=document.getElementById(m[1]+'Val'+m[2]);
   if(fill)fill.style.width=Math.min(pct,100)+'%';
   if(valEl)valEl.textContent=val;
 }
