@@ -19,11 +19,19 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
 .chart-container canvas{height:450px!important}
 .scene-title{font-size:1.8em;color:#ff6b35;margin-bottom:8px;font-weight:700}
 .scene-subtitle{font-size:1em;color:#8b949e;margin-bottom:24px}
-.counter{position:fixed;top:80px;right:30px;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px 20px;text-align:center;z-index:50}
-.counter .vu{font-size:2.2em;font-weight:800;color:#ff6b35}
-.counter .vu-label{font-size:.75em;color:#8b949e}
-.counter .rps{font-size:1.6em;font-weight:700;color:#3fb950;margin-top:4px}
-.counter .rps-label{font-size:.75em;color:#8b949e}
+.gauge-bar{display:none;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px 24px;margin-top:16px;width:900px;max-width:95vw}
+.gauge-row{display:flex;align-items:center;gap:16px;margin:6px 0}
+.gauge-label{font-size:.8em;color:#8b949e;min-width:90px;text-align:right;font-weight:600}
+.gauge-track{flex:1;height:28px;background:#21262d;border-radius:14px;overflow:hidden;position:relative}
+.gauge-fill{height:100%;border-radius:14px;transition:width .5s ease-out;position:relative}
+.gauge-fill.rps-fill{background:linear-gradient(90deg,#1a4d1a,#3fb950,#3fb950)}
+.gauge-fill.vu-fill{background:linear-gradient(90deg,#4a2800,#ff6b35,#ff6b35)}
+.gauge-fill::after{content:'';position:absolute;right:0;top:0;width:3px;height:100%;background:#fff;border-radius:2px;box-shadow:0 0 8px rgba(255,255,255,.6)}
+.gauge-value{min-width:80px;font-size:1.3em;font-weight:800;text-align:left}
+.gauge-value.rps-val{color:#3fb950}
+.gauge-value.vu-val{color:#ff6b35}
+.gauge-ticks{flex:1;display:flex;justify-content:space-between;padding:0 2px;margin-top:-2px}
+.gauge-ticks span{font-size:.6em;color:#484f58}
 .pulse{animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3fb950;margin-right:6px}
@@ -59,19 +67,17 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
   <span style="margin-left:12px;font-size:.8em;color:#484f58">Screen record with OBS for B-roll capture</span>
 </div>
 
-<div class="counter" id="counter" style="display:none">
-  <div><span class="status-dot pulse"></span><span style="font-size:.8em;color:#8b949e">BENCHMARK</span></div>
-  <div class="vu" id="vuCount">0</div>
-  <div class="vu-label">Virtual Users</div>
-  <div class="rps" id="rpsCount">0</div>
-  <div class="rps-label">req/sec</div>
-</div>
+<!-- gauge bars are inside each scene now -->
 
 <!-- Scene 0: SQLite Flat Line -->
 <div class="scene active" id="scene0">
   <div class="scene-title">SQLite — The Hard Ceiling</div>
   <div class="scene-subtitle">Single Instance on c5.large (2 vCPU, 4GB RAM)</div>
   <div class="chart-container"><canvas id="chart0"></canvas></div>
+  <div class="gauge-bar" id="gauge0">
+    <div class="gauge-row"><span class="gauge-label">⚡ RPS</span><div class="gauge-track"><div class="gauge-fill rps-fill" id="rpsFill0" style="width:0%"></div></div><span class="gauge-value rps-val" id="rpsVal0">0</span></div>
+    <div class="gauge-row"><span class="gauge-label">👥 USERS</span><div class="gauge-track"><div class="gauge-fill vu-fill" id="vuFill0" style="width:0%"></div></div><span class="gauge-value vu-val" id="vuVal0">0</span></div>
+  </div>
   <div class="status-bar" id="status0"></div>
   <div class="annotation" id="ann0">48 RPS — no matter what you throw at it</div>
 </div>
@@ -81,6 +87,10 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
   <div class="scene-title">PostgreSQL Default — Scales Under Load</div>
   <div class="scene-subtitle">Same c5.large hardware, just PostgreSQL instead of SQLite</div>
   <div class="chart-container"><canvas id="chart1"></canvas></div>
+  <div class="gauge-bar" id="gauge1">
+    <div class="gauge-row"><span class="gauge-label">⚡ RPS</span><div class="gauge-track"><div class="gauge-fill rps-fill" id="rpsFill1" style="width:0%"></div></div><span class="gauge-value rps-val" id="rpsVal1">0</span></div>
+    <div class="gauge-row"><span class="gauge-label">👥 USERS</span><div class="gauge-track"><div class="gauge-fill vu-fill" id="vuFill1" style="width:0%"></div></div><span class="gauge-value vu-val" id="vuVal1">0</span></div>
+  </div>
   <div class="status-bar" id="status1"></div>
   <div class="annotation" id="ann1">71 RPS at peak — 48% improvement, zero config</div>
 </div>
@@ -90,6 +100,10 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
   <div class="scene-title">SQLite vs PostgreSQL Default</div>
   <div class="scene-subtitle">Same hardware — different databases, different stories</div>
   <div class="chart-container"><canvas id="chart2"></canvas></div>
+  <div class="gauge-bar" id="gauge2">
+    <div class="gauge-row"><span class="gauge-label">⚡ RPS</span><div class="gauge-track"><div class="gauge-fill rps-fill" id="rpsFill2" style="width:0%"></div></div><span class="gauge-value rps-val" id="rpsVal2">0</span></div>
+    <div class="gauge-row"><span class="gauge-label">👥 USERS</span><div class="gauge-track"><div class="gauge-fill vu-fill" id="vuFill2" style="width:0%"></div></div><span class="gauge-value vu-val" id="vuVal2">0</span></div>
+  </div>
   <div class="status-bar" id="status2"></div>
   <div class="annotation" id="ann2">PostgreSQL overtakes SQLite at 50 VUs and keeps climbing</div>
 </div>
@@ -99,6 +113,10 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
   <div class="scene-title">PGTune — The Free Optimization</div>
   <div class="scene-subtitle">Same c5.large, same PostgreSQL — just better config</div>
   <div class="chart-container"><canvas id="chart3"></canvas></div>
+  <div class="gauge-bar" id="gauge3">
+    <div class="gauge-row"><span class="gauge-label">⚡ RPS</span><div class="gauge-track"><div class="gauge-fill rps-fill" id="rpsFill3" style="width:0%"></div></div><span class="gauge-value rps-val" id="rpsVal3">0</span></div>
+    <div class="gauge-row"><span class="gauge-label">👥 USERS</span><div class="gauge-track"><div class="gauge-fill vu-fill" id="vuFill3" style="width:0%"></div></div><span class="gauge-value vu-val" id="vuVal3">0</span></div>
+  </div>
   <div class="status-bar" id="status3"></div>
   <div class="annotation" id="ann3">+34% for $0 — PGTune link in description</div>
 </div>
@@ -108,6 +126,10 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
   <div class="scene-title">The Big Jump — Queue Mode</div>
   <div class="scene-subtitle">From food truck (c5.large) to restaurant (c5.4xlarge)</div>
   <div class="chart-container"><canvas id="chart4"></canvas></div>
+  <div class="gauge-bar" id="gauge4">
+    <div class="gauge-row"><span class="gauge-label">⚡ RPS</span><div class="gauge-track"><div class="gauge-fill rps-fill" id="rpsFill4" style="width:0%"></div></div><span class="gauge-value rps-val" id="rpsVal4">0</span></div>
+    <div class="gauge-row"><span class="gauge-label">👥 USERS</span><div class="gauge-track"><div class="gauge-fill vu-fill" id="vuFill4" style="width:0%"></div></div><span class="gauge-value vu-val" id="vuVal4">0</span></div>
+  </div>
   <div class="status-bar" id="status4"></div>
   <div class="annotation" id="ann4">95 → 266 RPS — nearly 3× with queue mode</div>
 </div>
@@ -117,6 +139,10 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
   <div class="scene-title">Queue Mode — Rock Solid Under Pressure</div>
   <div class="scene-subtitle">c5.4xlarge with Redis + workers — single webhook test</div>
   <div class="chart-container"><canvas id="chart5"></canvas></div>
+  <div class="gauge-bar" id="gauge5">
+    <div class="gauge-row"><span class="gauge-label">⚡ RPS</span><div class="gauge-track"><div class="gauge-fill rps-fill" id="rpsFill5" style="width:0%"></div></div><span class="gauge-value rps-val" id="rpsVal5">0</span></div>
+    <div class="gauge-row"><span class="gauge-label">👥 USERS</span><div class="gauge-track"><div class="gauge-fill vu-fill" id="vuFill5" style="width:0%"></div></div><span class="gauge-value vu-val" id="vuVal5">0</span></div>
+  </div>
   <div class="status-bar" id="status5"></div>
   <div class="annotation" id="ann5">266 RPS, zero failures — the workhorse architecture</div>
 </div>
@@ -126,6 +152,10 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
   <div class="scene-title">Queue Tuning — Barely Matters</div>
   <div class="scene-subtitle">PGTune on queue mode: +5% vs +34% on single instance</div>
   <div class="chart-container"><canvas id="chart6"></canvas></div>
+  <div class="gauge-bar" id="gauge6">
+    <div class="gauge-row"><span class="gauge-label">⚡ RPS</span><div class="gauge-track"><div class="gauge-fill rps-fill" id="rpsFill6" style="width:0%"></div></div><span class="gauge-value rps-val" id="rpsVal6">0</span></div>
+    <div class="gauge-row"><span class="gauge-label">👥 USERS</span><div class="gauge-track"><div class="gauge-fill vu-fill" id="vuFill6" style="width:0%"></div></div><span class="gauge-value vu-val" id="vuVal6">0</span></div>
+  </div>
   <div class="status-bar" id="status6"></div>
   <div class="annotation" id="ann6">Architecture > tuning — queue mode is robust by default</div>
 </div>
@@ -135,6 +165,10 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
   <div class="scene-title">Split Queue — The Hallway Problem</div>
   <div class="scene-subtitle">More hardware, LESS performance. Why?</div>
   <div class="chart-container"><canvas id="chart7"></canvas></div>
+  <div class="gauge-bar" id="gauge7">
+    <div class="gauge-row"><span class="gauge-label">⚡ RPS</span><div class="gauge-track"><div class="gauge-fill rps-fill" id="rpsFill7" style="width:0%"></div></div><span class="gauge-value rps-val" id="rpsVal7">0</span></div>
+    <div class="gauge-row"><span class="gauge-label">👥 USERS</span><div class="gauge-track"><div class="gauge-fill vu-fill" id="vuFill7" style="width:0%"></div></div><span class="gauge-value vu-val" id="vuVal7">0</span></div>
+  </div>
   <div class="status-bar" id="status7"></div>
   <div class="annotation" id="ann7">Network latency kills it — don't split what works</div>
 </div>
@@ -144,6 +178,10 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
   <div class="scene-title">The Complete Scaling Ladder</div>
   <div class="scene-subtitle">Every configuration, ranked — recommended path highlighted</div>
   <div class="chart-container"><canvas id="chart8"></canvas></div>
+  <div class="gauge-bar" id="gauge8">
+    <div class="gauge-row"><span class="gauge-label">⚡ RPS</span><div class="gauge-track"><div class="gauge-fill rps-fill" id="rpsFill8" style="width:0%"></div></div><span class="gauge-value rps-val" id="rpsVal8">0</span></div>
+    <div class="gauge-row"><span class="gauge-label">👥 USERS</span><div class="gauge-track"><div class="gauge-fill vu-fill" id="vuFill8" style="width:0%"></div></div><span class="gauge-value vu-val" id="vuVal8">0</span></div>
+  </div>
   <div class="status-bar" id="status8"></div>
   <div class="annotation" id="ann8">48 → 71 → 95 → 266 → 280 — skip split queue entirely</div>
 </div>
@@ -153,6 +191,10 @@ select{background:#161b22;color:#e6edf3;border:1px solid #30363d;padding:8px 12p
   <div class="scene-title">Binary Data — The Exception</div>
   <div class="scene-subtitle">2MB file upload workflow — different bottleneck entirely</div>
   <div class="chart-container"><canvas id="chart9"></canvas></div>
+  <div class="gauge-bar" id="gauge9">
+    <div class="gauge-row"><span class="gauge-label">⚡ RPS</span><div class="gauge-track"><div class="gauge-fill rps-fill" id="rpsFill9" style="width:0%"></div></div><span class="gauge-value rps-val" id="rpsVal9">0</span></div>
+    <div class="gauge-row"><span class="gauge-label">👥 USERS</span><div class="gauge-track"><div class="gauge-fill vu-fill" id="vuFill9" style="width:0%"></div></div><span class="gauge-value vu-val" id="vuVal9">0</span></div>
+  </div>
   <div class="status-bar" id="status9"></div>
   <div class="annotation" id="ann9">~9 RPS everywhere — queue mode fails entirely (500 errors)</div>
 </div>
@@ -191,11 +233,26 @@ document.getElementById('sceneSelect').addEventListener('change', e => {
   resetScene();
 });
 
+const MAX_RPS = 300; // gauge scale max
+const MAX_VU = 200;
+
 function updateCounter(vu, rps, show=true) {
-  const el = document.getElementById('counter');
-  el.style.display = show ? 'block' : 'none';
-  document.getElementById('vuCount').textContent = vu;
-  document.getElementById('rpsCount').textContent = rps + ' RPS';
+  const gauge = document.getElementById('gauge'+currentScene);
+  if(!gauge) return;
+  gauge.style.display = show ? 'block' : 'none';
+  
+  const rpsNum = typeof rps === 'number' ? rps : parseInt(rps)||0;
+  const vuNum = typeof vu === 'number' ? vu : parseInt(vu)||0;
+  
+  const rpsFill = document.getElementById('rpsFill'+currentScene);
+  const rpsVal = document.getElementById('rpsVal'+currentScene);
+  const vuFill = document.getElementById('vuFill'+currentScene);
+  const vuVal = document.getElementById('vuVal'+currentScene);
+  
+  if(rpsFill) rpsFill.style.width = Math.min(rpsNum/MAX_RPS*100, 100)+'%';
+  if(rpsVal) rpsVal.textContent = rpsNum + ' RPS';
+  if(vuFill) vuFill.style.width = (vuNum > 0 ? Math.min(vuNum/MAX_VU*100, 100) : 0)+'%';
+  if(vuVal) vuVal.textContent = vuNum > 0 ? vuNum : '—';
 }
 
 function hideAnnotation(n) { document.getElementById('ann'+n).classList.remove('show'); }
@@ -642,7 +699,7 @@ async function play9() {
 
 // Scene 10: Hero Stats (~40s)
 async function play10() {
-  document.getElementById('counter').style.display = 'none';
+  const gauge = document.getElementById('gauge10'); // no gauge on hero stats
   for(let i=0;i<5;i++) document.getElementById('hs'+i).classList.remove('show');
   hideAnnotation(10);
   
@@ -669,7 +726,8 @@ async function playScene() {
 function resetScene() {
   animating = false;
   autoPlaying = false;
-  document.getElementById('counter').style.display = 'none';
+  const gauge = document.getElementById('gauge'+currentScene);
+  if(gauge) gauge.style.display = 'none';
   if(charts[currentScene]){charts[currentScene].destroy();delete charts[currentScene];}
   const st = document.getElementById('status'+currentScene);
   if(st) st.innerHTML = '';
