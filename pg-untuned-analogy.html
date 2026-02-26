@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PostgreSQL Default — The Messy Kitchen</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',system-ui,sans-serif;flex-direction:column;gap:20px}
+.stage{position:relative;width:960px;height:540px;background:#161b22;border:1px solid #30363d;border-radius:20px;overflow:hidden}
+.ground{position:absolute;bottom:0;width:100%;height:90px;background:linear-gradient(0deg,#1a1e24,#21262d)}
+.counter-top{position:absolute;bottom:90px;left:60px;width:840px;height:6px;background:#30363d;border-radius:3px}
+
+.actor{position:absolute;font-size:3em;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));transition:all .6s ease;opacity:0}
+.actor.on{opacity:1}
+
+.speech{position:absolute;background:#21262d;border:1px solid #30363d;border-radius:12px;padding:10px 16px;font-size:.9em;color:#e6edf3;opacity:0;transition:opacity .5s;max-width:240px;text-align:center;z-index:20}
+.speech::after{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #21262d}
+.speech.show{opacity:1}
+
+.title-bar{position:absolute;top:16px;left:50%;transform:translateX(-50%);text-align:center;z-index:10}
+.title-bar h1{font-size:1.5em;color:#ff6b35;font-weight:800}
+.title-bar p{font-size:.85em;color:#8b949e;margin-top:2px}
+
+.label{position:absolute;font-size:.7em;color:#8b949e;text-align:center;opacity:0;transition:opacity .5s}
+.label.on{opacity:1}
+
+/* Animations */
+@keyframes cook{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-5deg) translateY(-3px)}75%{transform:rotate(5deg) translateY(-3px)}}
+@keyframes search{0%,100%{transform:translateX(0)}30%{transform:translateX(-15px)}70%{transform:translateX(15px)}}
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@keyframes sparkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
+@keyframes slideDown{from{transform:translateY(-30px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.cooking{animation:cook .6s ease infinite}
+.searching{animation:search 1s ease infinite}
+.popping{animation:pop .5s cubic-bezier(.34,1.56,.64,1) forwards}
+.floating{animation:float 2s ease-in-out infinite}
+.shaking{animation:shake .4s ease infinite}
+.sparkling{animation:sparkle 1.5s ease infinite}
+
+/* Status bar */
+.status{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-size:.9em;color:#8b949e;z-index:10;white-space:nowrap;opacity:0;transition:opacity .5s}
+.status.show{opacity:1}
+
+/* Controls */
+.controls{display:flex;gap:10px}
+button{background:#ff6b35;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:1em;cursor:pointer;font-weight:600}
+button:hover{background:#e55a25}
+button.sec{background:#21262d;color:#8b949e}
+button.sec:hover{background:#30363d}
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="title-bar">
+    <h1>🚚 Food Truck — PostgreSQL Default</h1>
+    <p>Bigger pantry than SQLite, but nobody organized the shelves</p>
+  </div>
+  <div class="ground"></div>
+  <div class="counter-top"></div>
+  <div class="status" id="status"></div>
+</div>
+
+<div class="controls">
+  <button onclick="play()">▶ Play</button>
+  <button class="sec" onclick="reset()">↺ Reset</button>
+</div>
+
+<script>
+const stage=document.getElementById('stage');
+const statusEl=document.getElementById('status');
+let animating=false;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+function el(emoji,x,y,size='3em',id=''){
+  const d=document.createElement('div');d.className='actor';d.textContent=emoji;
+  d.style.left=x+'px';d.style.top=y+'px';d.style.fontSize=size;
+  if(id)d.id=id;stage.appendChild(d);return d;
+}
+function lbl(text,x,y,id=''){
+  const d=document.createElement('div');d.className='label';d.textContent=text;
+  d.style.left=x+'px';d.style.top=y+'px';if(id)d.id=id;stage.appendChild(d);return d;
+}
+function speech(text,x,y){
+  const d=document.createElement('div');d.className='speech';d.innerHTML=text;
+  d.style.left=x+'px';d.style.top=y+'px';stage.appendChild(d);return d;
+}
+function show(e,cls=''){e.classList.add('on');if(cls)e.classList.add(cls)}
+function hide(e){e.classList.remove('on')}
+function setStatus(t){statusEl.textContent=t;statusEl.classList.add('show')}
+
+function reset(){
+  animating=false;
+  stage.querySelectorAll('.actor,.speech,.label').forEach(e=>e.remove());
+  statusEl.classList.remove('show');statusEl.textContent='';
+}
+
+async function play(){
+  reset();
+  await sleep(200);
+  animating=true;
+
+  // === ACT 1: Set the scene — the truck with a messy kitchen ===
+  
+  // Truck body
+  const truck=el('🚚',30,300,'5em');
+  show(truck,'popping');
+  await sleep(800);
+
+  // Chef appears
+  const chef=el('👨‍🍳',180,290,'3.5em','chef');
+  show(chef,'popping');
+  await sleep(600);
+
+  // Kitchen equipment — scattered messily
+  const pan=el('🍳',300,310,'2.2em');show(pan,'popping');await sleep(200);
+  const knife=el('🔪',370,320,'2em');show(knife,'popping');await sleep(200);
+  const pot=el('🥘',440,300,'2.2em');show(pot,'popping');await sleep(200);
+  const board=el('�cutting','0','0');// skip bad emoji
+  
+  // The PANTRY — big but messy
+  const shelf1=el('🗄️',550,240,'3em');show(shelf1,'popping');await sleep(300);
+  const shelf2=el('🗄️',620,240,'3em');show(shelf2,'popping');await sleep(300);
+  const shelf3=el('🗄️',690,240,'3em');show(shelf3,'popping');await sleep(300);
+  
+  const pantryLbl=lbl('📦 PostgreSQL Pantry — BIG but messy',560,215);pantryLbl.classList.add('on');
+  
+  // Ingredients scattered randomly on shelves
+  const ingredients=[
+    el('🧅',555,280,'1.4em'),el('🥕',640,270,'1.4em'),el('🧄',710,285,'1.4em'),
+    el('🫑',575,290,'1.4em'),el('🥫',660,280,'1.4em'),el('🧂',695,270,'1.4em'),
+    el('🫒',560,270,'1.2em'),el('🥬',630,290,'1.2em'),el('🍅',700,275,'1.2em')
+  ];
+  for(const ing of ingredients){show(ing);await sleep(100);}
+  
+  await sleep(1000);
+  if(!animating)return;
+  
+  const sp1=speech("Way more space than<br>SQLite's tiny shelf!<br>But where's the garlic...?",500,140);
+  await sleep(300);sp1.classList.add('show');
+  setStatus('PostgreSQL gives you a real database — but default config wastes its potential');
+  await sleep(4000);
+  sp1.classList.remove('show');
+
+  // === ACT 2: Order comes in — chef starts cooking ===
+  if(!animating)return;
+  
+  // Customer arrives
+  const cust1=el('🧑',820,300,'2.5em');show(cust1,'popping');
+  await sleep(500);
+  const order1=el('🎫',780,260,'1.8em');show(order1,'floating');
+  setStatus('🎫 Order in: Pasta with garlic sauce');
+  await sleep(2000);
+  
+  // Chef goes to cook — but has to SEARCH for ingredients
+  if(!animating)return;
+  chef.classList.remove('popping');
+  chef.classList.add('searching');
+  
+  const sp2=speech("Okay, pasta...<br>where did I put<br>the garlic? 🤔",180,200);
+  await sleep(300);sp2.classList.add('show');
+  setStatus('⏳ Chef searching messy shelves... (untuned shared_buffers = cache misses)');
+  await sleep(3000);
+  sp2.classList.remove('show');
+  
+  // Chef walks to shelves — wrong one first
+  if(!animating)return;
+  chef.style.left='550px';chef.style.top='290px';
+  setStatus('🔍 Checking shelf 1... nope, that\'s onions');
+  await sleep(2000);
+  
+  chef.style.left='620px';
+  setStatus('🔍 Checking shelf 2... carrots, peppers...');
+  await sleep(2000);
+  
+  chef.style.left='690px';
+  setStatus('🔍 Shelf 3... found it! 🧄');
+  await sleep(1500);
+  
+  // Found it! Grabs garlic
+  if(!animating)return;
+  const sparkle=el('✨',700,250,'2em');show(sparkle,'sparkling');
+  await sleep(800);hide(sparkle);
+  
+  // Chef goes back to cook
+  chef.style.left='300px';chef.style.top='290px';
+  chef.classList.remove('searching');
+  chef.classList.add('cooking');
+  setStatus('👨‍🍳 Finally cooking! But all that searching cost time...');
+  await sleep(3000);
+  
+  // Serve
+  if(!animating)return;
+  const plate=el('🍝',750,290,'2.5em');show(plate,'popping');
+  hide(order1);
+  setStatus('✅ Order served! But it took a while...');
+  await sleep(2500);
+
+  // === ACT 3: Rush hits — the disorganization compounds ===
+  if(!animating)return;
+  
+  const sp3=speech("Now imagine 50<br>customers at once...",180,200);
+  await sleep(300);sp3.classList.add('show');
+  await sleep(3000);
+  sp3.classList.remove('show');
+  
+  // Crowd arrives
+  const crowd=['👩','🧔','👦','👩‍🦰','🧑‍🦱','👴'];
+  for(let i=0;i<crowd.length;i++){
+    if(!animating)return;
+    const c=el(crowd[i],760+((i%3)*35),280+(Math.floor(i/3)*35),'2em');
+    show(c,'popping');
+    await sleep(300);
+  }
+  
+  // Orders pile up
+  const tickets=[];
+  for(let i=0;i<4;i++){
+    const t=el('🎫',250+i*30,220-i*12,'1.5em');show(t,'popping');tickets.push(t);
+    await sleep(200);
+  }
+  
+  setStatus('📈 Orders piling up — chef keeps searching those messy shelves');
+  chef.classList.remove('cooking');
+  chef.classList.add('searching');
+  await sleep(3000);
+  
+  // Chef bouncing between shelves frantically  
+  if(!animating)return;
+  for(let trip=0;trip<3;trip++){
+    chef.style.left=(550+Math.random()*150)+'px';
+    await sleep(800);
+    chef.style.left='300px';
+    const t=tickets.pop();if(t)hide(t);
+    const served=el(['🍝','🍔','🥗','🌮'][trip],730,300+trip*15,'1.5em');
+    show(served,'popping');
+    await sleep(800);
+  }
+  
+  // === ACT 4: The verdict ===
+  if(!animating)return;
+  chef.classList.remove('searching');
+  chef.classList.add('shaking');
+  
+  const sp4=speech("I've got the space...<br>but everything's a mess!<br>71 orders is my limit 😤",350,140);
+  await sleep(300);sp4.classList.add('show');
+  
+  setStatus('🚚 PostgreSQL Default: 71 RPS — better than SQLite (48), but the untuned config holds it back');
+  await sleep(5000);
+  sp4.classList.remove('show');
+  
+  // Comparison callout
+  if(!animating)return;
+  const sp5=speech("SQLite had a tiny shelf: 48/sec<br>I have a big pantry: 71/sec<br><span style='color:#3fb950'>But imagine if someone<br>ORGANIZED these shelves... 🔧</span>",350,120);
+  await sleep(300);sp5.classList.add('show');
+  setStatus('💡 PGTune can organize this kitchen for free — that\'s the next scene...');
+  
+  await sleep(6000);
+  animating=false;
+}
+</script>
+</body>
+</html>
