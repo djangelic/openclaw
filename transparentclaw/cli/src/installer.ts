@@ -10,7 +10,7 @@ import { SystemInfo, DockerInfo, installDocker, findAvailablePort } from './dete
 
 export interface DeploymentConfig {
   type: 'local' | 'remote';
-  networking: 'tailscale' | 'cloudflare' | 'none';
+  networking: 'tailscale' | 'cloudflare' | 'ngrok' | 'none';
   ports: {
     n8n: number;
     postgres: number;
@@ -219,7 +219,6 @@ export class AIInstaller {
       networking: this.config.options.networking as any,
       ports: {
         n8n: await findAvailablePort(5678),
-        gateway: await findAvailablePort(3100),
         postgres: 5432 // Internal only
       },
       volumes: {
@@ -282,7 +281,6 @@ Provide a brief, encouraging message about the deployment plan.`;
       console.log(chalk.gray(`  ${aiResponse}`));
       console.log(chalk.blue('\n🔧 Configuration:'));
       console.log(chalk.gray(`  • n8n: http://localhost:${this.deploymentConfig.ports.n8n}`));
-      console.log(chalk.gray(`  • Gateway: http://localhost:${this.deploymentConfig.ports.gateway}`));
       console.log(chalk.gray(`  • Database: Internal PostgreSQL`));
       console.log(chalk.gray(`  • Agent Name: ${this.deploymentConfig.agentName}`));
       

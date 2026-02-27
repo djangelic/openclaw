@@ -91,10 +91,14 @@ export class SSHDeployer {
       const keyAnswers = await inquirer.prompt(keyQuestions);
       config.keyPath = keyAnswers.keyPath.replace('~', process.env.HOME || process.env.USERPROFILE || '');
       
-      try {
-        config.privateKey = await readFile(config.keyPath);
-      } catch (error) {
-        throw new Error(`Failed to read SSH key: ${error}`);
+      if (config.keyPath) {
+        try {
+          config.privateKey = await readFile(config.keyPath);
+        } catch (error) {
+          throw new Error(`Failed to read SSH key: ${error}`);
+        }
+      } else {
+        throw new Error('SSH key path is required');
       }
     } else {
       const passwordQuestions = [
@@ -201,7 +205,7 @@ export class SSHDeployer {
           resolve();
         });
 
-        writeStream.on('error', (error) => {
+        writeStream.on('error', (error: Error) => {
           reject(new Error(`File upload failed: ${error.message}`));
         });
 
@@ -229,11 +233,11 @@ export class SSHDeployer {
           resolve();
         });
 
-        writeStream.on('error', (error) => {
+        writeStream.on('error', (error: Error) => {
           reject(new Error(`File download failed: ${error.message}`));
         });
 
-        readStream.on('error', (error) => {
+        readStream.on('error', (error: Error) => {
           reject(new Error(`Remote file read failed: ${error.message}`));
         });
 
@@ -413,7 +417,8 @@ export class SSHDeployer {
       try {
         await this.executeCommand('which ufw');
       } catch {
-        spinner.skip('UFW not available, skipping firewall configuration');
+        spinner.stop();
+        console.log(chalk.yellow('UFW not available, skipping firewall configuration'));
         return;
       }
 

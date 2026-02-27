@@ -48,7 +48,8 @@ export class NetworkingSetup {
         ]);
 
         if (!installResponse.install) {
-          spinner.skip('Skipping network setup');
+          spinner.stop();
+          console.log(chalk.yellow('Skipping network setup'));
           return null;
         }
 
@@ -71,7 +72,8 @@ export class NetworkingSetup {
         spinner.succeed(chalk.green(`External access configured: ${externalUrl}`));
         return externalUrl;
       } else {
-        spinner.skip('Network setup completed (manual configuration required)');
+        spinner.stop();
+        console.log(chalk.yellow('Network setup completed (manual configuration required)'));
         return null;
       }
 
