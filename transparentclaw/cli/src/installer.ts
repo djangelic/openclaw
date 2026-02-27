@@ -6,14 +6,13 @@ import inquirer from 'inquirer';
 import { Deployer } from './deployer.js';
 import { NetworkingSetup } from './networking.js';
 import { Bootstrap } from './bootstrap.js';
-import { SystemInfo, DockerInfo, installDocker, findAvailablePort } from './utils.js';
+import { SystemInfo, DockerInfo, installDocker, findAvailablePort } from './detector.js';
 
 export interface DeploymentConfig {
   type: 'local' | 'remote';
-  networking: 'tailscale' | 'cloudflare' | 'ngrok' | 'none';
+  networking: 'tailscale' | 'cloudflare' | 'none';
   ports: {
     n8n: number;
-    gateway: number;
     postgres: number;
   };
   volumes: {

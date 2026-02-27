@@ -182,3 +182,63 @@ export async function findAvailablePort(startPort: number = 3000): Promise<numbe
   
   throw new Error(`No available ports found starting from ${startPort}`);
 }
+
+export async function checkPorts(ports: number[]): Promise<{ port: number; available: boolean }[]> {
+  const results = [];
+  
+  for (const port of ports) {
+    try {
+      const { stdout } = await execAsync(getPortCheckCommand(port));
+      const available = !isPortInUse(stdout, port);
+      results.push({ port, available });
+    } catch {
+      // If command fails, assume port is available
+      results.push({ port, available: true });
+    }
+  }
+  
+  return results;
+}
+
+export async function checkNetwork(): Promise<{
+  dockerHub: boolean;
+  internet: boolean;
+}> {
+  let dockerHub = false;
+  let internet = false;
+
+  try {
+    // Check internet connectivity
+    await execAsync('ping -c 1 8.8.8.8', { timeout: 5000 });
+    internet = true;
+  } catch {
+    // Try Windows ping format
+    try {
+      await execAsync('ping -n 1 8.8.8.8', { timeout: 5000 });
+      internet = true;
+    } catch {
+      internet = false;
+    }
+  }
+
+  try {
+    // Check Docker Hub connectivity
+    await execAsync('curl -s --max-time 10 https://registry-1.docker.io/v2/', { timeout: 10000 });
+    dockerHub = true;
+  } catch {
+    // Try with ping as fallback
+    try {
+      await execAsync('ping -c 1 registry-1.docker.io', { timeout: 5000 });
+      dockerHub = true;
+    } catch {
+      try {
+        await execAsync('ping -n 1 registry-1.docker.io', { timeout: 5000 });
+        dockerHub = true;
+      } catch {
+        dockerHub = false;
+      }
+    }
+  }
+
+  return { dockerHub, internet };
+}

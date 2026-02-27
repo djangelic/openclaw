@@ -1,0 +1,228 @@
+{
+  "name": "⏰ Heartbeat",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": "memory_daily",
+        "where": {
+          "conditions": [
+            {
+              "leftValue": "date",
+              "operation": "equal",
+              "rightValue": "=CURRENT_DATE"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "field": "created_at",
+              "direction": "DESC"
+            }
+          ]
+        },
+        "limit": 10
+      },
+      "id": "check-recent-activity",
+      "name": "Check Recent Activity",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyze recent activity and decide if proactive action is needed\n// Returns decision and optional task to execute\n\nconst analyzeActivity = () => {\n  const recentMemories = $('Check Recent Activity').all();\n  const now = new Date();\n  const hour = now.getHours();\n  \n  // Don't disturb during sleep hours (11 PM - 7 AM)\n  if (hour >= 23 || hour < 7) {\n    return {\n      action: 'none',\n      reason: 'quiet_hours',\n      message: null\n    };\n  }\n  \n  // Check if there's been any activity today\n  if (recentMemories.length === 0) {\n    return {\n      action: 'none',\n      reason: 'no_activity',\n      message: null\n    };\n  }\n  \n  // Get the most recent activity\n  const lastActivity = recentMemories[0];\n  const lastActivityTime = new Date(lastActivity.created_at);\n  const hoursSinceActivity = (now - lastActivityTime) / (1000 * 60 * 60);\n  \n  // If it's been more than 8 hours since last activity, maybe check in\n  if (hoursSinceActivity > 8) {\n    return {\n      action: 'checkin',\n      reason: 'long_silence',\n      message: 'Hey! I noticed it\\'s been a while since we last talked. Just checking in - anything I can help with today? 😊'\n    };\n  }\n  \n  // Look for patterns that might need attention\n  const todaysActivities = recentMemories.map(m => m.content.toLowerCase());\n  \n  // Check for mentions of reminders or tasks\n  const hasReminders = todaysActivities.some(activity => \n    activity.includes('remind') || \n    activity.includes('task') ||\n    activity.includes('todo') ||\n    activity.includes('later')\n  );\n  \n  if (hasReminders && hour >= 9 && hour <= 17) {\n    return {\n      action: 'reminder_check',\n      reason: 'pending_tasks',\n      message: 'I noticed you mentioned some tasks or reminders earlier. Would you like me to help you organize or check on anything?'\n    };\n  }\n  \n  // Check for error patterns or frustrations\n  const hasErrors = todaysActivities.some(activity =>\n    activity.includes('error') ||\n    activity.includes('problem') ||\n    activity.includes('issue') ||\n    activity.includes('not working')\n  );\n  \n  if (hasErrors) {\n    return {\n      action: 'help_offer',\n      reason: 'detected_issues',\n      message: 'I saw you were dealing with some issues earlier. Need any help troubleshooting or want to talk through anything?'\n    };\n  }\n  \n  // Default: no action needed\n  return {\n    action: 'none',\n    reason: 'all_good',\n    message: null\n  };\n};\n\nreturn analyzeActivity();"
+      },
+      "id": "activity-analyzer",
+      "name": "Activity Analyzer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition-1",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "none",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "should-act",
+      "name": "Should Act?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/api/v1/chat/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $json.message }}"
+            },
+            {
+              "name": "source", 
+              "value": "heartbeat"
+            },
+            {
+              "name": "priority",
+              "value": "low"
+            }
+          ]
+        }
+      },
+      "id": "send-proactive-message",
+      "name": "Send Proactive Message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 240]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "memory_daily",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "values": {
+            "date": "=CURRENT_DATE",
+            "session_id": "heartbeat",
+            "content": "Heartbeat check: {{ $json.reason }} - {{ $json.action }}",
+            "source": "heartbeat",
+            "metadata": "={{ JSON.stringify({ action: $json.action, reason: $json.reason, timestamp: new Date().toISOString() }) }}"
+          }
+        }
+      },
+      "id": "log-heartbeat",
+      "name": "Log Heartbeat",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1120, 360]
+    },
+    {
+      "parameters": {
+        "content": "## ⏰ Heartbeat Workflow\\n\\nProactive check-in routine that runs every 30 minutes.\\n\\n**What it does:**\\n- Checks recent activity patterns\\n- Respects quiet hours (11 PM - 7 AM)\\n- Offers help when issues are detected\\n- Provides gentle check-ins after long silences\\n- Suggests task reviews when reminders are mentioned\\n\\n**Smart features:**\\n- Won't spam - only acts when truly helpful\\n- Logs all decisions for transparency\\n- Adapts to user patterns over time",
+        "height": 140,
+        "width": 280
+      },
+      "id": "sticky-note-heartbeat",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [40, 240]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check Recent Activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Recent Activity": {
+      "main": [
+        [
+          {
+            "node": "Activity Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Activity Analyzer": {
+      "main": [
+        [
+          {
+            "node": "Should Act?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Act?": {
+      "main": [
+        [
+          {
+            "node": "Send Proactive Message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Heartbeat",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Heartbeat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    "heartbeat",
+    "proactive",
+    "routine"
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-02-27T21:09:00.000Z",
+  "versionId": "1"
+}

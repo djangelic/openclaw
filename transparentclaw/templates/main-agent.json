@@ -1,0 +1,322 @@
+{
+  "name": "🧠 Main Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "chat-trigger",
+      "name": "Chat Hub Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Read agent context from Data Tables\n// This builds the system prompt with soul, memory, and user info\n\nconst contextBuilder = {\n  buildSystemPrompt: async () => {\n    // Get soul (personality)\n    const soulData = await $('Read Soul').first().json;\n    const soul = {};\n    soulData.forEach(row => {\n      soul[row.key] = row.value;\n    });\n\n    // Get user profile\n    const userData = await $('Read User Profile').first().json;\n    const user = {};\n    userData.forEach(row => {\n      user[row.key] = row.value;\n    });\n\n    // Get recent memory (last 3 days)\n    const recentMemory = await $('Read Recent Memory').first().json;\n    \n    // Get relevant long-term memories\n    const longTermMemory = await $('Search Long-term Memory').first().json;\n\n    // Build system prompt\n    const systemPrompt = `# Agent Identity\nName: ${soul.name || 'Assistant'}\nPersonality: ${soul.personality || 'Helpful and transparent'}\nCommunication Style: ${soul.communication_style || 'Clear and conversational'}\nBoundaries: ${soul.boundaries || 'Respect privacy and user consent'}\n\n# User Context\nPreferred Name: ${user.preferred_name || 'User'}\nTimezone: ${user.timezone || 'UTC'}\nCommunication Preference: ${user.communication_preference || 'balanced'}\n\n# Recent Context\n${recentMemory.length ? '## Recent Activity\\n' + recentMemory.slice(-5).map(m => `${m.date}: ${m.content}`).join('\\n') : 'No recent activity.'}\n\n# Relevant Memories\n${longTermMemory.length ? '## Long-term Context\\n' + longTermMemory.slice(0, 3).map(m => `[${m.category}] ${m.content}`).join('\\n') : 'No relevant long-term memories.'}\n\n# Instructions\nYou are an AI assistant with transparent behavior. Users can see your workflows on the n8n canvas.\n- Be helpful, honest, and direct\n- Use available skills/tools when appropriate \n- Remember important information by writing to memory\n- Maintain conversation context across sessions\n- Respect user boundaries and preferences`;\n\n    return {\n      systemPrompt,\n      userMessage: $('Chat Hub Trigger').first().json.chatInput,\n      conversationId: $('Chat Hub Trigger').first().json.sessionId || 'default'\n    };\n  }\n};\n\nreturn await contextBuilder.buildSystemPrompt();"
+      },
+      "id": "context-builder",
+      "name": "Context Builder",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": "soul",
+        "options": {}
+      },
+      "id": "read-soul",
+      "name": "Read Soul",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [240, 140]
+    },
+    {
+      "parameters": {
+        "operation": "select", 
+        "table": "user_profile",
+        "options": {}
+      },
+      "id": "read-user-profile",
+      "name": "Read User Profile",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [240, 180]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": "memory_daily",
+        "where": {
+          "conditions": [
+            {
+              "leftValue": "date",
+              "operation": "largerEqual",
+              "rightValue": "=CURRENT_DATE - INTERVAL '3 days'"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "field": "created_at",
+              "direction": "DESC"
+            }
+          ]
+        },
+        "limit": 20
+      },
+      "id": "read-recent-memory",
+      "name": "Read Recent Memory", 
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [240, 220]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": "memory_long_term",
+        "where": {
+          "conditions": [
+            {
+              "leftValue": "importance",
+              "operation": "largerEqual", 
+              "rightValue": "2"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "field": "updated_at",
+              "direction": "DESC"
+            }
+          ]
+        },
+        "limit": 5
+      },
+      "id": "search-long-term-memory",
+      "name": "Search Long-term Memory",
+      "type": "n8n-nodes-base.postgres", 
+      "typeVersion": 2.4,
+      "position": [240, 260]
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "={{ $json.systemPrompt }}",
+        "hasOutputParser": true,
+        "options": {
+          "humanMessageTemplate": "={{ $json.userMessage }}",
+          "maxIterations": 3
+        }
+      },
+      "id": "ai-agent",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent", 
+      "typeVersion": 1.6,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "resource": "database",
+        "operation": "select",
+        "query": "=SELECT * FROM data_table('skills_registry') WHERE enabled = true"
+      },
+      "id": "available-tools",
+      "name": "Available Tools",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [680, 140]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.search.brave.com/res/v1/web/search?q={{ encodeURIComponent($json.query) }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "headers": {
+            "parameters": [
+              {
+                "name": "X-Subscription-Token",
+                "value": "={{ $credentials.braveSearch.apiKey }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "web-search-tool",
+      "name": "Web Search Tool",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 180]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "memory_long_term",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "values": {
+            "category": "={{ $json.category || 'general' }}",
+            "content": "={{ $json.content }}",
+            "importance": "={{ $json.importance || 2 }}",
+            "tags": "={{ $json.tags || '' }}"
+          }
+        }
+      },
+      "id": "memory-write-tool",
+      "name": "Memory Write Tool",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [680, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Save conversation summary to daily memory\n// This runs after each conversation to maintain context\n\nconst saveConversation = () => {\n  const agentResponse = $('AI Agent').first().json;\n  const userMessage = $('Context Builder').first().json.userMessage;\n  const conversationId = $('Context Builder').first().json.conversationId;\n  \n  // Create conversation summary\n  const summary = `User: ${userMessage}\\nAgent: ${agentResponse.output || agentResponse.text || 'No response'}`;\n  \n  return {\n    date: new Date().toISOString().split('T')[0],\n    session_id: conversationId,\n    content: summary,\n    source: 'chat',\n    metadata: {\n      timestamp: new Date().toISOString(),\n      model: 'claude-3-sonnet', // TODO: get from config\n      tokens_used: agentResponse.usage?.total_tokens || 0\n    }\n  };\n};\n\nreturn saveConversation();"
+      },
+      "id": "memory-writer",
+      "name": "Memory Writer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "memory_daily",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "values": {
+            "date": "={{ $json.date }}",
+            "session_id": "={{ $json.session_id }}",
+            "content": "={{ $json.content }}",
+            "source": "={{ $json.source }}",
+            "metadata": "={{ JSON.stringify($json.metadata) }}"
+          }
+        }
+      },
+      "id": "save-to-memory",
+      "name": "Save to Memory Daily",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "content": "## 🧠 Main Agent Workflow\\n\\nThis is the core AI agent that powers your chat interface.\\n\\n**Flow:**\\n1. Chat Hub Trigger receives messages\\n2. Context Builder reads your soul, memory, and profile\\n3. AI Agent processes with full context\\n4. Tools are available (web search, memory write)\\n5. Memory Writer saves conversation for future context\\n\\n**Customization:**\\n- Edit soul in Data Tables for personality changes\\n- Add new tools by creating skill workflows\\n- Modify memory retention in Memory Writer node",
+        "height": 160,
+        "width": 300
+      },
+      "id": "sticky-note-main",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [40, 140]
+    }
+  ],
+  "connections": {
+    "Chat Hub Trigger": {
+      "main": [
+        [
+          {
+            "node": "Context Builder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Soul": {
+      "main": [
+        [
+          {
+            "node": "Context Builder",
+            "type": "main", 
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read User Profile": {
+      "main": [
+        [
+          {
+            "node": "Context Builder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Recent Memory": {
+      "main": [
+        [
+          {
+            "node": "Context Builder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Long-term Memory": {
+      "main": [
+        [
+          {
+            "node": "Context Builder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Context Builder": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Memory Writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory Writer": {
+      "main": [
+        [
+          {
+            "node": "Save to Memory Daily",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    "agent",
+    "chat",
+    "core"
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-02-27T21:09:00.000Z",
+  "versionId": "1"
+}

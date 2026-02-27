@@ -1,0 +1,275 @@
+{
+  "name": "🔍 Web Search Skill",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "web-search",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Web Search Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "web-search-skill"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate and prepare search parameters\n// Ensures we have a proper query and sets defaults\n\nconst validateSearchRequest = () => {\n  const body = $('Web Search Webhook').first().json.body || {};\n  const query = body.query || body.q || '';\n  \n  if (!query || typeof query !== 'string' || query.trim().length === 0) {\n    return {\n      error: 'Missing or invalid search query',\n      code: 'INVALID_QUERY',\n      success: false\n    };\n  }\n  \n  // Clean and prepare the query\n  const cleanQuery = query.trim();\n  \n  // Extract optional parameters\n  const params = {\n    query: cleanQuery,\n    count: Math.min(parseInt(body.count) || 5, 10), // Max 10 results\n    country: body.country || 'US',\n    language: body.language || 'en',\n    safesearch: body.safesearch || 'moderate',\n    freshness: body.freshness || null, // pd, pw, pm, py\n    category: body.category || null // web, images, videos, news\n  };\n  \n  return {\n    success: true,\n    ...params,\n    timestamp: new Date().toISOString()\n  };\n};\n\nreturn validateSearchRequest();"
+      },
+      "id": "validate-request",
+      "name": "Validate Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition-1",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "is-valid-request",
+      "name": "Is Valid Request?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.search.brave.com/res/v1/web/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json.query }}"
+            },
+            {
+              "name": "count",
+              "value": "={{ $json.count }}"
+            },
+            {
+              "name": "country",
+              "value": "={{ $json.country }}"
+            },
+            {
+              "name": "search_lang",
+              "value": "={{ $json.language }}"
+            },
+            {
+              "name": "safesearch",
+              "value": "={{ $json.safesearch }}"
+            }
+          ]
+        },
+        "options": {
+          "headers": {
+            "parameters": [
+              {
+                "name": "X-Subscription-Token",
+                "value": "={{ $credentials.braveSearch.apiKey }}"
+              },
+              {
+                "name": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "brave-search-api",
+      "name": "Brave Search API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 240]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format search results for the agent\n// Cleans and structures the response from Brave Search API\n\nconst formatResults = () => {\n  try {\n    const searchResponse = $('Brave Search API').first().json;\n    const originalQuery = $('Validate Request').first().json.query;\n    \n    // Handle API errors\n    if (!searchResponse || searchResponse.error) {\n      return {\n        success: false,\n        error: searchResponse?.error?.message || 'Search API error',\n        query: originalQuery,\n        results: []\n      };\n    }\n    \n    // Extract web results\n    const webResults = searchResponse.web?.results || [];\n    \n    if (webResults.length === 0) {\n      return {\n        success: true,\n        query: originalQuery,\n        message: `No results found for \"${originalQuery}\"`,\n        results: []\n      };\n    }\n    \n    // Format results for agent consumption\n    const formattedResults = webResults.map((result, index) => {\n      return {\n        rank: index + 1,\n        title: result.title || 'No title',\n        url: result.url,\n        description: result.description || '',\n        // Clean snippet by removing extra whitespace and HTML\n        snippet: (result.description || '')\n          .replace(/<[^>]*>/g, '') // Remove HTML tags\n          .replace(/\\s+/g, ' ')    // Normalize whitespace\n          .trim()\n          .substring(0, 200) + (result.description?.length > 200 ? '...' : ''),\n        published: result.published || null,\n        domain: result.url ? new URL(result.url).hostname : null\n      };\n    });\n    \n    // Add search metadata\n    const response = {\n      success: true,\n      query: originalQuery,\n      total_results: webResults.length,\n      search_time: new Date().toISOString(),\n      results: formattedResults\n    };\n    \n    // Add query suggestions if available\n    if (searchResponse.query?.altered) {\n      response.corrected_query = searchResponse.query.altered;\n    }\n    \n    return response;\n    \n  } catch (error) {\n    return {\n      success: false,\n      error: `Result formatting error: ${error.message}`,\n      query: $('Validate Request').first().json.query || 'unknown',\n      results: []\n    };\n  }\n};\n\nreturn formatResults();"
+      },
+      "id": "format-results",
+      "name": "Format Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 240]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json, null, 2) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "return-results",
+      "name": "Return Results",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1340, 240]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, error: $json.error, code: $json.code || 'VALIDATION_ERROR' }, null, 2) }}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "return-error",
+      "name": "Return Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 360]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "memory_daily",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "values": {
+            "date": "=CURRENT_DATE",
+            "session_id": "web_search",
+            "content": "Web search performed: {{ $('Validate Request').first().json.query }} ({{ $json.total_results || 0 }} results)",
+            "source": "skill",
+            "metadata": "={{ JSON.stringify({ \n  skill: 'web_search',\n  query: $('Validate Request').first().json.query,\n  results_count: $json.total_results || 0,\n  success: $json.success,\n  timestamp: $json.search_time\n}) }}"
+          }
+        }
+      },
+      "id": "log-search-activity",
+      "name": "Log Search Activity",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1340, 180]
+    },
+    {
+      "parameters": {
+        "content": "## 🔍 Web Search Skill\\n\\nA reusable skill that the main agent can call to search the web.\\n\\n**How it works:**\\n1. Webhook receives search requests from main agent\\n2. Validates query and parameters\\n3. Calls Brave Search API\\n4. Formats results for easy consumption\\n5. Logs activity to memory\\n6. Returns structured JSON response\\n\\n**Usage from main agent:**\\nPOST /webhook/web-search\\n{\\n  \\\"query\\\": \\\"search terms\\\",\\n  \\\"count\\\": 5,\\n  \\\"country\\\": \\\"US\\\"\\n}\\n\\n**Features:**\\n- Input validation\\n- Error handling\\n- Result formatting\\n- Activity logging",
+        "height": 200,
+        "width": 320
+      },
+      "id": "sticky-note-search",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [40, 180]
+    }
+  ],
+  "connections": {
+    "Web Search Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Request": {
+      "main": [
+        [
+          {
+            "node": "Is Valid Request?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Valid Request?": {
+      "main": [
+        [
+          {
+            "node": "Brave Search API",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brave Search API": {
+      "main": [
+        [
+          {
+            "node": "Format Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Results": {
+      "main": [
+        [
+          {
+            "node": "Return Results",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Search Activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    "skill",
+    "web-search",
+    "tool"
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-02-27T21:09:00.000Z",
+  "versionId": "1"
+}

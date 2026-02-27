@@ -1,243 +1,167 @@
-# TransparentClaw 🔍
+# TransparentClaw
 
-> **One-line pitch:** OpenClaw's brain + n8n's nervous system, deployed with one command, guided by AI.
+> **AI agents with visible logic, structured memory, and workflow-native control**
 
-A self-deploying AI agent platform that combines OpenClaw's memory and personality system with n8n's transparent workflow engine. Deploy your own AI assistant that shows you exactly how it works.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](https://docs.docker.com/compose/)
+[![n8n](https://img.shields.io/badge/Powered%20by-n8n-FF6D5A.svg)](https://n8n.io)
+[![OpenClaw](https://img.shields.io/badge/Compatible%20with-OpenClaw-green.svg)](#)
 
-## 🚀 Quick Start
+## 🚀 30-Second Install
 
 ```bash
-# Install and deploy in one command
+# One command deployment
 npx transparentclaw init
 
-# Or install globally
-npm install -g transparentclaw
-tclaw init
+# Follow the AI installer prompts - it will:
+# 1. Ask for your API key (Anthropic/OpenAI)
+# 2. Set up Docker Compose stack
+# 3. Configure your agent's personality
+# 4. Launch Chat Hub interface
 ```
 
-The AI installer will:
-1. 🤖 Ask for your API key (Anthropic or OpenAI)
-2. 🔍 Analyze your system (Docker, ports, resources)
-3. 💬 Walk you through deployment options (local vs remote, networking)
-4. 🐳 Generate and deploy Docker Compose stack
-5. 🔧 Bootstrap your agent (memory, skills, workflows)
-6. 🌐 Set up external access (Tailscale, Cloudflare, or Ngrok)
-7. 🎉 Open Chat Hub in your browser
+Your transparent AI agent is ready in minutes, not hours.
 
-Your AI agent is ready in minutes, not hours.
+## The Problem with Current AI Agents
 
-## ✨ What You Get
+🚫 **Opaque Black Boxes** - You can't see how they make decisions  
+🧩 **Fragmented Memory** - Context gets lost between conversations  
+🔒 **Vendor Lock-in** - Your data trapped in proprietary systems  
+⚙️ **No Visibility** - Can't understand or modify agent behavior  
+🔄 **No Persistence** - Start from scratch every session  
 
-- **🧠 Persistent AI Agent** - Remembers conversations, learns your preferences
-- **🔍 Complete Transparency** - See and edit every workflow your agent uses
-- **📊 Visual Interface** - n8n's Chat Hub for talking, workflow editor for tweaking
-- **🔧 Extensible Skills** - Add new capabilities by building n8n workflows
-- **💾 Data Ownership** - Your data stays on your infrastructure
-- **🌐 External Access** - Reach your agent from anywhere (optional)
-- **⚡ Self-Healing** - AI installer handles errors and configuration issues
-
-## 🏗️ Architecture
+## The TransparentClaw Solution
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                   TransparentClaw CLI                    │
-│              (AI-guided installer + manager)             │
-└──────────────────────┬──────────────────────────────────┘
-                       │ generates
-                       ▼
-┌─────────────────────────────────────────────────────────┐
-│                   Docker Compose Stack                    │
-│                                                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────────┐ │
-│  │   n8n         │  │  OpenClaw    │  │   Postgres    │ │
-│  │  (embedded)   │◄─┤  Gateway     │  │   (shared)    │ │
-│  │              │  │              │  │               │ │
-│  │ • Chat Hub   │  │ • Memory     │  │ • n8n data    │ │
-│  │ • Workflows  │  │ • Soul       │  │ • Data Tables │ │
-│  │ • Data Tables│  │ • Skills     │  │ • Agent memory│ │
-│  │ • AI Agent   │  │ • Cron       │  │               │ │
-│  │ • Triggers   │  │ • Sessions   │  │               │ │
-│  └──────┬───────┘  └──────┬───────┘  └───────────────┘ │
-│         │                  │                             │
-│  ┌──────┴──────────────────┴───────┐                    │
-│  │        Bridge Service            │                    │
-│  │   (syncs OpenClaw ↔ n8n)        │                    │
-│  │                                  │                    │
-│  │ • Memory ↔ Data Tables           │                    │
-│  │ • Skills ↔ Sub-workflows         │                    │
-│  │ • Soul ↔ System prompt           │                    │
-│  │ • Tool calls ↔ Workflow execs    │                    │
-│  └──────────────────────────────────┘                    │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│               Chat Hub                       │
+│        (Your conversation interface)         │
+└──────────────┬──────────────────────────────┘
+               │
+               ▼
+┌─────────────────────────────────────────────┐
+│            Agent Brain                       │
+│                                             │
+│  📊 Data Tables     📋 Visible Workflows   │
+│  (Structured        (Logic you can see     │
+│   Memory)            and modify)           │
+│                                            │
+│  • Soul & Identity  • Tool execution      │
+│  • Long-term memory • Skill registry      │
+│  • Daily logs       • Automated routines  │
+│  • User preferences • Custom behaviors    │
+└─────────────────────────────────────────────┘
 ```
 
-## 🔧 Commands
+## ✨ Features
 
-```bash
-# Initialize new deployment
-tclaw init
+🔍 **Complete Transparency** - See every decision in visual workflows  
+🧠 **Persistent Memory** - Structured data tables that never forget  
+🎯 **Customizable Skills** - Build new capabilities via n8n workflows  
+🔧 **Visual Logic** - Edit agent behavior on a drag-and-drop canvas  
+📊 **Structured State** - Soul, memory, skills stored in queryable tables  
+🌐 **Model Agnostic** - Works with 14+ LLM providers via Chat Hub  
+🐳 **One-Command Deploy** - Docker Compose + AI installer handles everything  
+🏠 **Data Ownership** - Your infrastructure, your data, your control  
+🔒 **Privacy First** - Nothing leaves your infrastructure by default  
+⚡ **Self-Healing** - AI installer troubleshoots and fixes issues  
 
-# Check service status
-tclaw status
+## How It Works
 
-# Stop all services
-tclaw stop
+### Data Tables = Agent Memory
+Your agent's state lives in structured PostgreSQL tables that you can query and modify:
 
-# Restart services
-tclaw restart
-
-# Update to latest version
-tclaw update
-
-# View logs
-tclaw logs [service]
-
-# Backup agent data
-tclaw backup
-
-# Migrate to different server
-tclaw migrate
-```
-
-## 🌐 Networking Options
-
-| Option | Cost | Pros | Cons |
-|--------|------|------|------|
-| **Tailscale** | Free | P2P encrypted, works behind NAT | Requires Tailscale on client devices |
-| **Cloudflare Tunnel** | Free | Custom domain, no port forwarding | Requires Cloudflare account + domain |
-| **Ngrok** | Free tier | Instant URL, no config | Temporary URLs, rate limits |
-| **Local Only** | Free | Simplest setup | No external access |
-
-## 📊 Data Tables
-
-Your agent uses structured data tables for transparency:
-
-| Table | Purpose | Examples |
+| Table | Purpose | Contents |
 |-------|---------|----------|
-| `soul` | Agent personality | name, emoji, communication style |
-| `memory_long_term` | Curated memories | lessons learned, important facts |
-| `memory_daily` | Conversation logs | raw chat history by date |
-| `skills_registry` | Available capabilities | calendar, web search, file ops |
-| `user_profile` | About you | timezone, preferences, context |
-| `conversations` | Chat sessions | full conversation history |
+| `soul` | Agent identity | Name, personality, communication style, rules |
+| `memory_long_term` | Curated memories | Important facts, lessons learned, preferences |
+| `memory_daily` | Raw conversation logs | Full chat history organized by date |
+| `skills_registry` | Available tools | Workflow IDs, descriptions, parameters |
+| `user_profile` | About you | Timezone, context, personal information |
 
-## 🛠️ Creating Skills
+### Workflows = Agent Behavior
+Every action your agent takes runs through visible n8n workflows:
 
-Skills are n8n workflows that your agent can call:
+- **🧠 Conversation Flow** - How the agent processes your messages
+- **🔧 Tool Execution** - How skills get called and results returned  
+- **💭 Memory Management** - How new information gets stored
+- **⏰ Scheduled Routines** - Automated tasks (weather checks, reminders)
+- **🔍 Decision Logic** - The reasoning process made visible
 
-1. **Build in n8n**: Create workflow with Webhook trigger
-2. **Add to registry**: Register in skills Data Table  
-3. **Tag properly**: Use `skill`, `transparentclaw` tags
-4. **Test thoroughly**: Verify inputs/outputs work correctly
+You can see, understand, and modify every step.
 
-Example skill workflow:
-```json
-{
-  "name": "🌐 Web Search Skill",
-  "nodes": [
-    { "type": "n8n-nodes-base.webhook", "name": "Webhook Trigger" },
-    { "type": "n8n-nodes-base.httpRequest", "name": "Search API" },
-    { "type": "n8n-nodes-base.code", "name": "Format Results" },
-    { "type": "n8n-nodes-base.respondToWebhook", "name": "Return Results" }
-  ]
-}
-```
+## Comparison
 
-## 🔒 Security & Privacy
+| Feature | TransparentClaw | Raw ChatGPT | OpenClaw | LangChain |
+|---------|----------------|-------------|----------|-----------|
+| **Memory Persistence** | ✅ Structured tables | ❌ Session only | ✅ File-based | 🟡 Configurable |
+| **Logic Visibility** | ✅ Visual workflows | ❌ Black box | 🟡 Code-based | 🟡 Code-based |
+| **Easy Customization** | ✅ Drag & drop | ❌ None | 🟡 File editing | 🟡 Programming |
+| **Data Ownership** | ✅ Your infrastructure | ❌ OpenAI servers | ✅ Local files | ✅ Your choice |
+| **Model Flexibility** | ✅ 14+ providers | ❌ OpenAI only | ✅ Multiple | ✅ Multiple |
+| **Deployment Ease** | ✅ One command | ✅ Just signup | 🟡 Manual setup | ❌ Complex setup |
+| **Visual Interface** | ✅ Chat Hub + n8n | ✅ ChatGPT web | 🟡 Terminal/Slack | ❌ Code only |
+| **Skills/Tools** | ✅ Workflow-based | 🟡 Built-in only | ✅ File-based | ✅ Programming |
 
-- **Local First**: Your data never leaves your infrastructure by default
-- **API Keys**: Stored securely in encrypted tool_config table
-- **Network Security**: Optional external access with encryption (Tailscale/Cloudflare)
-- **Container Security**: Non-root user, minimal attack surface
-- **Data Ownership**: You own all data, models, and conversations
+## Screenshots
 
-## 📚 Documentation
+![Chat Interface](docs/images/chat-hub-interface.png)  
+*Chat with your agent via n8n's Chat Hub*
 
-- **[Architecture](ARCHITECTURE.md)** - Detailed system design
-- **[Deployment Guide](docs/DEPLOYMENT.md)** - Manual deployment steps
-- **[Creating Skills](docs/CREATING-SKILLS.md)** - Build custom capabilities
-- **[API Reference](docs/API.md)** - Bridge service endpoints
-- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and fixes
+![Workflow Editor](docs/images/workflow-canvas.png)  
+*See and edit your agent's logic visually*
 
-## 🤝 Contributing
+![Data Tables](docs/images/data-tables-view.png)  
+*Query and modify your agent's memory directly*
 
-1. **Fork the repository**
-2. **Create feature branch**: `git checkout -b feature/amazing-feature`
-3. **Make your changes**: Follow the existing patterns
-4. **Test thoroughly**: Ensure compatibility with n8n + OpenClaw
-5. **Submit PR**: Include description of changes and testing done
+![Skill Builder](docs/images/skill-workflow-builder.png)  
+*Build new capabilities with drag-and-drop workflows*
 
-### Development Setup
+## Quick Start Guide
 
-```bash
-# Clone repository
-git clone https://github.com/[org]/transparentclaw.git
-cd transparentclaw
+1. **Install**: `npx transparentclaw init`
+2. **Configure**: Follow the AI installer prompts
+3. **Chat**: Open the Chat Hub URL provided
+4. **Customize**: Edit workflows in n8n interface
+5. **Extend**: Add skills via workflow builder
 
-# Install dependencies
-npm install
+See [Getting Started Guide](docs/GETTING-STARTED.md) for detailed instructions.
 
-# Build TypeScript
-npm run build
+## Documentation
 
-# Run in development mode
-npm run dev
+📚 **[Getting Started](docs/GETTING-STARTED.md)** - Installation and first steps  
+🛠️ **[Creating Skills](docs/CREATING-SKILLS.md)** - Build custom agent capabilities  
+🧠 **[Agent Anatomy](docs/AGENT-ANATOMY.md)** - Understanding your agent's structure  
+🔧 **[Architecture](ARCHITECTURE.md)** - Technical deep dive  
+💬 **[Chat Hub API](CHATHUB-API.md)** - Integration reference  
 
-# Test installation locally
-npm run test:install
-```
+## Contributing
 
-## 🐛 Known Issues
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Development setup
+- Code style guidelines  
+- Pull request process
+- Issue templates
 
-- **n8n Embed License**: Still finalizing commercial licensing terms
-- **Data Tables API**: Using direct PostgreSQL access until n8n API is available
-- **Chat Hub Integration**: WebSocket integration needs n8n internal API details
-- **Workflow Templates**: Using placeholders until we have real n8n workflows
+## License
 
-## 🗺️ Roadmap
+MIT License - see [LICENSE](LICENSE) for details.
 
-### Phase 1 - MVP ✅
-- [x] AI-guided installer CLI
-- [x] Docker Compose generation
-- [x] Basic bridge service
-- [x] Data Tables integration
-- [x] Skill registry system
-- [x] Local deployment support
+## Credits
 
-### Phase 1.5 - Polish
-- [ ] Remote SSH deployment
-- [ ] Real n8n workflow templates
-- [ ] Chat Hub WebSocket integration  
-- [ ] Error recovery and self-healing
-- [ ] Comprehensive testing
+Built on the shoulders of giants:
 
-### Phase 2 - Advanced
-- [ ] Browser extension integration
-- [ ] Multi-agent support
-- [ ] Skill marketplace
-- [ ] Voice interface
-- [ ] Mobile app
-
-## 🙋 Support
-
-- **Documentation**: Check docs/ directory first
-- **Issues**: Create GitHub issue with reproduction steps
-- **Discussions**: Use GitHub Discussions for questions
-- **Discord**: Join the OpenClaw community server
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **n8n team** - For the incredible workflow platform
-- **OpenClaw community** - For the agent architecture inspiration
-- **Docker** - For making deployment simple
-- **Anthropic & OpenAI** - For the AI that powers everything
+- **[n8n](https://n8n.io)** - The incredible workflow automation platform that powers TransparentClaw
+- **OpenClaw** - Architecture inspiration for transparent AI agents
+- **Docker** - Making deployment simple and reproducible
+- **PostgreSQL** - Reliable structured storage for agent memory
 
 ---
 
-**Built with ❤️ by the TransparentClaw team**
+**Ready to see inside your AI agent?** 
 
-*One command. Full transparency. Your AI assistant.*
+```bash
+npx transparentclaw init
+```
+
+*TransparentClaw - Where AI transparency meets workflow power*
