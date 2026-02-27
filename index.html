@@ -24,6 +24,7 @@ header p{color:var(--text-dim);margin-top:8px;font-size:1.05rem}
 .section-header h2{font-size:.95rem;font-weight:600;flex:1}
 .section-header .desc{color:var(--text-dim);font-size:.8rem;font-weight:400;margin-left:8px}
 .section-header .count{color:var(--text-dim);font-size:.75rem;background:var(--border);padding:2px 8px;border-radius:10px}
+.section-header .date{color:var(--green);font-size:.75rem;margin-left:auto;font-variant-numeric:tabular-nums}
 .section-body{display:none}
 .section.open .section-body{display:block}
 .section-header .arrow{color:var(--text-dim);transition:transform .2s;font-size:.7rem}
@@ -34,6 +35,7 @@ header p{color:var(--text-dim);margin-top:8px;font-size:1.05rem}
 .file-list li .ficon{color:var(--text-dim);font-size:.8rem;width:16px;text-align:center}
 .file-list li a{flex:1}
 .file-list li .badge{font-size:.7rem;color:var(--text-dim);background:var(--border);padding:1px 6px;border-radius:4px}
+.file-list li .date{font-size:.75rem;color:var(--text-dim);margin-left:auto;white-space:nowrap;font-variant-numeric:tabular-nums}
 .thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
 .thumb-grid img{width:100%;aspect-ratio:1;object-fit:contain;border-radius:4px;background:var(--card-hover);image-rendering:pixelated}
 .thumb-grid a{display:block}
@@ -54,6 +56,74 @@ footer{text-align:center;padding:32px 0;color:var(--text-dim);font-size:.8rem;bo
 <script>
 const GITHUB_BASE = 'https://github.com/djangelic/openclaw/blob/main/';
 const PAGES_BASE = '';
+
+// File dates from git log (last modified)
+const FILE_DATES = {
+  'benchmarking/benchmarking-animated-30s.html':'2026-02-26','benchmarking/benchmarking-animated.html':'2026-02-26',
+  'benchmarking/benchmarking-food-analogies.html':'2026-02-26','benchmarking/benchmarking-v2-broll.html':'2026-02-26',
+  'benchmarking/benchmarking-viz.html':'2026-02-26','benchmarking/franchise-intro-analogy.html':'2026-02-26',
+  'benchmarking/pg-untuned-analogy.html':'2026-02-26','benchmarking/three-architectures.html':'2026-02-26',
+  'benchmarking/three-architectures.png':'2026-02-26','benchmarking/benchmarking-script.md':'2026-02-26',
+  'benchmarking/benchmarking-script-v7.md':'2026-02-26','benchmarking/benchmarking-script-v8.md':'2026-02-26',
+  'blog-drafts/ai-dependency-trap.md':'2026-02-26','blog-drafts/ai-on-rails-playbook.md':'2026-02-26',
+  'blog-drafts/airgapped-advantage.md':'2026-02-26','blog-drafts/bouncer-post.md':'2026-02-26',
+  'blog-drafts/callforge-case-study.md':'2026-02-26','blog-drafts/five-slack-apps.md':'2026-02-26',
+  'blog-drafts/human-in-the-loop.md':'2026-02-26','blog-drafts/last-layer-playbook.md':'2026-02-26',
+  'blog-drafts/security-scanner-case-study.md':'2026-02-26','blog-drafts/tool-graveyard.md':'2026-02-26',
+  'youtube-scripts/Final Script Draft v9.md':'2026-02-26','youtube-scripts/Final Script Draft v10.md':'2026-02-26',
+  'youtube-scripts/Final Script Draft v11.md':'2026-02-26','youtube-scripts/yt-business-launch-script.md':'2026-02-26',
+  'youtube-scripts/yt-personal-launch-script.md':'2026-02-26','youtube-scripts/podcast-automation-spec.md':'2026-02-26',
+  'n8n-pitch/n8n-engineering-pitch.html':'2026-02-26','n8n-pitch/n8n-engineering-asks.md':'2026-02-26',
+  'n8n-pitch/n8n-engineering-pitch-script.md':'2026-02-26','n8n-pitch/hassan.png':'2026-02-26',
+  'n8n-pitch/michele.png':'2026-02-26',
+  'visualizations/aidependency.html':'2026-02-26','visualizations/ai-dependency-trap.html':'2026-02-26',
+  'visualizations/cortana-capabilities.html':'2026-02-26','visualizations/thumbnail.html':'2026-02-26',
+  'tools/check_alpha.py':'2026-02-26','tools/gen_sprites.py':'2026-02-26',
+  'tools/gen_dalle_sprites.py':'2026-02-26','tools/screenshot.py':'2026-02-26',
+  'tools/habit-tracker-template.md':'2026-02-26',
+  'ai-dependency-trap/index.html':'2026-02-19','ai-dependency-trap/mcp-in-n8n.html':'2026-02-19',
+  'ai-dependency-trap/mcp-section-updated.html':'2026-02-19',
+  'slack-sorcery/game-design.html':'2026-02-20','slack-sorcery/mvp-design.html':'2026-02-20',
+  'slack-sorcery/app-icon.png':'2026-02-21',
+  'the-wings-of-a-king/index.html':'2026-02-23','the-wings-of-a-king/the-wings-of-a-king.md':'2026-02-26',
+  'the-wings-of-a-king/series-plan.md':'2026-02-23','the-wings-of-a-king/image-prompts.md':'2026-02-23',
+  'pixel-sprites/bg-kitchen-interior.png':'2026-02-26','pixel-sprites/bg-parking-lot.png':'2026-02-26',
+  'pixel-sprites/bg-street-night.png':'2026-02-26','pixel-sprites/broken-cable.png':'2026-02-26',
+  'pixel-sprites/chef-cooking.png':'2026-02-26','pixel-sprites/chef-stressed.png':'2026-02-26',
+  'pixel-sprites/chef.png':'2026-02-26','pixel-sprites/customer-2.png':'2026-02-26',
+  'pixel-sprites/customer-3.png':'2026-02-26','pixel-sprites/customer.png':'2026-02-26',
+  'pixel-sprites/developer.png':'2026-02-26','pixel-sprites/food-truck.png':'2026-02-26',
+  'pixel-sprites/franchise-building.png':'2026-02-26','pixel-sprites/frying-pan.png':'2026-02-26',
+  'pixel-sprites/kitchen-shelf-messy.png':'2026-02-26','pixel-sprites/kitchen-shelf-organized.png':'2026-02-26',
+  'pixel-sprites/network-cable.png':'2026-02-26','pixel-sprites/redis-crystal.png':'2026-02-26',
+  'pixel-sprites/restaurant.png':'2026-02-26','pixel-sprites/runner-exhausted.png':'2026-02-26',
+  'pixel-sprites/test-kitchen.png':'2026-02-26','pixel-sprites/ticket-rail.png':'2026-02-26',
+  'pixel-sprites/wrench-tool.png':'2026-02-26',
+  'slackemon-banners/battle-field.png':'2026-02-21','slackemon-banners/itemsbanner.png':'2026-02-22',
+  'slackemon-banners/pallet-town.png':'2026-02-21','slackemon-banners/pallettown.png':'2026-02-22',
+  'slackemon-banners/pokebattlesbanner.png':'2026-02-22','slackemon-banners/pokedexbanner.png':'2026-02-22',
+  'slackemon-banners/pokegyms.png':'2026-02-22','slackemon-banners/pokemon-banner.png':'2026-02-21',
+  'slackemon-banners/pokemon-logo.png':'2026-02-21','slackemon-banners/slackemonbanner.png':'2026-02-22',
+  'slackemon-banners/profilebanner.png':'2026-02-22','slackemon-banners/professor-oak.png':'2026-02-22',
+  'slackemon-banners/settings.png':'2026-02-22',
+  'slackemon-emoji/sm_crit.png':'2026-02-21','slackemon-emoji/sm_hp_full.png':'2026-02-21',
+  'slackemon-emoji/sm_hp_low.png':'2026-02-21','slackemon-emoji/sm_hp_mid.png':'2026-02-21',
+  'slackemon-emoji/sm_miss.png':'2026-02-21','slackemon-emoji/sm_not_effective.png':'2026-02-21',
+  'slackemon-emoji/sm_shield.png':'2026-02-21','slackemon-emoji/sm_speed.png':'2026-02-21',
+  'slackemon-emoji/sm_status_burn.png':'2026-02-21','slackemon-emoji/sm_status_freeze.png':'2026-02-21',
+  'slackemon-emoji/sm_status_paralyze.png':'2026-02-21','slackemon-emoji/sm_status_poison.png':'2026-02-21',
+  'slackemon-emoji/sm_status_sleep.png':'2026-02-21','slackemon-emoji/sm_super_effective.png':'2026-02-21',
+  'slackemon-emoji/sm_xp_bar.png':'2026-02-21',
+  'slackemon-menu/sm_daycare.png':'2026-02-21','slackemon-menu/sm_gym.png':'2026-02-21',
+  'slackemon-menu/sm_help.png':'2026-02-21','slackemon-menu/sm_leaderboard.png':'2026-02-21',
+  'slackemon-menu/sm_pokecenter.png':'2026-02-21','slackemon-menu/sm_pokedex.png':'2026-02-21',
+  'slackemon-menu/sm_pokemart.png':'2026-02-21','slackemon-menu/sm_safari.png':'2026-02-21',
+  'slackemon-menu/sm_team.png':'2026-02-21','slackemon-menu/sm_trade.png':'2026-02-21'
+};
+
+function getDate(folder, file) { return FILE_DATES[folder+'/'+file] || ''; }
+function fmtDate(d) { if (!d) return ''; const [y,m,day]=d.split('-'); const months=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${months[+m]} ${+day}`; }
+function latestDate(folder, files) { let max=''; (files||[]).forEach(f=>{const d=getDate(folder,f);if(d>max)max=d;}); return max; }
 
 const sections = [
   {
@@ -76,7 +146,7 @@ const sections = [
   {
     id: 'youtube-scripts', icon: '🎬', name: 'YouTube Scripts', desc: 'Video & podcast scripts',
     files: [
-      'Final Script Draft v9.md','Final Script Draft v10.md','Final Script Draft v11.md',
+      'Final Script Draft v11.md','Final Script Draft v10.md','Final Script Draft v9.md',
       'yt-business-launch-script.md','yt-personal-launch-script.md','podcast-automation-spec.md'
     ]
   },
@@ -111,28 +181,35 @@ const sections = [
     id: 'pixel-sprites', icon: '👾', name: 'Pixel Sprites', desc: 'Pixel art sprite assets',
     thumbs: ['bg-kitchen-interior.png','bg-parking-lot.png','bg-street-night.png','broken-cable.png',
       'chef-cooking.png','chef-stressed.png','chef.png','customer-2.png','customer-3.png','customer.png',
-      'delivery-bag.png','delivery-bike.png','delivery-driver.png','drone.png','food-bag.png',
-      'kitchen-bg.png','laptop.png','manager.png','phone.png','receipt.png','robot-arm.png',
-      'server-rack.png','tablet.png','tech-worker.png','waiter.png']
+      'developer.png','food-truck.png','franchise-building.png','frying-pan.png',
+      'kitchen-shelf-messy.png','kitchen-shelf-organized.png','network-cable.png','redis-crystal.png',
+      'restaurant.png','runner-exhausted.png','test-kitchen.png','ticket-rail.png','wrench-tool.png']
   },
   {
     id: 'slackemon-banners', icon: '🏞️', name: 'Slackemon Banners', desc: 'Banner art for Slackemon',
     thumbs: ['battle-field.png','itemsbanner.png','pallet-town.png','pallettown.png',
       'pokebattlesbanner.png','pokedexbanner.png','pokegyms.png','pokemon-banner.png','pokemon-logo.png',
-      'slackemon.png','slackemon_starter.png','trainerbanner.png','wildpokemon.png']
+      'slackemonbanner.png','profilebanner.png','professor-oak.png','settings.png']
   },
   {
     id: 'slackemon-emoji', icon: '😀', name: 'Slackemon Emoji', desc: 'Custom emoji set for Slackemon',
     thumbs: ['sm_crit.png','sm_hp_full.png','sm_hp_low.png','sm_hp_mid.png','sm_miss.png',
       'sm_not_effective.png','sm_shield.png','sm_speed.png','sm_status_burn.png','sm_status_freeze.png',
-      'sm_status_paralyze.png','sm_status_poison.png','sm_status_sleep.png','sm_super_effective.png','sm_xp.png']
+      'sm_status_paralyze.png','sm_status_poison.png','sm_status_sleep.png','sm_super_effective.png','sm_xp_bar.png']
   },
   {
     id: 'slackemon-menu', icon: '📋', name: 'Slackemon Menu', desc: 'Menu icons for Slackemon',
     thumbs: ['sm_daycare.png','sm_gym.png','sm_help.png','sm_leaderboard.png','sm_pokecenter.png',
-      'sm_pokedex.png','sm_pokemart.png','sm_safari.png','sm_team.png','sm_trade.png','sm_wild.png']
+      'sm_pokedex.png','sm_pokemart.png','sm_safari.png','sm_team.png','sm_trade.png']
   }
 ];
+
+// Sort sections by most recent file date
+sections.sort((a,b) => {
+  const da = latestDate(a.id, a.files || a.thumbs);
+  const db = latestDate(b.id, b.files || b.thumbs);
+  return db.localeCompare(da);
+});
 
 function fileLink(folder, file) {
   const ext = file.split('.').pop().toLowerCase();
@@ -156,9 +233,11 @@ function render() {
     div.className = 'section open';
     div.dataset.id = s.id;
     const count = (s.files||[]).length + (s.thumbs||[]).length;
+    const sectionDate = latestDate(s.id, s.files || s.thumbs);
     div.innerHTML = `<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
       <span class="arrow">▶</span><span class="icon">${s.icon}</span>
       <h2>${s.name}<span class="desc">${s.desc}</span></h2>
+      <span class="date">${fmtDate(sectionDate)}</span>
       <span class="count">${count} files</span>
     </div><div class="section-body"></div>`;
     const body = div.querySelector('.section-body');
@@ -166,10 +245,17 @@ function render() {
     if (s.files) {
       const ul = document.createElement('ul');
       ul.className = 'file-list';
-      s.files.forEach(f => {
+      // Sort files by date (most recent first), then alphabetically
+      const sorted = [...s.files].sort((a,b) => {
+        const da = getDate(s.id,a), db = getDate(s.id,b);
+        if (da !== db) return db.localeCompare(da);
+        return a.localeCompare(b);
+      });
+      sorted.forEach(f => {
         const li = document.createElement('li');
         const ext = f.split('.').pop().toLowerCase();
-        li.innerHTML = `<span class="ficon">${fileIcon(f)}</span><a href="${fileLink(s.id,f)}" target="_blank">${f}</a><span class="badge">${ext}</span>`;
+        const d = getDate(s.id, f);
+        li.innerHTML = `<span class="ficon">${fileIcon(f)}</span><a href="${fileLink(s.id,f)}" target="_blank">${f}</a><span class="badge">${ext}</span><span class="date">${fmtDate(d)}</span>`;
         li.dataset.name = f.toLowerCase();
         ul.appendChild(li);
       });

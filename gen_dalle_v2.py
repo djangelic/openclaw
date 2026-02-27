@@ -1,7 +1,6 @@
 import requests, os, time
 from PIL import Image
 import io
-import numpy as np
 
 url = 'https://internal.users.n8n.cloud/webhook/231e2915-e0b4-4fdd-84b2-e7a4edd16712'
 headers = {'djangelic': 'croak-borders-pompous-bliss', 'Content-Type': 'application/json'}
@@ -44,27 +43,26 @@ sprites = {
 }
 
 def remove_magenta_bg(img_bytes):
-    """Remove magenta #FF00FF background with tight tolerance."""
+    """Remove magenta #FF00FF background with tight tolerance using Pillow only."""
     img = Image.open(io.BytesIO(img_bytes)).convert("RGBA")
-    arr = np.array(img)
-    r, g, b, a = arr[:,:,0], arr[:,:,1], arr[:,:,2], arr[:,:,3]
-    
-    # Magenta: high R, low G, high B
-    mask = (r > 180) & (g < 100) & (b > 180)
-    # Also catch near-magenta/pink fringes
-    mask2 = (r > 150) & (g < 80) & (b > 150) & (np.abs(r.astype(int) - b.astype(int)) < 60)
-    combined = mask | mask2
-    
-    arr[combined] = [0, 0, 0, 0]
-    
-    result = Image.fromarray(arr)
-    # Crop to content (remove empty space)
-    bbox = result.getbbox()
+    pixels = list(img.getdata())
+    new_pixels = []
+    for r, g, b, a in pixels:
+        # Magenta: high R, low G, high B
+        if r > 180 and g < 100 and b > 180:
+            new_pixels.append((0, 0, 0, 0))
+        # Near-magenta/pink fringes
+        elif r > 150 and g < 80 and b > 150 and abs(r - b) < 60:
+            new_pixels.append((0, 0, 0, 0))
+        else:
+            new_pixels.append((r, g, b, a))
+    img.putdata(new_pixels)
+    # Crop to content
+    bbox = img.getbbox()
     if bbox:
-        result = result.crop(bbox)
-    
+        img = img.crop(bbox)
     buf = io.BytesIO()
-    result.save(buf, format='PNG')
+    img.save(buf, format='PNG')
     return buf.getvalue()
 
 total = len(sprites)
