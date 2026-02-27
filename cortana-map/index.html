@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cortana — Skills & Tools Map</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0e1a; color: #c8d6e5; font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden; }
+  #canvas { width: 100vw; height: 100vh; display: block; }
+  #tooltip {
+    position: absolute; pointer-events: none; opacity: 0;
+    background: rgba(10,14,26,0.95); border: 1px solid #80bdbe;
+    border-radius: 8px; padding: 12px 16px; max-width: 320px;
+    font-size: 13px; line-height: 1.5; transition: opacity 0.15s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  #tooltip h3 { color: #80bdbe; margin-bottom: 4px; font-size: 14px; }
+  #tooltip .tag { display: inline-block; background: rgba(128,189,190,0.15); border-radius: 3px; padding: 1px 6px; font-size: 11px; margin-right: 4px; color: #80bdbe; }
+  #legend {
+    position: absolute; bottom: 20px; left: 20px; background: rgba(10,14,26,0.85);
+    border: 1px solid rgba(128,189,190,0.3); border-radius: 8px; padding: 16px;
+    font-size: 12px;
+  }
+  #legend h4 { color: #80bdbe; margin-bottom: 8px; }
+  .legend-item { display: flex; align-items: center; margin: 4px 0; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
+  #title {
+    position: absolute; top: 20px; left: 20px;
+    font-size: 22px; font-weight: 600; color: #80bdbe;
+    text-shadow: 0 0 20px rgba(128,189,190,0.3);
+  }
+  #title span { font-size: 13px; color: #6b7b8d; font-weight: 400; display: block; margin-top: 4px; }
+  #search {
+    position: absolute; top: 20px; right: 20px;
+    background: rgba(10,14,26,0.85); border: 1px solid rgba(128,189,190,0.3);
+    border-radius: 6px; padding: 8px 14px; color: #c8d6e5; font-size: 13px;
+    outline: none; width: 200px;
+  }
+  #search:focus { border-color: #80bdbe; }
+  #detail {
+    position: absolute; top: 60px; right: 20px; width: 280px;
+    background: rgba(10,14,26,0.9); border: 1px solid rgba(128,189,190,0.3);
+    border-radius: 8px; padding: 16px; font-size: 12px; display: none;
+    max-height: 70vh; overflow-y: auto;
+  }
+  #detail h3 { color: #80bdbe; font-size: 15px; margin-bottom: 6px; }
+  #detail .conn { color: #6b7b8d; margin: 2px 0; }
+  #detail .conn b { color: #c8d6e5; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="tooltip"></div>
+<div id="title">💠 Cortana's Brain Map<span>Skills, tools, and how they connect. Drag nodes to explore.</span></div>
+<input id="search" placeholder="🔍 Filter nodes..." />
+<div id="detail"></div>
+<div id="legend">
+  <h4>Node Types</h4>
+  <div class="legend-item"><div class="legend-dot" style="background:#80bdbe"></div>Core (me)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f26622"></div>Skills (specialized abilities)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6c5ce7"></div>Built-in Tools</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#fdcb6e"></div>External APIs / Services</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#e17055"></div>Platforms / Surfaces</div>
+</div>
+
+<script>
+// ── DATA ──
+const TYPES = { core: '#80bdbe', skill: '#f26622', tool: '#6c5ce7', api: '#fdcb6e', platform: '#e17055' };
+const SIZES = { core: 28, skill: 18, tool: 14, api: 12, platform: 14 };
+
+const nodes = [
+  // Core
+  { id: 'cortana', label: 'Cortana 💠', type: 'core', desc: 'AI assistant powered by Claude. Orchestrates everything below.' },
+
+  // Built-in Tools
+  { id: 'exec', label: 'Shell / Exec', type: 'tool', desc: 'Run any shell command on the host machine (PowerShell, bash).' },
+  { id: 'browser', label: 'Browser', type: 'tool', desc: 'Full browser automation — navigate, click, screenshot, scrape.' },
+  { id: 'files', label: 'File System', type: 'tool', desc: 'Read, write, and edit files anywhere on the machine.' },
+  { id: 'web_search', label: 'Web Search', type: 'tool', desc: 'Brave Search API for web lookups.' },
+  { id: 'web_fetch', label: 'Web Fetch', type: 'tool', desc: 'Fetch and extract readable content from URLs.' },
+  { id: 'memory', label: 'Memory System', type: 'tool', desc: 'MEMORY.md + daily logs. Semantic search across all memory files.' },
+  { id: 'cron', label: 'Cron / Reminders', type: 'tool', desc: 'Schedule tasks, reminders, and recurring jobs.' },
+  { id: 'subagents', label: 'Sub-Agents', type: 'tool', desc: 'Spawn isolated background agents for complex/parallel tasks.' },
+  { id: 'tts', label: 'Text-to-Speech', type: 'tool', desc: 'Convert text to audio and deliver it.' },
+  { id: 'image_tool', label: 'Image Analysis', type: 'tool', desc: 'Analyze images with vision models.' },
+  { id: 'message', label: 'Messaging', type: 'tool', desc: 'Send messages, react, pin/unpin across chat platforms.' },
+  { id: 'canvas', label: 'Canvas', type: 'tool', desc: 'Present interactive HTML UIs to the user.' },
+  { id: 'nodes_tool', label: 'Node Control', type: 'tool', desc: 'Control paired devices — camera, screen, location, commands.' },
+
+  // Skills (specialized knowledge packs)
+  { id: 'sk_calendar', label: '📅 Calendar', type: 'skill', desc: 'Google Calendar via n8n MCP — availability, events, scheduling. Covers Personal, Work, Family, Custody calendars.' },
+  { id: 'sk_notion', label: '📓 Notion', type: 'skill', desc: 'Create/manage Notion pages, databases, and blocks. Connected to clients DB, stories, motorcycle DB, pantry, friends.' },
+  { id: 'sk_weather', label: '🌤 Weather', type: 'skill', desc: 'Current weather and forecasts via wttr.in / Open-Meteo.' },
+  { id: 'sk_slack', label: '💬 Slack', type: 'skill', desc: 'Slack channel actions — reactions, pins, message management.' },
+  { id: 'sk_1password', label: '🔐 1Password', type: 'skill', desc: '1Password CLI for secrets management.' },
+  { id: 'sk_ofw', label: '👨‍👧‍👦 OFW', type: 'skill', desc: 'OurFamilyWizard — custody calendar, expenses, schedule trade requests with Tara.' },
+  { id: 'sk_stories', label: '🎬 n8n Stories', type: 'skill', desc: 'Fetch DevRel story projects from work Notion via MCP. Content pipeline tracking.' },
+  { id: 'sk_publii', label: '✍️ Publii Blog', type: 'skill', desc: 'Create posts for djangelic.com — HTML generation, image hosting via GitHub Pages.' },
+  { id: 'sk_gamma2wp', label: '🔄 Gamma→WP', type: 'skill', desc: 'Convert Gamma presentations into WordPress posts with Avada Fusion Builder shortcodes.' },
+  { id: 'sk_justworks', label: '💰 Justworks', type: 'skill', desc: 'HR platform — expense reports, receipt uploads, reimbursement requests. Okta auth + TOTP MFA.' },
+  { id: 'sk_benchmark', label: '📊 n8n Benchmark', type: 'skill', desc: 'Run k6 performance benchmarks across AWS configs for n8n.' },
+  { id: 'sk_healthcheck', label: '🛡 Healthcheck', type: 'skill', desc: 'Host security hardening — firewall, SSH, updates, risk audits.' },
+  { id: 'sk_skillcreator', label: '🧰 Skill Creator', type: 'skill', desc: 'Design and package new skills with scripts and references.' },
+
+  // External APIs / Services
+  { id: 'api_n8n', label: 'n8n Server', type: 'api', desc: 'n8n.aztechsol.com — workflow automation hub. Hosts MCP servers, webhooks, calendar integration.' },
+  { id: 'api_notion', label: 'Notion API', type: 'api', desc: 'Notion databases: clients, stories, motorcycle, pantry, friends.' },
+  { id: 'api_wp', label: 'WordPress API', type: 'api', desc: 'aztechsol.com REST API — posts, pages, media. Avada/Fusion Builder.' },
+  { id: 'api_wave', label: 'Wave Invoicing', type: 'api', desc: 'GraphQL API for invoicing and payment tracking.' },
+  { id: 'api_ofw', label: 'OFW API', type: 'api', desc: 'OurFamilyWizard REST API — custody calendar and expense management.' },
+  { id: 'api_justworks', label: 'Justworks API', type: 'api', desc: 'Okta auth + GraphQL expenses API for reimbursements.' },
+  { id: 'api_gcal', label: 'Google Calendar', type: 'api', desc: '5 calendars: Personal, Work, TNA Events, Custody, Friends.' },
+  { id: 'api_github', label: 'GitHub Pages', type: 'api', desc: 'djangelic.github.io/openclaw — file sharing, blog images, visualizations.' },
+  { id: 'api_brave', label: 'Brave Search', type: 'api', desc: 'Web search API for research and lookups.' },
+
+  // Platforms
+  { id: 'plt_slack', label: 'Slack', type: 'platform', desc: 'Primary communication channel with Angel. DMs + workspace channels.' },
+  { id: 'plt_discord', label: 'Discord', type: 'platform', desc: 'Community and group chat platform.' },
+  { id: 'plt_telegram', label: 'Telegram', type: 'platform', desc: 'Alternative messaging surface.' },
+];
+
+const edges = [
+  // Core → Tools
+  ...['exec','browser','files','web_search','web_fetch','memory','cron','subagents','tts','image_tool','message','canvas','nodes_tool']
+    .map(t => ({ from: 'cortana', to: t, label: 'uses' })),
+
+  // Core → Skills
+  ...['sk_calendar','sk_notion','sk_weather','sk_slack','sk_1password','sk_ofw','sk_stories','sk_publii','sk_gamma2wp','sk_justworks','sk_benchmark','sk_healthcheck','sk_skillcreator']
+    .map(s => ({ from: 'cortana', to: s, label: 'has skill' })),
+
+  // Skills → APIs
+  { from: 'sk_calendar', to: 'api_n8n' }, { from: 'sk_calendar', to: 'api_gcal' },
+  { from: 'sk_notion', to: 'api_notion' },
+  { from: 'sk_stories', to: 'api_n8n' }, { from: 'sk_stories', to: 'api_notion' },
+  { from: 'sk_ofw', to: 'api_ofw' },
+  { from: 'sk_justworks', to: 'api_justworks' },
+  { from: 'sk_publii', to: 'api_github' },
+  { from: 'sk_gamma2wp', to: 'api_wp' },
+  { from: 'sk_benchmark', to: 'api_n8n' },
+
+  // Tools → APIs
+  { from: 'web_search', to: 'api_brave' },
+  { from: 'message', to: 'plt_slack' }, { from: 'message', to: 'plt_discord' }, { from: 'message', to: 'plt_telegram' },
+  { from: 'sk_slack', to: 'plt_slack' },
+
+  // Cross-connections
+  { from: 'api_n8n', to: 'api_gcal' },
+  { from: 'api_n8n', to: 'api_wp' },
+  { from: 'sk_publii', to: 'files' },
+  { from: 'sk_gamma2wp', to: 'browser' },
+  { from: 'sk_justworks', to: 'browser' },
+  { from: 'sk_healthcheck', to: 'exec' },
+  { from: 'cron', to: 'subagents' },
+  { from: 'memory', to: 'files' },
+];
+
+// ── SIMULATION ──
+const W = window.innerWidth, H = window.innerHeight;
+const cvs = document.getElementById('canvas');
+const ctx = cvs.getContext('2d');
+cvs.width = W * devicePixelRatio; cvs.height = H * devicePixelRatio;
+ctx.scale(devicePixelRatio, devicePixelRatio);
+cvs.style.width = W + 'px'; cvs.style.height = H + 'px';
+
+// Init positions
+nodes.forEach(n => {
+  if (n.id === 'cortana') { n.x = W/2; n.y = H/2; }
+  else { n.x = W/2 + (Math.random()-0.5)*400; n.y = H/2 + (Math.random()-0.5)*400; }
+  n.vx = 0; n.vy = 0;
+  n.r = SIZES[n.type];
+});
+
+const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
+let hovered = null, dragged = null, filterText = '';
+let camX = 0, camY = 0, camZoom = 1;
+
+function tick() {
+  const alpha = 0.3;
+  // Repulsion
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i+1; j < nodes.length; j++) {
+      let dx = nodes[j].x - nodes[i].x, dy = nodes[j].y - nodes[i].y;
+      let d2 = dx*dx + dy*dy || 1;
+      let f = 800 / d2;
+      nodes[i].vx -= dx * f * alpha; nodes[i].vy -= dy * f * alpha;
+      nodes[j].vx += dx * f * alpha; nodes[j].vy += dy * f * alpha;
+    }
+  }
+  // Attraction (edges)
+  edges.forEach(e => {
+    const a = nodeMap[e.from], b = nodeMap[e.to];
+    if (!a || !b) return;
+    let dx = b.x - a.x, dy = b.y - a.y;
+    let d = Math.sqrt(dx*dx + dy*dy) || 1;
+    let ideal = (a.type === 'core' || b.type === 'core') ? 180 : 120;
+    let f = (d - ideal) * 0.005 * alpha;
+    a.vx += dx/d * f; a.vy += dy/d * f;
+    b.vx -= dx/d * f; b.vy -= dy/d * f;
+  });
+  // Center gravity
+  nodes.forEach(n => {
+    n.vx += (W/2 - n.x) * 0.0005; n.vy += (H/2 - n.y) * 0.0005;
+    n.vx *= 0.85; n.vy *= 0.85;
+    if (n !== dragged) { n.x += n.vx; n.y += n.vy; }
+  });
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.translate(camX, camY);
+  ctx.scale(camZoom, camZoom);
+
+  const connectedToHover = new Set();
+  if (hovered) {
+    edges.forEach(e => {
+      if (e.from === hovered.id) connectedToHover.add(e.to);
+      if (e.to === hovered.id) connectedToHover.add(e.from);
+    });
+    connectedToHover.add(hovered.id);
+  }
+
+  // Edges
+  edges.forEach(e => {
+    const a = nodeMap[e.from], b = nodeMap[e.to];
+    if (!a || !b) return;
+    const active = !hovered || connectedToHover.has(a.id) && connectedToHover.has(b.id);
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+    ctx.strokeStyle = active ? 'rgba(128,189,190,0.25)' : 'rgba(128,189,190,0.05)';
+    ctx.lineWidth = active ? 1.5 : 0.5;
+    ctx.stroke();
+  });
+
+  // Nodes
+  nodes.forEach(n => {
+    const dimmed = filterText && !n.label.toLowerCase().includes(filterText);
+    const active = !hovered || connectedToHover.has(n.id);
+    const globalAlpha = dimmed ? 0.15 : (active ? 1 : 0.15);
+    ctx.globalAlpha = globalAlpha;
+
+    // Glow
+    if (n === hovered || n.type === 'core') {
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 1.8, 0, Math.PI*2);
+      const g = ctx.createRadialGradient(n.x, n.y, n.r*0.5, n.x, n.y, n.r*1.8);
+      g.addColorStop(0, TYPES[n.type] + '40'); g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g; ctx.fill();
+    }
+
+    // Circle
+    ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+    ctx.fillStyle = TYPES[n.type]; ctx.fill();
+    ctx.strokeStyle = '#0a0e1a'; ctx.lineWidth = 2; ctx.stroke();
+
+    // Label
+    ctx.fillStyle = '#c8d6e5';
+    ctx.font = (n.type === 'core' ? 'bold 13px' : '11px') + " 'Segoe UI', system-ui, sans-serif";
+    ctx.textAlign = 'center';
+    ctx.fillText(n.label, n.x, n.y + n.r + 14);
+
+    ctx.globalAlpha = 1;
+  });
+
+  ctx.restore();
+  tick();
+  requestAnimationFrame(draw);
+}
+
+// ── INTERACTION ──
+function screenToWorld(sx, sy) {
+  return [(sx - camX) / camZoom, (sy - camY) / camZoom];
+}
+
+function hitTest(sx, sy) {
+  const [wx, wy] = screenToWorld(sx, sy);
+  for (let i = nodes.length-1; i >= 0; i--) {
+    const n = nodes[i];
+    if ((n.x-wx)**2 + (n.y-wy)**2 < (n.r+4)**2) return n;
+  }
+  return null;
+}
+
+const tooltip = document.getElementById('tooltip');
+const detail = document.getElementById('detail');
+
+cvs.addEventListener('mousemove', e => {
+  const n = hitTest(e.clientX, e.clientY);
+  hovered = n;
+  cvs.style.cursor = n ? 'pointer' : 'default';
+  if (n) {
+    tooltip.innerHTML = `<h3>${n.label}</h3><span class="tag">${n.type}</span><br/>${n.desc}`;
+    tooltip.style.opacity = 1;
+    tooltip.style.left = (e.clientX + 16) + 'px';
+    tooltip.style.top = (e.clientY - 10) + 'px';
+  } else { tooltip.style.opacity = 0; }
+
+  if (dragged) {
+    const [wx, wy] = screenToWorld(e.clientX, e.clientY);
+    dragged.x = wx; dragged.y = wy;
+    dragged.vx = 0; dragged.vy = 0;
+  }
+});
+
+cvs.addEventListener('mousedown', e => {
+  const n = hitTest(e.clientX, e.clientY);
+  if (n) { dragged = n; showDetail(n); }
+});
+cvs.addEventListener('mouseup', () => { dragged = null; });
+
+cvs.addEventListener('wheel', e => {
+  e.preventDefault();
+  const z = camZoom * (e.deltaY < 0 ? 1.1 : 0.9);
+  camZoom = Math.max(0.3, Math.min(3, z));
+  // zoom toward cursor
+  const [wx, wy] = screenToWorld(e.clientX, e.clientY);
+  camX = e.clientX - wx * camZoom;
+  camY = e.clientY - wy * camZoom;
+}, { passive: false });
+
+document.getElementById('search').addEventListener('input', e => {
+  filterText = e.target.value.toLowerCase();
+});
+
+function showDetail(n) {
+  const conns = [];
+  edges.forEach(e => {
+    if (e.from === n.id) conns.push({ dir: '→', node: nodeMap[e.to] });
+    if (e.to === n.id) conns.push({ dir: '←', node: nodeMap[e.from] });
+  });
+  let html = `<h3>${n.label}</h3><p style="margin-bottom:8px">${n.desc}</p>`;
+  if (conns.length) {
+    html += '<hr style="border-color:rgba(128,189,190,0.2);margin:8px 0">';
+    html += '<b style="color:#80bdbe">Connections:</b>';
+    conns.forEach(c => {
+      if (c.node) html += `<div class="conn">${c.dir} <b>${c.node.label}</b> <span style="color:#6b7b8d">(${c.node.type})</span></div>`;
+    });
+  }
+  detail.innerHTML = html;
+  detail.style.display = 'block';
+}
+
+draw();
+</script>
+</body>
+</html>
