@@ -523,10 +523,11 @@ cvs.addEventListener('wheel', e => {
   camY = e.clientY - (e.clientY - camY) * (camZoom / oldZoom);
 }, { passive: false });
 
-// Pan with middle mouse or shift+drag
+// Pan with right-click drag
 let panning = false, panStart = {};
+cvs.addEventListener('contextmenu', e => e.preventDefault());
 cvs.addEventListener('mousedown', e => {
-  if (e.button === 1 || (e.button === 0 && e.shiftKey && !hitTest(e.clientX, e.clientY))) {
+  if (e.button === 2 || e.button === 1) {
     panning = true; panStart = { x: e.clientX - camX, y: e.clientY - camY };
     e.preventDefault();
   }
@@ -534,7 +535,7 @@ cvs.addEventListener('mousedown', e => {
 cvs.addEventListener('mousemove', e => {
   if (panning) { camX = e.clientX - panStart.x; camY = e.clientY - panStart.y; }
 });
-cvs.addEventListener('mouseup', () => { panning = false; });
+cvs.addEventListener('mouseup', e => { if (e.button === 2 || e.button === 1) panning = false; });
 
 document.getElementById('search').addEventListener('input', e => {
   filterText = e.target.value.toLowerCase();
