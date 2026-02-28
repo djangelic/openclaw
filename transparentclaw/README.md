@@ -1,6 +1,14 @@
-# TransparentClaw
+<p align="center">
+  <img src="assets/logo.svg" width="200" alt="CrystalClaw Logo" />
+</p>
 
-> **AI agents with visible logic, structured memory, and workflow-native control**
+<h1 align="center">CrystalClaw 💎</h1>
+
+<p align="center">
+  <strong>AI agents with visible logic, structured memory, and workflow-native control</strong>
+  <br />
+  <em>n8n's interface, upgraded with OpenClaw's brain</em>
+</p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](https://docs.docker.com/compose/)
@@ -11,7 +19,7 @@
 
 ```bash
 # One command deployment
-npx transparentclaw init
+npx crystalclaw init
 
 # Follow the AI installer prompts - it will:
 # 1. Ask for your API key (Anthropic/OpenAI)
@@ -30,7 +38,7 @@ Your transparent AI agent is ready in minutes, not hours.
 ⚙️ **No Visibility** - Can't understand or modify agent behavior  
 🔄 **No Persistence** - Start from scratch every session  
 
-## The TransparentClaw Solution
+## The CrystalClaw Solution
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -92,7 +100,7 @@ You can see, understand, and modify every step.
 
 ## Comparison
 
-| Feature | TransparentClaw | Raw ChatGPT | OpenClaw | LangChain |
+| Feature | CrystalClaw | Raw ChatGPT | OpenClaw | LangChain |
 |---------|----------------|-------------|----------|-----------|
 | **Memory Persistence** | ✅ Structured tables | ❌ Session only | ✅ File-based | 🟡 Configurable |
 | **Logic Visibility** | ✅ Visual workflows | ❌ Black box | 🟡 Code-based | 🟡 Code-based |
@@ -119,7 +127,7 @@ You can see, understand, and modify every step.
 
 ## Quick Start Guide
 
-1. **Install**: `npx transparentclaw init`
+1. **Install**: `npx crystalclaw init`
 2. **Configure**: Follow the AI installer prompts
 3. **Chat**: Open the Chat Hub URL provided
 4. **Customize**: Edit workflows in n8n interface
@@ -151,7 +159,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 Built on the shoulders of giants:
 
-- **[n8n](https://n8n.io)** - The incredible workflow automation platform that powers TransparentClaw
+- **[n8n](https://n8n.io)** - The incredible workflow automation platform that powers CrystalClaw
 - **OpenClaw** - Architecture inspiration for transparent AI agents
 - **Docker** - Making deployment simple and reproducible
 - **PostgreSQL** - Reliable structured storage for agent memory
@@ -161,7 +169,7 @@ Built on the shoulders of giants:
 **Ready to see inside your AI agent?** 
 
 ```bash
-npx transparentclaw init
+npx crystalclaw init
 ```
 
-*TransparentClaw - Where AI transparency meets workflow power*
+*CrystalClaw - Where AI transparency meets workflow power*
