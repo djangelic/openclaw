@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="crystal1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E0F7FA;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#80DEEA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ACC1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="crystal2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#B2EBF2;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#0097A7;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="crystal3" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E0F7FA;stop-opacity:0.95" />
+      <stop offset="40%" style="stop-color:#4DD0E1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#006064;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#006064" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#0D1B2A" />
+  <circle cx="256" cy="256" r="236" fill="none" stroke="url(#crystal1)" stroke-width="2" opacity="0.4"/>
+
+  <!-- Central claw - 3 crystal talons arranged in a trident/claw shape -->
+  <g filter="shadow" transform="translate(256,260)">
+
+    <!-- Left talon (crystal shard) -->
+    <g transform="rotate(-30)">
+      <polygon points="0,-180 -28,-60 -18,40 0,50 18,40 28,-60" 
+               fill="url(#crystal1)" stroke="#4DD0E1" stroke-width="1.5"/>
+      <!-- Facet lines -->
+      <line x1="0" y1="-180" x2="-18" y2="40" stroke="#B2EBF2" stroke-width="0.8" opacity="0.5"/>
+      <line x1="0" y1="-180" x2="18" y2="40" stroke="#B2EBF2" stroke-width="0.8" opacity="0.5"/>
+      <!-- Shine facet -->
+      <polygon points="0,-180 -28,-60 -10,-55 0,-170" fill="url(#shine)"/>
+    </g>
+
+    <!-- Center talon (tallest crystal) -->
+    <g transform="rotate(0)">
+      <polygon points="0,-200 -32,-70 -22,50 0,65 22,50 32,-70" 
+               fill="url(#crystal3)" stroke="#4DD0E1" stroke-width="1.5"/>
+      <!-- Facet lines -->
+      <line x1="0" y1="-200" x2="-22" y2="50" stroke="#E0F7FA" stroke-width="0.8" opacity="0.5"/>
+      <line x1="0" y1="-200" x2="22" y2="50" stroke="#E0F7FA" stroke-width="0.8" opacity="0.5"/>
+      <line x1="-32" y1="-70" x2="0" y2="65" stroke="#B2EBF2" stroke-width="0.5" opacity="0.3"/>
+      <!-- Shine facet -->
+      <polygon points="0,-200 -32,-70 -12,-65 0,-190" fill="url(#shine)"/>
+    </g>
+
+    <!-- Right talon (crystal shard) -->
+    <g transform="rotate(30)">
+      <polygon points="0,-180 -28,-60 -18,40 0,50 18,40 28,-60" 
+               fill="url(#crystal2)" stroke="#4DD0E1" stroke-width="1.5"/>
+      <!-- Facet lines -->
+      <line x1="0" y1="-180" x2="-18" y2="40" stroke="#B2EBF2" stroke-width="0.8" opacity="0.5"/>
+      <line x1="0" y1="-180" x2="18" y2="40" stroke="#B2EBF2" stroke-width="0.8" opacity="0.5"/>
+      <!-- Shine facet -->
+      <polygon points="0,-180 -28,-60 -10,-55 0,-170" fill="url(#shine)"/>
+    </g>
+
+    <!-- Base connector (where talons meet) -->
+    <ellipse cx="0" cy="50" rx="55" ry="20" fill="#00838F" opacity="0.6"/>
+    <ellipse cx="0" cy="48" rx="50" ry="16" fill="#00ACC1" opacity="0.4"/>
+
+    <!-- Sparkle effects -->
+    <g filter="glow" opacity="0.9">
+      <!-- Top sparkle on center talon -->
+      <polygon points="0,-200 -4,-192 0,-184 4,-192" fill="#ffffff"/>
+      <!-- Left sparkle -->
+      <circle cx="-40" cy="-120" r="2.5" fill="#ffffff"/>
+      <line x1="-46" y1="-120" x2="-34" y2="-120" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
+      <line x1="-40" y1="-126" x2="-40" y2="-114" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
+      <!-- Right sparkle -->
+      <circle cx="38" cy="-100" r="2" fill="#ffffff"/>
+      <line x1="33" y1="-100" x2="43" y2="-100" stroke="#ffffff" stroke-width="0.8" opacity="0.5"/>
+      <line x1="38" y1="-105" x2="38" y2="-95" stroke="#ffffff" stroke-width="0.8" opacity="0.5"/>
+    </g>
+  </g>
+
+  <!-- Subtle ring of light around the claw -->
+  <circle cx="256" cy="260" r="120" fill="none" stroke="#4DD0E1" stroke-width="0.5" opacity="0.2"/>
+
+</svg>
