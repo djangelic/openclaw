@@ -188,14 +188,14 @@ onMounted(() => {
 
 .overview-header h2 {
   margin: 0 0 0.5rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.75rem;
   font-weight: 600;
 }
 
 .overview-header p {
   margin: 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.95rem;
 }
 
@@ -207,8 +207,8 @@ onMounted(() => {
 }
 
 .overview-card {
-  background: #1a1f36;
-  border: 1px solid #2d3748;
+  background: #262626;
+  border: 1px solid #3d3d3d;
   border-radius: 12px;
   padding: 1.5rem;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -233,17 +233,17 @@ onMounted(() => {
 .card-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #c8d6e5;
+  color: #f5f5f5;
 }
 
 .card-content {
-  color: #9ca3af;
+  color: #ababab;
 }
 
 .agent-identity .agent-name {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #c8d6e5;
+  color: #f5f5f5;
   margin-bottom: 0.5rem;
 }
 
@@ -261,7 +261,7 @@ onMounted(() => {
 }
 
 .uptime-label {
-  color: #9ca3af;
+  color: #ababab;
 }
 
 .uptime-value {
@@ -269,11 +269,11 @@ onMounted(() => {
 }
 
 .status-online {
-  color: #10b981;
+  color: #6ad28a;
 }
 
 .status-offline {
-  color: #ef4444;
+  color: #ff6d5a;
 }
 
 .stats-grid {
@@ -286,34 +286,34 @@ onMounted(() => {
 .stat-card {
   text-align: center;
   padding: 1rem;
-  background: rgba(77, 208, 225, 0.05);
+  background: rgba(255, 109, 90, 0.05);
   border-radius: 8px;
-  border: 1px solid rgba(77, 208, 225, 0.1);
+  border: 1px solid rgba(255, 109, 90, 0.1);
 }
 
 .stat-number {
   font-size: 2rem;
   font-weight: 700;
-  color: #4DD0E1;
+  color: #ff6d5a;
   margin-bottom: 0.25rem;
 }
 
 .stat-label {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: #ababab;
   margin-bottom: 0.5rem;
 }
 
 .stat-link {
   font-size: 0.75rem;
-  color: #4DD0E1;
+  color: #ff6d5a;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }
 
 .stat-link:hover {
-  color: #26C6DA;
+  color: #e0604f;
 }
 
 .recent-activity {
@@ -323,7 +323,7 @@ onMounted(() => {
 .empty-state {
   text-align: center;
   padding: 2rem;
-  color: #6b7280;
+  color: #7b7b7b;
   font-style: italic;
 }
 
@@ -336,7 +336,7 @@ onMounted(() => {
   display: flex;
   gap: 1rem;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #374151;
+  border-bottom: 1px solid #3d3d3d;
 }
 
 .activity-item:last-child {
@@ -345,7 +345,7 @@ onMounted(() => {
 
 .activity-time {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: #7b7b7b;
   white-space: nowrap;
   min-width: 80px;
 }
@@ -369,7 +369,7 @@ onMounted(() => {
 
 .status-label {
   font-size: 0.85rem;
-  color: #9ca3af;
+  color: #ababab;
 }
 
 .status-value {
@@ -387,8 +387,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #4DD0E1;
-  color: #1a1f36;
+  background: #ff6d5a;
+  color: #262626;
   border: none;
   padding: 0.875rem 1.5rem;
   border-radius: 8px;
@@ -400,7 +400,7 @@ onMounted(() => {
 }
 
 .action-btn:hover:not(:disabled) {
-  background: #26C6DA;
+  background: #e0604f;
   transform: translateY(-1px);
 }
 
@@ -411,12 +411,12 @@ onMounted(() => {
 
 .action-btn.secondary {
   background: transparent;
-  color: #4DD0E1;
-  border: 1px solid #4DD0E1;
+  color: #ff6d5a;
+  border: 1px solid #ff6d5a;
 }
 
 .action-btn.secondary:hover:not(:disabled) {
-  background: rgba(77, 208, 225, 0.1);
+  background: rgba(255, 109, 90, 0.1);
 }
 
 .btn-icon {

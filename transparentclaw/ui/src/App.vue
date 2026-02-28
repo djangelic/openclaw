@@ -90,8 +90,8 @@ onMounted(() => {
 .app {
   height: 100vh;
   width: 100vw;
-  background-color: #0a0e1a;
-  color: #c8d6e5;
+  background-color: #1a1a1a;
+  color: #f5f5f5;
   overflow: hidden;
 }
 
@@ -100,15 +100,15 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: linear-gradient(135deg, #0a0e1a 0%, #1a1f36 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #262626 100%);
 }
 
 .setup-card {
-  background: #1a1f36;
+  background: #262626;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid #2d3748;
+  border: 1px solid #3d3d3d;
   max-width: 400px;
   width: 90%;
   text-align: center;
@@ -116,14 +116,14 @@ onMounted(() => {
 
 .setup-card h1 {
   margin: 0 0 1rem 0;
-  color: #4DD0E1;
+  color: #ff6d5a;
   font-size: 2rem;
   font-weight: 300;
 }
 
 .setup-card p {
   margin: 0 0 2rem 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.95rem;
 }
 
@@ -140,7 +140,7 @@ onMounted(() => {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -148,22 +148,22 @@ onMounted(() => {
 .form-group input {
   width: 100%;
   padding: 0.75rem;
-  background: #0a0e1a;
-  border: 1px solid #374151;
+  background: #1a1a1a;
+  border: 1px solid #3d3d3d;
   border-radius: 6px;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 0.9rem;
   transition: border-color 0.2s;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #4DD0E1;
+  border-color: #ff6d5a;
 }
 
 .connect-btn {
-  background: #4DD0E1;
-  color: #1a1f36;
+  background: #ff6d5a;
+  color: #262626;
   border: none;
   padding: 0.875rem 1.5rem;
   border-radius: 6px;
@@ -173,7 +173,7 @@ onMounted(() => {
 }
 
 .connect-btn:hover:not(:disabled) {
-  background: #26C6DA;
+  background: #e0604f;
   transform: translateY(-1px);
 }
 
@@ -185,10 +185,10 @@ onMounted(() => {
 .error {
   margin-top: 1rem;
   padding: 0.75rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(255, 109, 90, 0.1);
+  border: 1px solid rgba(255, 109, 90, 0.3);
   border-radius: 6px;
-  color: #fca5a5;
+  color: #ff6d5a;
   font-size: 0.85rem;
 }
 

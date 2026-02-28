@@ -335,14 +335,14 @@ onMounted(() => {
 
 .settings-header h2 {
   margin: 0 0 0.5rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.75rem;
   font-weight: 600;
 }
 
 .settings-header p {
   margin: 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.95rem;
 }
 
@@ -353,8 +353,8 @@ onMounted(() => {
 }
 
 .settings-section {
-  background: #1a1f36;
-  border: 1px solid #2d3748;
+  background: #262626;
+  border: 1px solid #3d3d3d;
   border-radius: 12px;
   padding: 2rem;
 }
@@ -370,14 +370,14 @@ onMounted(() => {
 
 .section-header h3 {
   margin: 0 0 0.5rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.25rem;
   font-weight: 600;
 }
 
 .section-header p {
   margin: 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.9rem;
 }
 
@@ -394,24 +394,24 @@ onMounted(() => {
 }
 
 .form-group label {
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 0.9rem;
   font-weight: 500;
 }
 
 .form-group input {
-  background: #0a0e1a;
-  border: 1px solid #374151;
+  background: #1a1a1a;
+  border: 1px solid #3d3d3d;
   border-radius: 8px;
   padding: 0.75rem;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 0.9rem;
   transition: border-color 0.2s;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #4DD0E1;
+  border-color: #ff6d5a;
 }
 
 .form-group input:disabled {
@@ -430,7 +430,7 @@ onMounted(() => {
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #9ca3af;
+  color: #ababab;
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 4px;
@@ -438,7 +438,7 @@ onMounted(() => {
 }
 
 .toggle-visibility-btn:hover:not(:disabled) {
-  color: #c8d6e5;
+  color: #f5f5f5;
 }
 
 .field-help {
@@ -465,13 +465,13 @@ onMounted(() => {
 
 .test-btn {
   background: transparent;
-  color: #4DD0E1;
-  border: 1px solid #4DD0E1;
+  color: #ff6d5a;
+  border: 1px solid #ff6d5a;
 }
 
 .save-btn {
-  background: #4DD0E1;
-  color: #1a1f36;
+  background: #ff6d5a;
+  color: #262626;
 }
 
 .test-btn:hover:not(:disabled),
@@ -484,7 +484,7 @@ onMounted(() => {
 }
 
 .save-btn:hover:not(:disabled) {
-  background: #26C6DA;
+  background: #e0604f;
 }
 
 .test-btn:disabled,
@@ -534,8 +534,8 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  background: #0a0e1a;
-  border: 1px solid #374151;
+  background: #1a1a1a;
+  border: 1px solid #3d3d3d;
   border-radius: 8px;
 }
 
@@ -545,14 +545,14 @@ onMounted(() => {
 
 .setting-info label {
   display: block;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 0.25rem;
 }
 
 .setting-description {
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.8rem;
 }
 
@@ -576,7 +576,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #374151;
+  background-color: #3d3d3d;
   transition: 0.2s;
   border-radius: 24px;
 }
@@ -594,7 +594,7 @@ onMounted(() => {
 }
 
 input:checked + .toggle-slider {
-  background-color: #4DD0E1;
+  background-color: #ff6d5a;
 }
 
 input:checked + .toggle-slider:before {
@@ -607,8 +607,8 @@ input:disabled + .toggle-slider {
 }
 
 .save-settings-btn {
-  background: #4DD0E1;
-  color: #1a1f36;
+  background: #ff6d5a;
+  color: #262626;
   border: none;
   padding: 0.875rem 1.5rem;
   border-radius: 8px;
@@ -620,7 +620,7 @@ input:disabled + .toggle-slider {
 }
 
 .save-settings-btn:hover:not(:disabled) {
-  background: #26C6DA;
+  background: #e0604f;
   transform: translateY(-1px);
 }
 
@@ -639,17 +639,17 @@ input:disabled + .toggle-slider {
   display: flex;
   align-items: center;
   padding: 1rem;
-  background: #0a0e1a;
-  border: 1px solid #374151;
+  background: #1a1a1a;
+  border: 1px solid #3d3d3d;
   border-radius: 8px;
   text-decoration: none;
-  color: #c8d6e5;
+  color: #f5f5f5;
   transition: all 0.2s;
   gap: 0.75rem;
 }
 
 .quick-link:hover {
-  border-color: #4DD0E1;
+  border-color: #ff6d5a;
   transform: translateY(-1px);
   background: rgba(77, 208, 225, 0.05);
 }
@@ -664,13 +664,13 @@ input:disabled + .toggle-slider {
 }
 
 .link-arrow {
-  color: #9ca3af;
+  color: #ababab;
   transition: transform 0.2s;
 }
 
 .quick-link:hover .link-arrow {
   transform: translateX(2px);
-  color: #4DD0E1;
+  color: #ff6d5a;
 }
 
 .danger-actions {

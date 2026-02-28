@@ -254,14 +254,14 @@ onMounted(() => {
 
 .skills-header h2 {
   margin: 0 0 0.5rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.75rem;
   font-weight: 600;
 }
 
 .skills-header p {
   margin: 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.95rem;
 }
 
@@ -278,11 +278,11 @@ onMounted(() => {
 }
 
 .search-input {
-  background: #1a1f36;
-  border: 1px solid #2d3748;
+  background: #262626;
+  border: 1px solid #3d3d3d;
   border-radius: 8px;
   padding: 0.625rem 2.5rem 0.625rem 1rem;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 0.875rem;
   width: 300px;
   transition: border-color 0.2s;
@@ -290,7 +290,7 @@ onMounted(() => {
 
 .search-input:focus {
   outline: none;
-  border-color: #4DD0E1;
+  border-color: #ff6d5a;
 }
 
 .search-icon {
@@ -298,7 +298,7 @@ onMounted(() => {
   right: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #9ca3af;
+  color: #ababab;
   pointer-events: none;
 }
 
@@ -309,19 +309,19 @@ onMounted(() => {
 }
 
 .filter-select {
-  background: #1a1f36;
-  border: 1px solid #2d3748;
+  background: #262626;
+  border: 1px solid #3d3d3d;
   border-radius: 8px;
   padding: 0.625rem 1rem;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 0.875rem;
   cursor: pointer;
 }
 
 .refresh-btn {
   background: transparent;
-  color: #4DD0E1;
-  border: 1px solid #4DD0E1;
+  color: #ff6d5a;
+  border: 1px solid #ff6d5a;
   padding: 0.625rem 1rem;
   border-radius: 8px;
   font-weight: 600;
@@ -349,14 +349,14 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   height: 300px;
-  color: #9ca3af;
+  color: #ababab;
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid #374151;
-  border-top: 3px solid #4DD0E1;
+  border: 3px solid #3d3d3d;
+  border-top: 3px solid #ff6d5a;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -368,7 +368,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   height: 300px;
-  color: #9ca3af;
+  color: #ababab;
   text-align: center;
 }
 
@@ -380,7 +380,7 @@ onMounted(() => {
 
 .empty-state h3 {
   margin: 0 0 1rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.25rem;
 }
 
@@ -399,8 +399,8 @@ onMounted(() => {
 }
 
 .skill-card {
-  background: #1a1f36;
-  border: 1px solid #2d3748;
+  background: #262626;
+  border: 1px solid #3d3d3d;
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.2s;
@@ -414,7 +414,7 @@ onMounted(() => {
 
 .skill-card.disabled {
   opacity: 0.7;
-  border-color: #374151;
+  border-color: #3d3d3d;
 }
 
 .skill-header {
@@ -426,7 +426,7 @@ onMounted(() => {
 
 .skill-title h3 {
   margin: 0 0 0.5rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -486,7 +486,7 @@ onMounted(() => {
 
 .skill-description p {
   margin: 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -513,7 +513,7 @@ onMounted(() => {
 
 .detail-value {
   font-size: 0.8rem;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-family: monospace;
 }
 
@@ -521,14 +521,14 @@ onMounted(() => {
   display: flex;
   gap: 0.75rem;
   padding-top: 1rem;
-  border-top: 1px solid #2d3748;
+  border-top: 1px solid #3d3d3d;
 }
 
 .workflow-btn,
 .details-btn {
   background: transparent;
-  color: #4DD0E1;
-  border: 1px solid #4DD0E1;
+  color: #ff6d5a;
+  border: 1px solid #ff6d5a;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-weight: 500;
@@ -565,8 +565,8 @@ onMounted(() => {
 }
 
 .modal {
-  background: #1a1f36;
-  border: 1px solid #2d3748;
+  background: #262626;
+  border: 1px solid #3d3d3d;
   border-radius: 12px;
   width: 90%;
   max-width: 600px;
@@ -579,12 +579,12 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem;
-  border-bottom: 1px solid #2d3748;
+  border-bottom: 1px solid #3d3d3d;
 }
 
 .modal-header h3 {
   margin: 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -592,7 +592,7 @@ onMounted(() => {
 .close-btn {
   background: none;
   border: none;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0;
@@ -606,7 +606,7 @@ onMounted(() => {
 }
 
 .close-btn:hover {
-  color: #c8d6e5;
+  color: #f5f5f5;
 }
 
 .modal-content {
@@ -623,14 +623,14 @@ onMounted(() => {
 
 .detail-section h4 {
   margin: 0 0 1rem 0;
-  color: #4DD0E1;
+  color: #ff6d5a;
   font-size: 1rem;
   font-weight: 600;
 }
 
 .detail-section p {
   margin: 0;
-  color: #9ca3af;
+  color: #ababab;
   line-height: 1.5;
 }
 
@@ -654,7 +654,7 @@ onMounted(() => {
 
 .config-value {
   font-size: 0.9rem;
-  color: #c8d6e5;
+  color: #f5f5f5;
 }
 
 .config-value.enabled {
@@ -666,11 +666,11 @@ onMounted(() => {
 }
 
 .parameters-code {
-  background: #0a0e1a;
-  border: 1px solid #374151;
+  background: #1a1a1a;
+  border: 1px solid #3d3d3d;
   border-radius: 8px;
   padding: 1rem;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 0.8rem;
   overflow-x: auto;
   white-space: pre-wrap;
@@ -681,13 +681,13 @@ onMounted(() => {
   gap: 1rem;
   justify-content: flex-end;
   padding: 1.5rem;
-  border-top: 1px solid #2d3748;
+  border-top: 1px solid #3d3d3d;
 }
 
 .close-modal-btn {
   background: transparent;
-  color: #9ca3af;
-  border: 1px solid #374151;
+  color: #ababab;
+  border: 1px solid #3d3d3d;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
@@ -697,7 +697,7 @@ onMounted(() => {
 
 .close-modal-btn:hover {
   background: rgba(156, 163, 175, 0.1);
-  color: #c8d6e5;
+  color: #f5f5f5;
 }
 
 @keyframes spin {

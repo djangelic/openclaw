@@ -51,23 +51,23 @@ const openN8nDirect = () => {
 
 .workflows-header h2 {
   margin: 0 0 0.5rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.5rem;
   font-weight: 600;
 }
 
 .workflows-header p {
   margin: 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.9rem;
 }
 
 .workflows-container {
   flex: 1;
   min-height: 0;
-  background: #1a1f36;
+  background: #262626;
   border-radius: 8px;
-  border: 1px solid #2d3748;
+  border: 1px solid #3d3d3d;
   position: relative;
 }
 
@@ -91,14 +91,14 @@ const openN8nDirect = () => {
 
 .fallback-content h3 {
   margin: 0 0 1rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.25rem;
   font-weight: 600;
 }
 
 .fallback-content p {
   margin: 0 0 2rem 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -112,8 +112,8 @@ const openN8nDirect = () => {
 
 .settings-link,
 .open-direct-btn {
-  background: #4DD0E1;
-  color: #1a1f36;
+  background: #ff6d5a;
+  color: #262626;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
   text-decoration: none;
@@ -127,8 +127,8 @@ const openN8nDirect = () => {
 
 .open-direct-btn {
   background: transparent;
-  color: #4DD0E1;
-  border: 1px solid #4DD0E1;
+  color: #ff6d5a;
+  border: 1px solid #ff6d5a;
 }
 
 .settings-link:hover,
@@ -137,7 +137,7 @@ const openN8nDirect = () => {
 }
 
 .settings-link:hover {
-  background: #26C6DA;
+  background: #e0604f;
 }
 
 .open-direct-btn:hover {

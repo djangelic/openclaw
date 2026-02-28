@@ -179,10 +179,10 @@ Returns pending chunks since sequence N.
 
 ---
 
-## Key Insight for TransparentClaw
+## Key Insight for CrystalClaw
 
 The `custom-agent` provider type is exactly what we need. We can:
-1. Create a TransparentClaw agent via `POST /chat/agents` with our soul as systemPrompt
+1. Create a CrystalClaw agent via `POST /chat/agents` with our soul as systemPrompt
 2. Attach tools (Data Table tool, workflow tools, etc.)
 3. Users chat with it through Chat Hub
 4. Responses stream back via WebSocket

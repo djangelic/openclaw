@@ -302,14 +302,14 @@ onMounted(() => {
 
 .routines-header h2 {
   margin: 0 0 0.5rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.75rem;
   font-weight: 600;
 }
 
 .routines-header p {
   margin: 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.95rem;
 }
 
@@ -321,10 +321,10 @@ onMounted(() => {
 
 .routines-tabs {
   display: flex;
-  background: #1a1f36;
+  background: #262626;
   border-radius: 8px;
   padding: 0.25rem;
-  border: 1px solid #2d3748;
+  border: 1px solid #3d3d3d;
   margin-bottom: 2rem;
   width: fit-content;
 }
@@ -334,7 +334,7 @@ onMounted(() => {
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
-  color: #9ca3af;
+  color: #ababab;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
@@ -345,12 +345,12 @@ onMounted(() => {
 }
 
 .tab-btn:hover {
-  color: #c8d6e5;
+  color: #f5f5f5;
 }
 
 .tab-btn.active {
-  background: #4DD0E1;
-  color: #1a1f36;
+  background: #ff6d5a;
+  color: #262626;
 }
 
 .tab-icon {
@@ -371,7 +371,7 @@ onMounted(() => {
 
 .section-header h3 {
   margin: 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -382,8 +382,8 @@ onMounted(() => {
 }
 
 .action-btn {
-  background: #4DD0E1;
-  color: #1a1f36;
+  background: #ff6d5a;
+  color: #262626;
   border: none;
   padding: 0.625rem 1rem;
   border-radius: 6px;
@@ -398,8 +398,8 @@ onMounted(() => {
 
 .action-btn.secondary {
   background: transparent;
-  color: #4DD0E1;
-  border: 1px solid #4DD0E1;
+  color: #ff6d5a;
+  border: 1px solid #ff6d5a;
 }
 
 .action-btn:hover:not(:disabled) {
@@ -421,14 +421,14 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   height: 200px;
-  color: #9ca3af;
+  color: #ababab;
 }
 
 .loading-spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid #374151;
-  border-top: 3px solid #4DD0E1;
+  border: 3px solid #3d3d3d;
+  border-top: 3px solid #ff6d5a;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -440,7 +440,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   height: 200px;
-  color: #9ca3af;
+  color: #ababab;
   text-align: center;
 }
 
@@ -452,7 +452,7 @@ onMounted(() => {
 
 .empty-state h3 {
   margin: 0 0 1rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.25rem;
 }
 
@@ -463,8 +463,8 @@ onMounted(() => {
 }
 
 .empty-action-btn {
-  background: #4DD0E1;
-  color: #1a1f36;
+  background: #ff6d5a;
+  color: #262626;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
@@ -474,7 +474,7 @@ onMounted(() => {
 }
 
 .empty-action-btn:hover {
-  background: #26C6DA;
+  background: #e0604f;
   transform: translateY(-1px);
 }
 
@@ -489,8 +489,8 @@ onMounted(() => {
 
 .workflow-item,
 .execution-item {
-  background: #1a1f36;
-  border: 1px solid #2d3748;
+  background: #262626;
+  border: 1px solid #3d3d3d;
   border-radius: 8px;
   padding: 1rem;
   transition: transform 0.2s;
@@ -512,7 +512,7 @@ onMounted(() => {
 .workflow-info h4,
 .execution-info h4 {
   margin: 0 0 0.25rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1rem;
   font-weight: 600;
 }
@@ -553,7 +553,7 @@ onMounted(() => {
 }
 
 .execution-time {
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.8rem;
 }
 
@@ -565,13 +565,13 @@ onMounted(() => {
 
 .schedule-label,
 .next-run-label {
-  color: #9ca3af;
+  color: #ababab;
   margin-right: 0.5rem;
 }
 
 .schedule-value,
 .next-run-value {
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-weight: 500;
 }
 
@@ -582,15 +582,15 @@ onMounted(() => {
 }
 
 .execution-duration {
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.8rem;
 }
 
 .workflow-btn,
 .execution-btn {
   background: transparent;
-  color: #4DD0E1;
-  border: 1px solid #4DD0E1;
+  color: #ff6d5a;
+  border: 1px solid #ff6d5a;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   font-weight: 500;

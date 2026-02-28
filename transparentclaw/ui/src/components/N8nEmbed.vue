@@ -88,7 +88,7 @@ onMounted(() => {
   height: 100%;
   width: 100%;
   position: relative;
-  background: #0a0e1a;
+  background: #1a1a1a;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -106,14 +106,14 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #9ca3af;
+  color: #ababab;
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid #374151;
-  border-top: 3px solid #4DD0E1;
+  border: 3px solid #3d3d3d;
+  border-top: 3px solid #ff6d5a;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -132,7 +132,7 @@ onMounted(() => {
   height: 100%;
   padding: 2rem;
   text-align: center;
-  color: #9ca3af;
+  color: #ababab;
 }
 
 .error-icon {
@@ -142,7 +142,7 @@ onMounted(() => {
 
 .error-state h3 {
   margin: 0 0 1rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -162,8 +162,8 @@ onMounted(() => {
 }
 
 .retry-btn {
-  background: #4DD0E1;
-  color: #1a1f36;
+  background: #ff6d5a;
+  color: #262626;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
@@ -174,14 +174,14 @@ onMounted(() => {
 }
 
 .retry-btn:hover {
-  background: #26C6DA;
+  background: #e0604f;
   transform: translateY(-1px);
 }
 
 .open-link {
   background: transparent;
-  color: #4DD0E1;
-  border: 1px solid #4DD0E1;
+  color: #ff6d5a;
+  border: 1px solid #ff6d5a;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
   font-weight: 600;
@@ -192,7 +192,7 @@ onMounted(() => {
 }
 
 .open-link:hover {
-  background: rgba(77, 208, 225, 0.1);
+  background: rgba(255, 109, 90, 0.1);
   transform: translateY(-1px);
 }
 

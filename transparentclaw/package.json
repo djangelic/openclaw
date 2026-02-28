@@ -1,10 +1,10 @@
 {
-  "name": "transparentclaw",
+  "name": "crystalclaw",
   "version": "0.1.0",
   "description": "Self-deploying AI agent platform with n8n transparency",
   "type": "module",
   "bin": {
-    "tclaw": "cli/src/index.js"
+    "cclaw": "cli/src/index.js"
   },
   "scripts": {
     "build": "tsc",

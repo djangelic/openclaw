@@ -227,14 +227,14 @@ onMounted(async () => {
 
 .soul-header h2 {
   margin: 0 0 0.5rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.75rem;
   font-weight: 600;
 }
 
 .soul-header p {
   margin: 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.95rem;
 }
 
@@ -246,8 +246,8 @@ onMounted(async () => {
 }
 
 .soul-form {
-  background: #1a1f36;
-  border: 1px solid #2d3748;
+  background: #262626;
+  border: 1px solid #3d3d3d;
   border-radius: 12px;
   padding: 2rem;
 }
@@ -262,7 +262,7 @@ onMounted(async () => {
 
 .form-section h3 {
   margin: 0 0 1rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -280,18 +280,18 @@ onMounted(async () => {
 }
 
 .form-group label {
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 0.9rem;
   font-weight: 500;
 }
 
 .form-group input,
 .form-group textarea {
-  background: #0a0e1a;
-  border: 1px solid #374151;
+  background: #1a1a1a;
+  border: 1px solid #3d3d3d;
   border-radius: 8px;
   padding: 0.75rem;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 0.9rem;
   transition: border-color 0.2s;
   resize: vertical;
@@ -300,7 +300,7 @@ onMounted(async () => {
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #4DD0E1;
+  border-color: #ff6d5a;
 }
 
 .form-group input:disabled,
@@ -320,13 +320,13 @@ onMounted(async () => {
   justify-content: flex-end;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #2d3748;
+  border-top: 1px solid #3d3d3d;
 }
 
 .reset-btn {
   background: transparent;
-  color: #9ca3af;
-  border: 1px solid #374151;
+  color: #ababab;
+  border: 1px solid #3d3d3d;
   padding: 0.875rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
@@ -336,12 +336,12 @@ onMounted(async () => {
 
 .reset-btn:hover:not(:disabled) {
   background: rgba(156, 163, 175, 0.1);
-  color: #c8d6e5;
+  color: #f5f5f5;
 }
 
 .save-btn {
-  background: #4DD0E1;
-  color: #1a1f36;
+  background: #ff6d5a;
+  color: #262626;
   border: none;
   padding: 0.875rem 1.5rem;
   border-radius: 8px;
@@ -352,7 +352,7 @@ onMounted(async () => {
 }
 
 .save-btn:hover:not(:disabled) {
-  background: #26C6DA;
+  background: #e0604f;
   transform: translateY(-1px);
 }
 
@@ -367,15 +367,15 @@ onMounted(async () => {
 }
 
 .preview-card {
-  background: #1a1f36;
-  border: 1px solid #2d3748;
+  background: #262626;
+  border: 1px solid #3d3d3d;
   border-radius: 12px;
   padding: 1.5rem;
 }
 
 .preview-card h3 {
   margin: 0 0 1rem 0;
-  color: #c8d6e5;
+  color: #f5f5f5;
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -404,7 +404,7 @@ onMounted(async () => {
 .preview-name {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #c8d6e5;
+  color: #f5f5f5;
 }
 
 .preview-section {
@@ -417,7 +417,7 @@ onMounted(async () => {
 
 .preview-section h4 {
   margin: 0 0 0.5rem 0;
-  color: #4DD0E1;
+  color: #ff6d5a;
   font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -426,7 +426,7 @@ onMounted(async () => {
 
 .preview-section p {
   margin: 0;
-  color: #9ca3af;
+  color: #ababab;
   font-size: 0.85rem;
   line-height: 1.5;
 }

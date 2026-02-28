@@ -115,8 +115,8 @@ onMounted(() => {
 <style scoped>
 .topbar {
   height: 60px;
-  background: #1a1f36;
-  border-bottom: 1px solid #2d3748;
+  background: #262626;
+  border-bottom: 1px solid #3d3d3d;
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
@@ -142,7 +142,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(77, 208, 225, 0.1);
+  background: rgba(255, 109, 90, 0.1);
   border-radius: 8px;
 }
 
@@ -154,7 +154,7 @@ onMounted(() => {
 .agent-name {
   font-size: 1rem;
   font-weight: 600;
-  color: #c8d6e5;
+  color: #f5f5f5;
   margin: 0;
   line-height: 1.2;
 }
@@ -174,16 +174,16 @@ onMounted(() => {
 }
 
 .status-indicator.status-online {
-  background: #10b981;
+  background: #6ad28a;
 }
 
 .status-indicator.status-offline {
-  background: #ef4444;
+  background: #ff6d5a;
 }
 
 .status-text {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: #ababab;
   font-weight: 500;
 }
 
@@ -195,7 +195,7 @@ onMounted(() => {
 
 .current-route {
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: #ababab;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -223,7 +223,7 @@ onMounted(() => {
 
 .stat-label {
   font-size: 0.7rem;
-  color: #6b7280;
+  color: #7b7b7b;
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -231,7 +231,7 @@ onMounted(() => {
 
 .stat-value {
   font-size: 0.9rem;
-  color: #4DD0E1;
+  color: #ff6d5a;
   font-weight: 600;
 }
 
@@ -241,9 +241,9 @@ onMounted(() => {
 }
 
 .action-btn {
-  background: rgba(77, 208, 225, 0.1);
-  border: 1px solid rgba(77, 208, 225, 0.3);
-  color: #4DD0E1;
+  background: rgba(255, 109, 90, 0.1);
+  border: 1px solid rgba(255, 109, 90, 0.3);
+  color: #ff6d5a;
   width: 32px;
   height: 32px;
   border-radius: 6px;
@@ -255,8 +255,8 @@ onMounted(() => {
 }
 
 .action-btn:hover:not(:disabled) {
-  background: rgba(77, 208, 225, 0.2);
-  border-color: rgba(77, 208, 225, 0.5);
+  background: rgba(255, 109, 90, 0.2);
+  border-color: rgba(255, 109, 90, 0.5);
   transform: translateY(-1px);
 }
 
@@ -282,13 +282,13 @@ onMounted(() => {
 }
 
 .connection-online .connection-dot {
-  background: #10b981;
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  background: #6ad28a;
+  box-shadow: 0 0 8px rgba(106, 210, 138, 0.4);
 }
 
 .connection-offline .connection-dot {
-  background: #ef4444;
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+  background: #ff6d5a;
+  box-shadow: 0 0 8px rgba(255, 109, 90, 0.4);
 }
 
 @keyframes pulse {

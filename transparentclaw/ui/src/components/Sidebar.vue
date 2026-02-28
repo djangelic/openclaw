@@ -119,8 +119,8 @@ const toggleGroup = (group: keyof typeof expandedGroups) => {
 <style scoped>
 .sidebar {
   width: 260px;
-  background: #1a1f36;
-  border-right: 1px solid #2d3748;
+  background: #1a1a1a;
+  border-right: 1px solid #3d3d3d;
   display: flex;
   flex-direction: column;
   transition: width 0.3s ease;
@@ -132,7 +132,7 @@ const toggleGroup = (group: keyof typeof expandedGroups) => {
 
 .sidebar-header {
   padding: 1rem;
-  border-bottom: 1px solid #2d3748;
+  border-bottom: 1px solid #3d3d3d;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -151,13 +151,13 @@ const toggleGroup = (group: keyof typeof expandedGroups) => {
 .logo-text {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #4DD0E1;
+  color: #ff6d5a;
 }
 
 .collapse-btn {
   background: none;
   border: none;
-  color: #9ca3af;
+  color: #ababab;
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 4px;
@@ -165,7 +165,7 @@ const toggleGroup = (group: keyof typeof expandedGroups) => {
 }
 
 .collapse-btn:hover {
-  color: #c8d6e5;
+  color: #f5f5f5;
 }
 
 .sidebar-nav {
@@ -182,14 +182,14 @@ const toggleGroup = (group: keyof typeof expandedGroups) => {
   align-items: center;
   padding: 0.75rem 1rem;
   cursor: pointer;
-  color: #9ca3af;
+  color: #ababab;
   font-weight: 500;
   font-size: 0.9rem;
   transition: color 0.2s;
 }
 
 .nav-group-header:hover {
-  color: #c8d6e5;
+  color: #f5f5f5;
 }
 
 .group-icon {
@@ -211,7 +211,7 @@ const toggleGroup = (group: keyof typeof expandedGroups) => {
 }
 
 .nav-group-content {
-  border-left: 2px solid #374151;
+  border-left: 2px solid #3d3d3d;
   margin-left: 2rem;
 }
 
@@ -219,7 +219,7 @@ const toggleGroup = (group: keyof typeof expandedGroups) => {
   display: flex;
   align-items: center;
   padding: 0.625rem 1rem;
-  color: #c8d6e5;
+  color: #f5f5f5;
   text-decoration: none;
   font-size: 0.875rem;
   transition: all 0.2s;
@@ -227,14 +227,14 @@ const toggleGroup = (group: keyof typeof expandedGroups) => {
 }
 
 .nav-item:hover {
-  background: rgba(77, 208, 225, 0.1);
-  color: #4DD0E1;
+  background: rgba(255, 109, 90, 0.1);
+  color: #ff6d5a;
 }
 
 .nav-item.router-link-active {
-  background: rgba(77, 208, 225, 0.15);
-  color: #4DD0E1;
-  border-left: 3px solid #4DD0E1;
+  background: rgba(255, 109, 90, 0.15);
+  color: #ff6d5a;
+  border-left: 3px solid #ff6d5a;
 }
 
 .nav-icon {

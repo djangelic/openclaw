@@ -1,7 +1,7 @@
 # n8n Chat Hub Deep Dive - Technical Analysis
 
 **Date:** 2026-02-26  
-**Purpose:** Complete technical analysis of n8n's Chat Hub module for TransparentClaw integration  
+**Purpose:** Complete technical analysis of n8n's Chat Hub module for CrystalClaw integration  
 **Version Analyzed:** n8n/n8n master branch (latest)
 
 ## Table of Contents
@@ -807,37 +807,37 @@ ChatLayout.vue (layout wrapper)
 
 ---
 
-## 11. Extension Points for TransparentClaw
+## 11. Extension Points for CrystalClaw
 
-Based on this analysis, here are the **key integration points** where TransparentClaw can hook into Chat Hub:
+Based on this analysis, here are the **key integration points** where CrystalClaw can hook into Chat Hub:
 
 ### 1. System Prompt Injection
 
 **Location**: `ChatHubAgentService.createAgent()` / `updateAgent()`
-**Method**: Append TransparentClaw context to `systemPrompt` field
+**Method**: Append CrystalClaw context to `systemPrompt` field
 
 ```typescript
 // Intercept agent creation/update
-const transparentClawContext = `
+const crystalClawContext = `
 
-You are running inside TransparentClaw, an AI assistant with enhanced capabilities:
+You are running inside CrystalClaw, an AI assistant with enhanced capabilities:
 - You have access to the user's complete workspace context
 - You can read/write files, execute commands, and access external tools  
 - You maintain persistent memory across sessions
 - Always be transparent about your capabilities and limitations
 `;
 
-agent.systemPrompt = agent.systemPrompt + transparentClawContext;
+agent.systemPrompt = agent.systemPrompt + crystalClawContext;
 ```
 
 ### 2. Custom Tool Injection
 
 **Location**: `ChatHubToolService.getToolDefinitionsForSession()`
-**Method**: Dynamically inject TransparentClaw tools
+**Method**: Dynamically inject CrystalClaw tools
 
 ```typescript
-// Add TransparentClaw tools to every session
-const transparentClawTools: INode[] = [
+// Add CrystalClaw tools to every session
+const crystalClawTools: INode[] = [
   createFileReaderTool(),
   createCommandExecutorTool(), 
   createMemoryManagerTool(),
@@ -845,7 +845,7 @@ const transparentClawTools: INode[] = [
   // etc.
 ];
 
-return [...existingTools, ...transparentClawTools];
+return [...existingTools, ...crystalClawTools];
 ```
 
 ### 3. Message Interception
@@ -881,7 +881,7 @@ User Message: ${payload.message}
 // Enhance chunks as they stream
 async sendChunk(sessionId, messageId, content) {
   // Parse for action items, file references, etc.
-  const enhancedContent = await enhanceWithTransparentClaw(content);
+  const enhancedContent = await enhanceWithCrystalClaw(content);
   
   // Continue normal streaming
   await originalSendChunk(sessionId, messageId, enhancedContent);
@@ -910,11 +910,11 @@ async function onMessageComplete(message: ChatHubMessageDto) {
 ### 6. Frontend Integration
 
 **Location**: Custom Vue component in ChatView
-**Method**: Add TransparentClaw status/controls
+**Method**: Add CrystalClaw status/controls
 
 ```vue
 <!-- Add to ChatView.vue -->
-<TransparentClawStatusBar 
+<CrystalClawStatusBar 
   :session-id="sessionId"
   :workspace-context="workspaceContext"
   @memory-updated="handleMemoryUpdate"
@@ -924,20 +924,20 @@ async function onMessageComplete(message: ChatHubMessageDto) {
 ### 7. WebSocket Event Extension
 
 **Location**: `useChatPushHandler.ts`
-**Method**: Handle custom TransparentClaw events
+**Method**: Handle custom CrystalClaw events
 
 ```typescript
 // Add custom event handlers
 const customEventHandlers = {
-  'transparentClawMemoryUpdate': handleMemoryUpdate,
-  'transparentClawWorkspaceChange': handleWorkspaceChange,
-  'transparentClawTaskComplete': handleTaskComplete,
+  'crystalClawMemoryUpdate': handleMemoryUpdate,
+  'crystalClawWorkspaceChange': handleWorkspaceChange,
+  'crystalClawTaskComplete': handleTaskComplete,
 };
 ```
 
 ### 8. Database Extensions
 
-**New Tables** for TransparentClaw:
+**New Tables** for CrystalClaw:
 ```sql
 CREATE TABLE transparent_claw_memories (
   id UUID PRIMARY KEY,
@@ -962,7 +962,7 @@ CREATE TABLE transparent_claw_workspace_context (
 1. **Minimize Core Changes**: Hook into existing extension points rather than modifying core logic
 2. **Progressive Enhancement**: Start with basic features and add complexity incrementally  
 3. **Backward Compatibility**: Ensure normal Chat Hub operation isn't affected
-4. **User Opt-In**: Make TransparentClaw features optional and discoverable
+4. **User Opt-In**: Make CrystalClaw features optional and discoverable
 5. **Performance Conscious**: Don't slow down the core streaming experience
 
 ---
@@ -1109,6 +1109,6 @@ The n8n Chat Hub is a **sophisticated, production-ready chat interface** with:
 - **Robust state management** with Vue 3 + Pinia
 - **Scalable architecture** supporting multi-main instances
 
-For **TransparentClaw integration**, the system provides multiple clean extension points without requiring core modifications. The agent system prompt injection and custom tool registration offer the most promising paths for enhanced functionality.
+For **CrystalClaw integration**, the system provides multiple clean extension points without requiring core modifications. The agent system prompt injection and custom tool registration offer the most promising paths for enhanced functionality.
 
 The codebase demonstrates **excellent engineering practices** with comprehensive TypeScript typing, proper separation of concerns, and thoughtful WebSocket reliability patterns. This provides a solid foundation for building enhanced AI assistant capabilities.

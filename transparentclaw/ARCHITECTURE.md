@@ -1,4 +1,4 @@
-# TransparentClaw — Architecture v2
+# CrystalClaw — Architecture v2
 
 > **One-line pitch:** n8n with opinionated agent scaffolding — just add workflows and watch your AI assistant come to life on the canvas.
 
@@ -6,7 +6,7 @@
 
 ## 🎯 The Vision
 
-TransparentClaw is NOT a separate system alongside n8n. It's n8n configured as an agent operating framework.
+CrystalClaw is NOT a separate system alongside n8n. It's n8n configured as an agent operating framework.
 
 The key insight: **Everything lives natively in n8n**
 - **Data Tables** = agent state (soul, memory, tools, user profile)
@@ -22,7 +22,7 @@ No separate OpenClaw Gateway. No Bridge service. Just n8n + Postgres + installer
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                   TransparentClaw CLI                    │
+│                    CrystalClaw CLI                       │
 │              (AI-guided installer + manager)             │
 └──────────────────────┬──────────────────────────────────┘
                        │ generates docker-compose.yml
@@ -261,7 +261,7 @@ Callable web search capability:
 ## 🚀 CLI Installer Flow
 
 ```bash
-npx transparentclaw init
+npx crystalclaw init
 ```
 
 **Step-by-step process:**
@@ -336,7 +336,7 @@ curl -X POST http://localhost:5678/api/v1/chat/agents \
     "enabled": true
   }'
 
-echo "✅ TransparentClaw setup complete!"
+echo "✅ CrystalClaw setup complete!"
 echo "🌐 Access your agent at: http://localhost:5678/chat"
 ```
 
@@ -344,7 +344,7 @@ echo "🌐 Access your agent at: http://localhost:5678/chat"
 
 ## 🌐 Phase 2: Browser Extension
 
-Future enhancement that connects to the TransparentClaw instance:
+Future enhancement that connects to the CrystalClaw instance:
 
 - **Browser Extension** → connects to n8n Chat Hub
 - **File Access** → via native messaging host  
@@ -375,10 +375,10 @@ This essentially brings OpenClaw's browser capabilities to the n8n-based agent.
 ## 📁 Project Structure (Simplified)
 
 ```
-transparentclaw/
+crystalclaw/
 ├── cli/                      # The installer CLI
 │   ├── src/
-│   │   ├── index.ts          # Entry point (npx transparentclaw init)  
+│   │   ├── index.ts          # Entry point (npx crystalclaw init)  
 │   │   ├── installer.ts      # Interactive setup wizard
 │   │   ├── docker.ts         # Docker Compose generation
 │   │   └── bootstrap.ts      # n8n initialization
