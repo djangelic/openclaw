@@ -64,3 +64,6 @@ n8n-data/
 # Temporary files
 tmp/
 temp/
+
+# CrystalClaw - n8n fork (separate git repository)
+n8n-fork/
