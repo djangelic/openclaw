@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" width="200" alt="CrystalClaw Logo" />
+  <img src="assets/crystal-claw-logo.svg" width="200" alt="CrystalClaw Logo" />
 </p>
 
 <h1 align="center">CrystalClaw 💎</h1>
@@ -29,6 +29,20 @@ npx crystalclaw init
 ```
 
 Your transparent AI agent is ready in minutes, not hours.
+
+## 🚧 Development Status
+
+**Phase 2 Complete! ✅**
+
+- ✅ **n8n Fork Integration** - Successfully forked n8n's frontend with CrystalClaw features
+- ✅ **Persistent Chat Hub** - Chat panel available on ALL pages with collapse/expand  
+- ✅ **Soul Editor** - Visual agent identity management interface
+- ✅ **Memory Browser** - Data tables viewer for agent memory
+- ✅ **Skills Registry** - Workflow-based skills management  
+- ✅ **Navigation Integration** - CrystalClaw items in main sidebar
+- 🚧 **Next: Logo & Deployment** - Final touches and production deployment
+
+*Currently in active development - MVP coming March 2026*
 
 ## The Problem with Current AI Agents
 
