@@ -14,17 +14,18 @@ header{text-align:center;padding:48px 0 32px;border-bottom:1px solid var(--borde
 header h1{font-size:2rem;font-weight:600}
 header h1 span{color:var(--accent2)}
 header p{color:var(--text-dim);margin-top:8px;font-size:1.05rem}
+.stats{color:var(--text-dim);margin-top:12px;font-size:.85rem}
+.stats strong{color:var(--green)}
 .search-box{margin:24px auto 0;max-width:480px}
 .search-box input{width:100%;padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.95rem;outline:none}
 .search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,.15)}
-.section{margin-bottom:32px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.section{margin-bottom:16px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
 .section-header{background:var(--surface);padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
 .section-header:hover{background:var(--card-hover)}
 .section-header .icon{font-size:1.2rem}
 .section-header h2{font-size:.95rem;font-weight:600;flex:1}
 .section-header .desc{color:var(--text-dim);font-size:.8rem;font-weight:400;margin-left:8px}
 .section-header .count{color:var(--text-dim);font-size:.75rem;background:var(--border);padding:2px 8px;border-radius:10px}
-.section-header .date{color:var(--green);font-size:.75rem;margin-left:auto;font-variant-numeric:tabular-nums}
 .section-body{display:none}
 .section.open .section-body{display:block}
 .section-header .arrow{color:var(--text-dim);transition:transform .2s;font-size:.7rem}
@@ -33,12 +34,13 @@ header p{color:var(--text-dim);margin-top:8px;font-size:1.05rem}
 .file-list li{padding:8px 16px 8px 42px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:.9rem}
 .file-list li:hover{background:var(--card-hover)}
 .file-list li .ficon{color:var(--text-dim);font-size:.8rem;width:16px;text-align:center}
-.file-list li a{flex:1}
-.file-list li .badge{font-size:.7rem;color:var(--text-dim);background:var(--border);padding:1px 6px;border-radius:4px}
-.file-list li .date{font-size:.75rem;color:var(--text-dim);margin-left:auto;white-space:nowrap;font-variant-numeric:tabular-nums}
+.file-list li a{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-list li .badge{font-size:.7rem;color:var(--text-dim);background:var(--border);padding:1px 6px;border-radius:4px;flex-shrink:0}
+.file-list li .sub{color:var(--text-dim);font-size:.75rem;margin-right:4px}
 .thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
 .thumb-grid img{width:100%;aspect-ratio:1;object-fit:contain;border-radius:4px;background:var(--card-hover);image-rendering:pixelated}
 .thumb-grid a{display:block}
+.thumb-grid .sub-label{grid-column:1/-1;color:var(--text-dim);font-size:.75rem;border-top:1px solid var(--border);padding-top:8px;margin-top:4px}
 footer{text-align:center;padding:32px 0;color:var(--text-dim);font-size:.8rem;border-top:1px solid var(--border);margin-top:16px}
 @media(max-width:600px){header h1{font-size:1.5rem}.section-header .desc{display:none}.thumb-grid{grid-template-columns:repeat(auto-fill,minmax(60px,1fr))}}
 </style>
@@ -46,88 +48,47 @@ footer{text-align:center;padding:32px 0;color:var(--text-dim);font-size:.8rem;bo
 <body>
 <div class="container">
 <header>
-<h1>🛠️ Angel's <span>Workshop</span></h1>
+<h1>&#x1F3ED; Angel's <span>Workshop</span></h1>
 <p>Project files, visualizations, blog drafts, and creative assets</p>
+<div class="stats" id="stats"></div>
 <div class="search-box"><input type="text" id="search" placeholder="Search files..." autocomplete="off"></div>
 </header>
 <div id="sections"></div>
-<footer>Angel's Workshop &mdash; <a href="https://github.com/djangelic/openclaw">View on GitHub</a></footer>
+<footer>Angel's Workshop &mdash; <a href="https://github.com/djangelic/openclaw">View on GitHub</a> &mdash; Last updated Mar 2, 2026</footer>
 </div>
 <script>
 const GITHUB_BASE = 'https://github.com/djangelic/openclaw/blob/main/';
 const PAGES_BASE = '';
 
-// File dates from git log (last modified)
-const FILE_DATES = {
-  'benchmarking/benchmarking-animated-30s.html':'2026-02-26','benchmarking/benchmarking-animated.html':'2026-02-26',
-  'benchmarking/benchmarking-food-analogies.html':'2026-02-26','benchmarking/benchmarking-v2-broll.html':'2026-02-26',
-  'benchmarking/benchmarking-viz.html':'2026-02-26','benchmarking/franchise-intro-analogy.html':'2026-02-26',
-  'benchmarking/pg-untuned-analogy.html':'2026-02-26','benchmarking/three-architectures.html':'2026-02-26',
-  'benchmarking/three-architectures.png':'2026-02-26','benchmarking/benchmarking-script.md':'2026-02-26',
-  'benchmarking/benchmarking-script-v7.md':'2026-02-26','benchmarking/benchmarking-script-v8.md':'2026-02-26',
-  'blog-drafts/ai-dependency-trap.md':'2026-02-26','blog-drafts/ai-on-rails-playbook.md':'2026-02-26',
-  'blog-drafts/airgapped-advantage.md':'2026-02-26','blog-drafts/bouncer-post.md':'2026-02-26',
-  'blog-drafts/callforge-case-study.md':'2026-02-26','blog-drafts/five-slack-apps.md':'2026-02-26',
-  'blog-drafts/human-in-the-loop.md':'2026-02-26','blog-drafts/last-layer-playbook.md':'2026-02-26',
-  'blog-drafts/security-scanner-case-study.md':'2026-02-26','blog-drafts/tool-graveyard.md':'2026-02-26',
-  'youtube-scripts/Final Script Draft v9.md':'2026-02-26','youtube-scripts/Final Script Draft v10.md':'2026-02-26',
-  'youtube-scripts/Final Script Draft v11.md':'2026-02-26','youtube-scripts/yt-business-launch-script.md':'2026-02-26',
-  'youtube-scripts/yt-personal-launch-script.md':'2026-02-26','youtube-scripts/podcast-automation-spec.md':'2026-02-26',
-  'n8n-pitch/n8n-engineering-pitch.html':'2026-02-26','n8n-pitch/n8n-engineering-asks.md':'2026-02-26',
-  'n8n-pitch/n8n-engineering-pitch-script.md':'2026-02-26','n8n-pitch/hassan.png':'2026-02-26',
-  'n8n-pitch/michele.png':'2026-02-26',
-  'visualizations/aidependency.html':'2026-02-26','visualizations/ai-dependency-trap.html':'2026-02-26',
-  'visualizations/cortana-capabilities.html':'2026-02-26','visualizations/thumbnail.html':'2026-02-26',
-  'tools/check_alpha.py':'2026-02-26','tools/gen_sprites.py':'2026-02-26',
-  'tools/gen_dalle_sprites.py':'2026-02-26','tools/screenshot.py':'2026-02-26',
-  'tools/habit-tracker-template.md':'2026-02-26',
-  'ai-dependency-trap/index.html':'2026-02-19','ai-dependency-trap/mcp-in-n8n.html':'2026-02-19',
-  'ai-dependency-trap/mcp-section-updated.html':'2026-02-19',
-  'slack-sorcery/game-design.html':'2026-02-20','slack-sorcery/mvp-design.html':'2026-02-20',
-  'slack-sorcery/app-icon.png':'2026-02-21',
-  'the-wings-of-a-king/index.html':'2026-02-23','the-wings-of-a-king/the-wings-of-a-king.md':'2026-02-26',
-  'the-wings-of-a-king/series-plan.md':'2026-02-23','the-wings-of-a-king/image-prompts.md':'2026-02-23',
-  'pixel-sprites/bg-kitchen-interior.png':'2026-02-26','pixel-sprites/bg-parking-lot.png':'2026-02-26',
-  'pixel-sprites/bg-street-night.png':'2026-02-26','pixel-sprites/broken-cable.png':'2026-02-26',
-  'pixel-sprites/chef-cooking.png':'2026-02-26','pixel-sprites/chef-stressed.png':'2026-02-26',
-  'pixel-sprites/chef.png':'2026-02-26','pixel-sprites/customer-2.png':'2026-02-26',
-  'pixel-sprites/customer-3.png':'2026-02-26','pixel-sprites/customer.png':'2026-02-26',
-  'pixel-sprites/developer.png':'2026-02-26','pixel-sprites/food-truck.png':'2026-02-26',
-  'pixel-sprites/franchise-building.png':'2026-02-26','pixel-sprites/frying-pan.png':'2026-02-26',
-  'pixel-sprites/kitchen-shelf-messy.png':'2026-02-26','pixel-sprites/kitchen-shelf-organized.png':'2026-02-26',
-  'pixel-sprites/network-cable.png':'2026-02-26','pixel-sprites/redis-crystal.png':'2026-02-26',
-  'pixel-sprites/restaurant.png':'2026-02-26','pixel-sprites/runner-exhausted.png':'2026-02-26',
-  'pixel-sprites/test-kitchen.png':'2026-02-26','pixel-sprites/ticket-rail.png':'2026-02-26',
-  'pixel-sprites/wrench-tool.png':'2026-02-26',
-  'slackemon-banners/battle-field.png':'2026-02-21','slackemon-banners/itemsbanner.png':'2026-02-22',
-  'slackemon-banners/pallet-town.png':'2026-02-21','slackemon-banners/pallettown.png':'2026-02-22',
-  'slackemon-banners/pokebattlesbanner.png':'2026-02-22','slackemon-banners/pokedexbanner.png':'2026-02-22',
-  'slackemon-banners/pokegyms.png':'2026-02-22','slackemon-banners/pokemon-banner.png':'2026-02-21',
-  'slackemon-banners/pokemon-logo.png':'2026-02-21','slackemon-banners/slackemonbanner.png':'2026-02-22',
-  'slackemon-banners/profilebanner.png':'2026-02-22','slackemon-banners/professor-oak.png':'2026-02-22',
-  'slackemon-banners/settings.png':'2026-02-22',
-  'slackemon-emoji/sm_crit.png':'2026-02-21','slackemon-emoji/sm_hp_full.png':'2026-02-21',
-  'slackemon-emoji/sm_hp_low.png':'2026-02-21','slackemon-emoji/sm_hp_mid.png':'2026-02-21',
-  'slackemon-emoji/sm_miss.png':'2026-02-21','slackemon-emoji/sm_not_effective.png':'2026-02-21',
-  'slackemon-emoji/sm_shield.png':'2026-02-21','slackemon-emoji/sm_speed.png':'2026-02-21',
-  'slackemon-emoji/sm_status_burn.png':'2026-02-21','slackemon-emoji/sm_status_freeze.png':'2026-02-21',
-  'slackemon-emoji/sm_status_paralyze.png':'2026-02-21','slackemon-emoji/sm_status_poison.png':'2026-02-21',
-  'slackemon-emoji/sm_status_sleep.png':'2026-02-21','slackemon-emoji/sm_super_effective.png':'2026-02-21',
-  'slackemon-emoji/sm_xp_bar.png':'2026-02-21',
-  'slackemon-menu/sm_daycare.png':'2026-02-21','slackemon-menu/sm_gym.png':'2026-02-21',
-  'slackemon-menu/sm_help.png':'2026-02-21','slackemon-menu/sm_leaderboard.png':'2026-02-21',
-  'slackemon-menu/sm_pokecenter.png':'2026-02-21','slackemon-menu/sm_pokedex.png':'2026-02-21',
-  'slackemon-menu/sm_pokemart.png':'2026-02-21','slackemon-menu/sm_safari.png':'2026-02-21',
-  'slackemon-menu/sm_team.png':'2026-02-21','slackemon-menu/sm_trade.png':'2026-02-21'
-};
-
-function getDate(folder, file) { return FILE_DATES[folder+'/'+file] || ''; }
-function fmtDate(d) { if (!d) return ''; const [y,m,day]=d.split('-'); const months=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${months[+m]} ${+day}`; }
-function latestDate(folder, files) { let max=''; (files||[]).forEach(f=>{const d=getDate(folder,f);if(d>max)max=d;}); return max; }
-
 const sections = [
   {
-    id: 'benchmarking', icon: '📊', name: 'Benchmarking', desc: 'AI model benchmarking visualizations & scripts',
+    id: 'transparentclaw', icon: '\u{1F48E}', name: 'CrystalClaw', desc: 'Open-source AI agent platform (OpenClaw + n8n)',
+    files: [
+      'README.md','LICENSE','ARCHITECTURE.md','CONTRIBUTING.md','CHATHUB-API.md','CHATHUB-DEEP-DIVE.md',
+      'RESEARCH-NOTES.md','UI-MODIFICATION-PLAN.md','CRYSTALCLAW-CRON-INSTRUCTIONS.md',
+      'package.json','tsconfig.json',
+      'assets/crystal-claw-ascii.txt','assets/crystal-claw-logo.svg','assets/logo.svg','assets/logo-badge.md',
+      'bridge/Dockerfile','bridge/package.json','bridge/src/chat-bridge.ts','bridge/src/index.ts',
+      'bridge/src/memory-sync.ts','bridge/src/skill-sync.ts','bridge/src/tool-proxy.ts',
+      'cli/bootstrap.sh','cli/package.json','cli/package-lock.json','cli/tsconfig.json',
+      'cli/src/bootstrap.ts','cli/src/deployer.ts','cli/src/detector.ts','cli/src/index.ts',
+      'cli/src/installer.ts','cli/src/networking.ts','cli/src/ssh.ts',
+      'docker/docker-compose.base.yml',
+      'docs/AGENT-ANATOMY.md','docs/CREATING-SKILLS.md','docs/GETTING-STARTED.md','docs/images/README.md',
+      'templates/bootstrap.sh','templates/heartbeat.json','templates/main-agent.json',
+      'templates/memory-manager.json','templates/README.md','templates/skill-web-search.json',
+      'ui/index.html','ui/package.json','ui/package-lock.json','ui/vite.config.ts',
+      'ui/tsconfig.json','ui/tsconfig.node.json',
+      'ui/src/main.ts','ui/src/App.vue','ui/src/router.ts',
+      'ui/src/api/n8n.ts','ui/src/stores/agent.ts','ui/src/stores/config.ts',
+      'ui/src/components/N8nEmbed.vue','ui/src/components/Sidebar.vue','ui/src/components/TopBar.vue',
+      'ui/src/views/ChatView.vue','ui/src/views/ExecutionsView.vue','ui/src/views/MemoryView.vue',
+      'ui/src/views/OverviewView.vue','ui/src/views/RoutinesView.vue','ui/src/views/SettingsView.vue',
+      'ui/src/views/SkillsView.vue','ui/src/views/SoulView.vue','ui/src/views/WorkflowsView.vue'
+    ]
+  },
+  {
+    id: 'benchmarking', icon: '\u{1F4CA}', name: 'Benchmarking', desc: 'n8n performance benchmarking visualizations & scripts',
     files: [
       'benchmarking-animated-30s.html','benchmarking-animated.html','benchmarking-food-analogies.html',
       'benchmarking-v2-broll.html','benchmarking-viz.html','franchise-intro-analogy.html',
@@ -136,7 +97,7 @@ const sections = [
     ]
   },
   {
-    id: 'blog-drafts', icon: '✍️', name: 'Blog Drafts', desc: 'Unpublished blog posts & articles',
+    id: 'blog-drafts', icon: '\u{1F4DD}', name: 'Blog Drafts', desc: 'Unpublished blog posts & articles',
     files: [
       'ai-dependency-trap.md','ai-on-rails-playbook.md','airgapped-advantage.md','bouncer-post.md',
       'callforge-case-study.md','five-slack-apps.md','human-in-the-loop.md',
@@ -144,41 +105,58 @@ const sections = [
     ]
   },
   {
-    id: 'youtube-scripts', icon: '🎬', name: 'YouTube Scripts', desc: 'Video & podcast scripts',
+    id: 'youtube-scripts', icon: '\u{1F3AC}', name: 'YouTube Scripts', desc: 'Video & podcast scripts',
     files: [
       'Final Script Draft v11.md','Final Script Draft v10.md','Final Script Draft v9.md',
       'yt-business-launch-script.md','yt-personal-launch-script.md','podcast-automation-spec.md'
     ]
   },
   {
-    id: 'n8n-pitch', icon: '🔧', name: 'n8n Pitch', desc: 'Engineering pitch materials for n8n',
-    files: [
-      'n8n-engineering-pitch.html','n8n-engineering-asks.md','n8n-engineering-pitch-script.md',
-      'hassan.png','michele.png'
-    ]
+    id: 'n8n-pitch', icon: '\u{1F4E2}', name: 'n8n Pitch', desc: 'Engineering pitch materials for n8n',
+    files: ['n8n-engineering-pitch.html','n8n-engineering-asks.md','n8n-engineering-pitch-script.md','hassan.png','michele.png']
   },
   {
-    id: 'visualizations', icon: '🎨', name: 'Visualizations', desc: 'Interactive HTML visualizations',
+    id: 'cortana-map', icon: '\u{1F5FA}', name: 'Cortana Map', desc: 'Cortana capabilities visualization',
+    files: ['index.html']
+  },
+  {
+    id: 'visualizations', icon: '\u{1F4C8}', name: 'Visualizations', desc: 'Interactive HTML visualizations',
     files: ['aidependency.html','ai-dependency-trap.html','cortana-capabilities.html','thumbnail.html']
   },
   {
-    id: 'tools', icon: '⚙️', name: 'Tools', desc: 'Utility scripts & templates',
-    files: ['check_alpha.py','gen_sprites.py','gen_dalle_sprites.py','screenshot.py','habit-tracker-template.md']
+    id: 'ai-dependency-trap', icon: '\u{1F916}', name: 'AI Dependency Trap', desc: 'Full article with interactive sections',
+    files: ['index.html','mcp-in-n8n.html','mcp-section-updated.html'],
+    thumbs: ['images/img-01.png','images/img-02.png','images/img-03.png','images/img-04.png',
+      'images/img-05.png','images/img-06.png','images/img-07.png','images/img-08.png','images/img-09.png']
   },
   {
-    id: 'ai-dependency-trap', icon: '📰', name: 'AI Dependency Trap', desc: 'Full article with interactive sections',
-    files: ['index.html','mcp-in-n8n.html','mcp-section-updated.html'], sub: 'images'
-  },
-  {
-    id: 'slack-sorcery', icon: '🧙', name: 'Slack Sorcery', desc: 'Slack game design & assets',
-    files: ['game-design.html','mvp-design.html','app-icon.png'], subs: ['emoji-pack','modals','scripts']
-  },
-  {
-    id: 'the-wings-of-a-king', icon: '👑', name: 'The Wings of a King', desc: 'Creative writing project',
+    id: 'the-wings-of-a-king', icon: '\u{1F451}', name: 'The Wings of a King', desc: 'Creative writing project',
     files: ['index.html','the-wings-of-a-king.md','series-plan.md','image-prompts.md']
   },
   {
-    id: 'pixel-sprites', icon: '👾', name: 'Pixel Sprites', desc: 'Pixel art sprite assets',
+    id: 'tools', icon: '\u{1F6E0}', name: 'Tools', desc: 'Utility scripts & templates',
+    files: ['check_alpha.py','gen_sprites.py','gen_dalle_sprites.py','screenshot.py','habit-tracker-template.md']
+  },
+  {
+    id: 'slack-sorcery', icon: '\u{2728}', name: 'Slack Sorcery (Slackemon)', desc: 'Slack Pok\u00e9mon game — design, modals, emoji packs, scripts',
+    files: [
+      'game-design.html','mvp-design.html','app-icon.png',
+      'modals/01-onboarding-starter-pick.json','modals/01-onboarding-starter-pick-v2.json',
+      'modals/02-battle-action.json','modals/03-pvp-challenge.json','modals/04-pvp-move-select.json',
+      'modals/05-trainer-profile.json','modals/06-manage-team.json','modals/07-shop.json',
+      'modals/08-trade-offer.json','modals/09-encounter-message.json','modals/09-encounter-states.json',
+      'modals/10-battle-results-message.json',
+      'scripts/download-emoji-sprites.js',
+      'emoji-pack/emoji-mapping.json'
+    ],
+    thumbGroups: [
+      { label: 'Items', files: ['emoji-pack/items/pokeball.png','emoji-pack/items/greatball.png','emoji-pack/items/ultraball.png','emoji-pack/items/masterball.png','emoji-pack/items/potion.png','emoji-pack/items/super-potion.png','emoji-pack/items/revive.png','emoji-pack/items/rare-candy.png'] },
+      { label: 'Type Badges', files: ['emoji-pack/types/type-bug.png','emoji-pack/types/type-dragon.png','emoji-pack/types/type-electric.png','emoji-pack/types/type-fighting.png','emoji-pack/types/type-fire.png','emoji-pack/types/type-flying.png','emoji-pack/types/type-ghost.png','emoji-pack/types/type-grass.png','emoji-pack/types/type-ground.png','emoji-pack/types/type-ice.png','emoji-pack/types/type-normal.png','emoji-pack/types/type-poison.png','emoji-pack/types/type-psychic.png','emoji-pack/types/type-psychic.png','emoji-pack/types/type-rock.png','emoji-pack/types/type-water.png'] }
+    ],
+    pokemonNote: true
+  },
+  {
+    id: 'pixel-sprites', icon: '\u{1F3A8}', name: 'Pixel Sprites', desc: 'Pixel art sprite assets for benchmarking video',
     thumbs: ['bg-kitchen-interior.png','bg-parking-lot.png','bg-street-night.png','broken-cable.png',
       'chef-cooking.png','chef-stressed.png','chef.png','customer-2.png','customer-3.png','customer.png',
       'developer.png','food-truck.png','franchise-building.png','frying-pan.png',
@@ -186,82 +164,106 @@ const sections = [
       'restaurant.png','runner-exhausted.png','test-kitchen.png','ticket-rail.png','wrench-tool.png']
   },
   {
-    id: 'slackemon-banners', icon: '🏞️', name: 'Slackemon Banners', desc: 'Banner art for Slackemon',
+    id: 'slackemon-banners', icon: '\u{1F3DE}', name: 'Slackemon Banners', desc: 'Banner art for Slackemon',
     thumbs: ['battle-field.png','itemsbanner.png','pallet-town.png','pallettown.png',
-      'pokebattlesbanner.png','pokedexbanner.png','pokegyms.png','pokemon-banner.png','pokemon-logo.png',
-      'slackemonbanner.png','profilebanner.png','professor-oak.png','settings.png']
+      'pokebattlesbanner.png','pokedexbanner.png','pokegyms.png','pokemonbanner.png','pokemon-banner.png','pokemon-logo.png',
+      'slackemonbanner.png','profilebanner.png','professor-oak.png','settings.png'],
+    thumbGroups: [
+      { label: 'Trainer Sprites', files: ['trainers/acetrainer-gen4.png','trainers/blaine.png','trainers/brock.png','trainers/bugcatcher.png','trainers/erika.png','trainers/giovanni.png','trainers/hiker.png','trainers/koga.png','trainers/lass.png','trainers/lt-surge.png','trainers/misty.png','trainers/sabrina.png','trainers/teamrocket.png','trainers/youngster.png'] }
+    ]
   },
   {
-    id: 'slackemon-emoji', icon: '😀', name: 'Slackemon Emoji', desc: 'Custom emoji set for Slackemon',
+    id: 'slackemon-emoji', icon: '\u{1F600}', name: 'Slackemon Emoji', desc: 'Custom emoji set for Slackemon',
     thumbs: ['sm_crit.png','sm_hp_full.png','sm_hp_low.png','sm_hp_mid.png','sm_miss.png',
-      'sm_not_effective.png','sm_shield.png','sm_speed.png','sm_status_burn.png','sm_status_freeze.png',
-      'sm_status_paralyze.png','sm_status_poison.png','sm_status_sleep.png','sm_super_effective.png','sm_xp_bar.png']
+      'sm_not_effective.png','sm_shield.png','sm_speed.png','sm_sword.png',
+      'sm_status_burn.png','sm_status_freeze.png','sm_status_paralyze.png','sm_status_poison.png','sm_status_sleep.png',
+      'sm_super_effective.png','sm_xp_bar.png',
+      'sm_type_bug.png','sm_type_dark.png','sm_type_dragon.png','sm_type_electric.png','sm_type_fairy.png',
+      'sm_type_fighting.png','sm_type_fire.png','sm_type_flying.png','sm_type_ghost.png','sm_type_grass.png',
+      'sm_type_ground.png','sm_type_ice.png','sm_type_normal.png','sm_type_poison.png','sm_type_psychic.png',
+      'sm_type_rock.png','sm_type_steel.png','sm_type_water.png']
   },
   {
-    id: 'slackemon-menu', icon: '📋', name: 'Slackemon Menu', desc: 'Menu icons for Slackemon',
+    id: 'slackemon-menu', icon: '\u{1F4CB}', name: 'Slackemon Menu', desc: 'Menu icons for Slackemon',
     thumbs: ['sm_daycare.png','sm_gym.png','sm_help.png','sm_leaderboard.png','sm_pokecenter.png',
       'sm_pokedex.png','sm_pokemart.png','sm_safari.png','sm_team.png','sm_trade.png']
+  },
+  {
+    id: '_root', icon: '\u{1F4C1}', name: 'Root Files', desc: 'Standalone files in repo root',
+    rootFiles: [
+      {path:'gen_dalle_v2.py', name:'gen_dalle_v2.py'},
+      {path:'idle-realms-icon.png', name:'idle-realms-icon.png'},
+      {path:'idle-realms-logo.png', name:'idle-realms-logo.png'},
+      {path:'idle-realms-manifest.json', name:'idle-realms-manifest.json'},
+      {path:'n8n-marketing-irl-spain.html', name:'n8n-marketing-irl-spain.html'}
+    ]
   }
 ];
 
-// Sort sections by most recent file date
-sections.sort((a,b) => {
-  const da = latestDate(a.id, a.files || a.thumbs);
-  const db = latestDate(b.id, b.files || b.thumbs);
-  return db.localeCompare(da);
-});
-
 function fileLink(folder, file) {
+  const path = folder === '_root' ? file : `${folder}/${file}`;
   const ext = file.split('.').pop().toLowerCase();
-  if (['html','png','jpg','jpeg','gif','svg'].includes(ext)) {
-    return `${PAGES_BASE}${folder}/${file}`;
+  if (['html','png','jpg','jpeg','gif','svg','json'].includes(ext)) {
+    return `${PAGES_BASE}${path}`;
   }
-  return `${GITHUB_BASE}${folder}/${file}`;
+  return `${GITHUB_BASE}${path}`;
 }
 
 function fileIcon(file) {
   const ext = file.split('.').pop().toLowerCase();
-  const map = {html:'📄',md:'📝',py:'🐍',png:'🖼️',jpg:'🖼️',jpeg:'🖼️'};
-  return map[ext] || '📎';
+  const map = {html:'\u{1F310}',md:'\u{1F4C4}',py:'\u{1F40D}',png:'\u{1F5BC}',jpg:'\u{1F5BC}',jpeg:'\u{1F5BC}',
+    json:'\u{1F4CB}',js:'\u{1F7E8}',ts:'\u{1F535}',vue:'\u{1F49A}',svg:'\u{1F3A8}',yml:'\u{2699}',
+    sh:'\u{1F4E6}',txt:'\u{1F4C3}',gif:'\u{1F3AC}'};
+  return map[ext] || '\u{1F4C4}';
 }
 
 function render() {
   const container = document.getElementById('sections');
   container.innerHTML = '';
+  let totalFiles = 0;
+  let totalSections = 0;
+
   sections.forEach(s => {
     const div = document.createElement('div');
-    div.className = 'section open';
+    div.className = 'section';
     div.dataset.id = s.id;
-    const count = (s.files||[]).length + (s.thumbs||[]).length;
-    const sectionDate = latestDate(s.id, s.files || s.thumbs);
+
+    // Count files
+    let count = 0;
+    if (s.files) count += s.files.length;
+    if (s.thumbs) count += s.thumbs.length;
+    if (s.thumbGroups) s.thumbGroups.forEach(g => count += g.files.length);
+    if (s.rootFiles) count += s.rootFiles.length;
+    if (s.pokemonNote) count += 302; // 151 static + 151 animated pokemon sprites
+    totalFiles += count;
+    totalSections++;
+
     div.innerHTML = `<div class="section-header" onclick="this.parentElement.classList.toggle('open')">
-      <span class="arrow">▶</span><span class="icon">${s.icon}</span>
+      <span class="arrow">&#x25B6;</span><span class="icon">${s.icon}</span>
       <h2>${s.name}<span class="desc">${s.desc}</span></h2>
-      <span class="date">${fmtDate(sectionDate)}</span>
       <span class="count">${count} files</span>
     </div><div class="section-body"></div>`;
     const body = div.querySelector('.section-body');
 
-    if (s.files) {
+    // File list
+    const allFiles = s.files || (s.rootFiles ? s.rootFiles.map(f=>f.path) : null);
+    if (allFiles) {
       const ul = document.createElement('ul');
       ul.className = 'file-list';
-      // Sort files by date (most recent first), then alphabetically
-      const sorted = [...s.files].sort((a,b) => {
-        const da = getDate(s.id,a), db = getDate(s.id,b);
-        if (da !== db) return db.localeCompare(da);
-        return a.localeCompare(b);
-      });
-      sorted.forEach(f => {
+      allFiles.forEach(f => {
         const li = document.createElement('li');
+        const name = f.includes('/') ? f : f;
         const ext = f.split('.').pop().toLowerCase();
-        const d = getDate(s.id, f);
-        li.innerHTML = `<span class="ficon">${fileIcon(f)}</span><a href="${fileLink(s.id,f)}" target="_blank">${f}</a><span class="badge">${ext}</span><span class="date">${fmtDate(d)}</span>`;
+        const sub = f.includes('/') ? f.substring(0, f.lastIndexOf('/')) + '/' : '';
+        const link = fileLink(s.id, f);
+        li.innerHTML = `<span class="ficon">${fileIcon(f)}</span>${sub?`<span class="sub">${sub}</span>`:''}<a href="${link}" target="_blank">${f.includes('/')?f.split('/').pop():f}</a><span class="badge">${ext}</span>`;
         li.dataset.name = f.toLowerCase();
         ul.appendChild(li);
       });
       body.appendChild(ul);
     }
 
+    // Thumbnails
     if (s.thumbs) {
       const grid = document.createElement('div');
       grid.className = 'thumb-grid';
@@ -271,15 +273,41 @@ function render() {
       body.appendChild(grid);
     }
 
+    // Thumb groups
+    if (s.thumbGroups) {
+      const grid = document.createElement('div');
+      grid.className = 'thumb-grid';
+      s.thumbGroups.forEach(g => {
+        grid.innerHTML += `<div class="sub-label">${g.label}</div>`;
+        g.files.forEach(t => {
+          grid.innerHTML += `<a href="${s.id}/${t}" target="_blank" title="${t.split('/').pop()}"><img src="${s.id}/${t}" alt="${t.split('/').pop()}" loading="lazy"></a>`;
+        });
+      });
+      body.appendChild(grid);
+    }
+
+    // Pokemon note
+    if (s.pokemonNote) {
+      const note = document.createElement('div');
+      note.style.cssText = 'padding:12px 16px;border-top:1px solid var(--border);color:var(--text-dim);font-size:.85rem';
+      note.innerHTML = `<strong>Pok\u00e9mon Sprites:</strong> 151 static PNGs + 151 animated GIFs in <code>emoji-pack/pokemon/</code> and <code>emoji-pack/pokemon-animated/</code>. <a href="${GITHUB_BASE}slack-sorcery/emoji-pack/pokemon/" target="_blank">Browse on GitHub \u2192</a>`;
+      body.appendChild(note);
+    }
+
     container.appendChild(div);
   });
+
+  document.getElementById('stats').innerHTML = `<strong>${totalFiles}</strong> files across <strong>${totalSections}</strong> sections`;
 }
 
+// Search
 document.getElementById('search').addEventListener('input', e => {
   const q = e.target.value.toLowerCase();
   document.querySelectorAll('.section').forEach(sec => {
     let any = false;
     if (sec.dataset.id.includes(q)) { any = true; }
+    const sName = sec.querySelector('h2');
+    if (sName && sName.textContent.toLowerCase().includes(q)) any = true;
     sec.querySelectorAll('.file-list li').forEach(li => {
       const match = !q || li.dataset.name.includes(q);
       li.style.display = match ? '' : 'none';
