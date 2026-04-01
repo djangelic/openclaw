@@ -339,8 +339,8 @@ img { display: block; max-width: 100%; }
 
 .property-card .media {
   aspect-ratio: 16 / 9;
-  background: linear-gradient(135deg, rgba(34,50,71,0.95) 0%, rgba(53,81,114,0.95) 100%),
-    url('https://placehold.co/1200x675/e7dcc8/223247?text=Cole+Road+Development+Site&font=playfair-display') center/cover;
+  background: linear-gradient(135deg, rgba(34,50,71,0.28) 0%, rgba(53,81,114,0.28) 100%),
+    url('assets/cole-road-hero.jpg') center/cover;
   position: relative;
 }
 
