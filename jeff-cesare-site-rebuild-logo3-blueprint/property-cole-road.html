@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cole Road Development Site | Jeff Cesare Realty LLC</title>
+  <meta name="description" content="Supporting property page mockup for Jeff Cesare Realty LLC, built as a teaser-style commercial and development listing page." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .property-hero {
+      padding: 4rem 0 2rem;
+    }
+    .hero-wrap {
+      display: grid;
+      grid-template-columns: 1.14fr 0.86fr;
+      gap: 1.3rem;
+      align-items: stretch;
+    }
+    .hero-media,
+    .hero-side {
+      border-radius: 30px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      background: white;
+    }
+    .hero-media {
+      min-height: 560px;
+      background:
+        linear-gradient(180deg, rgba(23,34,49,0.08), rgba(23,34,49,0.38)),
+        url('assets/cole-road-hero.jpg') center/cover;
+      position: relative;
+      display: flex;
+      align-items: end;
+    }
+    .hero-overlay {
+      padding: 1.7rem;
+      width: 100%;
+      background: linear-gradient(180deg, transparent 0%, rgba(23,34,49,0.88) 100%);
+      color: white;
+    }
+    .hero-overlay h1 {
+      margin: 0.5rem 0 0.8rem;
+      font-size: clamp(2rem, 4vw, 3.7rem);
+      line-height: 0.97;
+      letter-spacing: -0.05em;
+      max-width: 12ch;
+    }
+    .hero-overlay p {
+      margin: 0;
+      max-width: 60ch;
+      color: rgba(255,255,255,0.84);
+      line-height: 1.75;
+    }
+    .hero-side {
+      padding: 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,239,231,0.98));
+    }
+    .quick-facts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+    .fact {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1rem;
+    }
+    .fact strong {
+      display: block;
+      color: var(--navy);
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    .fact span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .property-sections {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 1.25rem;
+      margin-top: 1.4rem;
+    }
+    .stack {
+      display: grid;
+      gap: 1.2rem;
+    }
+    .side-card {
+      position: sticky;
+      top: 98px;
+      align-self: start;
+    }
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .placeholder {
+      aspect-ratio: 16 / 10;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: var(--surface-alt);
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(23,34,49,0.06);
+    }
+    .placeholder.map {
+      background: url('assets/cole-road-aerial.jpg') center/cover;
+    }
+    .placeholder.aerial {
+      background: linear-gradient(180deg, rgba(34,50,71,0.06), rgba(34,50,71,0.16)), url('assets/cole-road-aerial.jpg') center/cover;
+    }
+    .placeholder.siteplan {
+      background: url('https://placehold.co/1200x800/efe6d8/223247.png?text=Site+Highlights&font=playfair-display') center/cover;
+    }
+    .placeholder.demographics {
+      background: url('https://placehold.co/1200x800/f8f5ef/223247.png?text=Demographics+%26+Traffic&font=playfair-display') center/cover;
+    }
+    @media (max-width: 980px) {
+      .hero-wrap,
+      .property-sections,
+      .quick-facts,
+      .image-grid {
+        grid-template-columns: 1fr;
+      }
+      .side-card {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="assets/logo-primary.jpg" alt="Jeff Cesare Realty LLC Broker logo concept" />
+        <div class="brand-copy">
+          <strong>Jeff Cesare Realty LLC</strong>
+          <span>Broker • Commercial • Residential • Development</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="#overview">Overview</a>
+        <a href="#highlights">Highlights</a>
+        <a href="#location">Location</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <a class="button" href="index.html#contact">Talk to Jeff</a>
+    </div>
+  </div>
+
+  <main>
+    <section class="property-hero">
+      <div class="container hero-wrap">
+        <div class="hero-media">
+          <div class="hero-overlay">
+            <div class="eyebrow" style="background: rgba(255,255,255,0.12); color: #efd39b; border-color: rgba(255,255,255,0.18);">For Sale • Lease • Development Opportunity</div>
+            <h1>Cole Road Development Site</h1>
+            <p>
+              A property-page concept designed to feel like a polished marketing sheet translated to the web: more credible than a rough flyer, more useful than a generic listing stub, and intentionally structured as a teaser.
+            </p>
+          </div>
+        </div>
+
+        <aside class="hero-side" id="overview">
+          <div>
+            <div class="kicker">Overview</div>
+            <h2 style="margin:0.35rem 0 0.65rem; font-size:1.9rem; line-height:1.04; letter-spacing:-0.04em;">Professional first impression, controlled information, stronger next-step calls</h2>
+            <p style="margin:0; color:var(--muted); line-height:1.76;">
+              Jeff’s notes made it clear that property pages should not function like public data rooms. They should create confidence, show the opportunity, highlight location context, and invite direct conversation for the deeper details.
+            </p>
+          </div>
+
+          <div class="quick-facts">
+            <div class="fact">
+              <strong>Use case</strong>
+              <span>Buyer, tenant, investor, and broker teaser page</span>
+            </div>
+            <div class="fact">
+              <strong>Format</strong>
+              <span>Reusable template for future featured opportunities</span>
+            </div>
+            <div class="fact">
+              <strong>Disclosure level</strong>
+              <span>High-level highlights only, with pricing held back</span>
+            </div>
+            <div class="fact">
+              <strong>Best fit</strong>
+              <span>Sign traffic, referrals, and serious first-look interest</span>
+            </div>
+          </div>
+
+          <div class="callout" id="contact">
+            <strong>Contact Listing Broker</strong>
+            <p style="margin:0.55rem 0 1rem;">Interested in availability, pricing, development context, lease structure, or next-step details? Reach out directly to Jeff Cesare.</p>
+            <div class="hero-actions" style="margin-top:0;">
+              <a class="button" href="tel:+15205551212">Call Jeff</a>
+              <a class="button-secondary" href="mailto:info@jeffcesarerealty.com">Email Inquiry</a>
+            </div>
+            <p class="small" style="margin:0.85rem 0 0;">Detailed pricing, availability, and supplemental documents can stay private until a serious inquiry is established.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container property-sections">
+        <div class="stack">
+          <section class="card" id="highlights">
+            <div class="kicker">Property Highlights</div>
+            <h2 style="margin:0.35rem 0 0.7rem; font-size:2rem; line-height:1.04; letter-spacing:-0.04em;">A cleaner way to show the opportunity without over-explaining it</h2>
+            <p>
+              The point of this page is not to answer everything. The point is to answer the right first questions well enough that serious buyers, tenants, investors, and brokers know this is worth discussing further.
+            </p>
+            <div class="meta">
+              <span>Tucson opportunity</span>
+              <span>Development angle</span>
+              <span>Call for pricing</span>
+              <span>Reusable listing format</span>
+            </div>
+            <ul class="list">
+              <li>strong opening summary with better visual credibility</li>
+              <li>room for acreage, zoning, access, or traffic bullets as needed</li>
+              <li>clean use of map and aerial context to tell the location story</li>
+              <li>direct CTA that routes serious prospects back to Jeff</li>
+            </ul>
+          </section>
+
+          <section class="card" id="location">
+            <div class="kicker">Location Story</div>
+            <h3>Show nearby anchors, context, and why the site matters</h3>
+            <p>
+              Jeff specifically talked about using map-style context to show nearby businesses, landmarks, and surrounding activity. That helps prospects evaluate fit faster without requiring a full memo on the first click.
+            </p>
+            <div class="image-grid">
+              <div class="placeholder map"></div>
+              <div class="placeholder aerial"></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="kicker">Supporting Visuals</div>
+            <h3>Leave room for site highlights, demographics, and traffic callouts</h3>
+            <p>
+              This template can easily expand with a site plan, location ring notes, traffic counts, nearby retail anchors, or a one-page flyer download if Jeff wants that layer later.
+            </p>
+            <div class="image-grid">
+              <div class="placeholder siteplan"></div>
+              <div class="placeholder demographics"></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="kicker">Why this page format works</div>
+            <h3>It saves Jeff time while improving the first impression</h3>
+            <p>
+              Instead of taking each inquiry from zero, Jeff can send one polished link that frames the opportunity, filters out weak-fit prospects, and keeps the full conversation in his hands.
+            </p>
+          </section>
+        </div>
+
+        <aside class="stack side-card">
+          <section class="card">
+            <div class="kicker">Lead Filter</div>
+            <h3>Suggested inquiry prompts</h3>
+            <ul class="list">
+              <li>Are you looking to buy, lease, or explore both?</li>
+              <li>What is your intended use for the property?</li>
+              <li>What is your timeline?</li>
+              <li>Are you an investor, tenant, broker, or owner-user?</li>
+              <li>What information do you need next to evaluate fit?</li>
+            </ul>
+          </section>
+
+          <section class="card">
+            <div class="kicker">Template Reuse</div>
+            <h3>Built for future listings too</h3>
+            <p>
+              Once this structure exists, Jeff can reuse it across future opportunities instead of rebuilding a property presentation from scratch each time.
+            </p>
+          </section>
+
+          <section class="card">
+            <div class="kicker">Next Step</div>
+            <h3>Better than sending a bare listing link</h3>
+            <p>
+              This page gives Jeff a professional middle layer between a casual website visit and a full back-and-forth conversation about the property.
+            </p>
+            <div class="hero-actions" style="margin-top:1rem;">
+              <a class="button" href="index.html#contact">Start with the homepage CTA</a>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="small">Supporting property page mockup for Jeff Cesare Realty LLC.</div>
+      <div class="small"><a href="index.html">Back to homepage mockup</a></div>
+    </div>
+  </footer>
+</body>
+</html>
