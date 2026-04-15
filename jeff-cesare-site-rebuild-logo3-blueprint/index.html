@@ -689,6 +689,69 @@
       margin: 0;
     }
 
+    /* ---- HERO IMAGE ---- */
+    .hero-image {
+      margin-top: 1rem;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+
+    /* ---- ABOUT IMAGES ---- */
+    .about-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+
+    .about-images img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    /* ---- SERVICE IMAGES ---- */
+    .service-item img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 0.85rem;
+      border: 1px solid var(--border);
+    }
+
+    /* ---- PROPERTY THUMB IMAGES ---- */
+    .property-card .property-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ---- GALLERY ---- */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .gallery-grid img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
     /* ---- RESPONSIVE ---- */
     @media (max-width: 900px) {
       #main {
@@ -701,7 +764,8 @@
       .process-steps {
         grid-template-columns: 1fr 1fr;
       }
-      .insights-grid {
+      .insights-grid,
+      .gallery-grid {
         grid-template-columns: 1fr;
       }
       #bottom-widget .inner {
@@ -750,16 +814,16 @@
   <div id="header">
     <div class="wrap">
       <a class="site-logo" href="index.html">
-        <img src="assets/logo-primary.jpg" alt="Jeff Cesare Realty LLC">
+        <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/10/site_logo.png" alt="Jeff Cesare Realty, LLC">
         <div class="logo-text">
-          <strong>Jeff Cesare Realty LLC</strong>
+          <strong>Jeff Cesare Realty, LLC</strong>
           <span>Broker &bull; Commercial &bull; Residential &bull; Development</span>
         </div>
       </a>
       <ul id="primary-menu">
+        <li><a href="#about">About Us</a></li>
         <li><a href="#services">Services</a></li>
         <li><a href="#properties">Properties</a></li>
-        <li><a href="#about">About</a></li>
         <li><a href="#process">How It Works</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -769,8 +833,8 @@
 
   <!-- TITLE BANNER -->
   <div id="title-area">
-    <h1>Tucson Commercial Brokerage &amp; Development</h1>
-    <p>Experienced representation for owners, investors, buyers, and tenants across Southern Arizona.</p>
+    <h1>Jeff Cesare Realty, LLC</h1>
+    <p>Offering trustworthy expertise in commercial and residential property buying, selling, and leasing.</p>
   </div>
 
   <!-- MAIN CONTENT -->
@@ -780,18 +844,35 @@
 
       <!-- ABOUT -->
       <div class="content-section" id="about">
-        <h2>About Jeff Cesare Realty</h2>
-        <p>Jeff Cesare Realty LLC is a Tucson-based brokerage firm specializing in commercial real estate, residential transactions, and development-minded land opportunities across Southern Arizona.</p>
+        <h2>About Us</h2>
+        <p>At Jeff Cesare Realty, we specialize in providing reliable expertise for buying, selling, and leasing properties, ensuring seamless transactions for both commercial and residential clients.</p>
         <p>Jeff Cesare is a licensed broker and managing member with years of hands-on experience in the Tucson market. Clients work directly with Jeff — from initial consultation through closing — with a focus on honest guidance, local market knowledge, and practical strategy.</p>
+
+        <div class="about-images">
+          <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/06/star-valley-master-plan-4.jpg?w=1024" alt="Star Valley master plan">
+          <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/07/star-valley-master-plan-1-conv-1-1.png?w=1024" alt="Star Valley site plan">
+        </div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="content-section" id="reviews">
+        <h2>Reviews</h2>
 
         <div class="testimonials">
           <div class="testimonial">
-            <p>"He is passionate about his work, loyal and dedicated to his clients and focused on success on behalf of his clients."</p>
+            <h3 style="font-family: var(--heading); font-size: 1.05rem; color: var(--brown-dark); margin: 0 0 0.4rem;">Passionate &amp; Dedicated!</h3>
+            <p>"I have known and worked with Jeff for over 25 years as a friend and real estate professional. He is passionate about his work, loyal and dedicated to his clients and focused on success on behalf of his clients."</p>
             <cite>— Keri Lazarus Silvyn, Esq.</cite>
           </div>
           <div class="testimonial">
-            <p>"He has always strived to create the best projects possible for his clients and the Tucson community."</p>
-            <cite>— Marty Magelli, P.E.</cite>
+            <h3 style="font-family: var(--heading); font-size: 1.05rem; color: var(--brown-dark); margin: 0 0 0.4rem;">Highly recommend!</h3>
+            <p>"From start to finish, the process was seamless. It's better than I imagined, and the customer support was incredibly responsive and friendly."</p>
+            <cite>— Mateo Garc&iacute;a</cite>
+          </div>
+          <div class="testimonial">
+            <h3 style="font-family: var(--heading); font-size: 1.05rem; color: var(--brown-dark); margin: 0 0 0.4rem;">Best Projects Possible!</h3>
+            <p>"We have worked with Jeff for nearly 30 years in the real estate development industry. He has always strived to create the best projects possible for his clients and the Tucson community."</p>
+            <cite>— Marty Magelli, P.E., Vice President, Baker &amp; Associates Engineering, Inc.</cite>
           </div>
         </div>
       </div>
@@ -799,24 +880,26 @@
       <!-- SERVICES -->
       <div class="content-section" id="services">
         <h2>Services</h2>
-        <p>Jeff Cesare Realty provides focused representation across four core areas:</p>
+        <p>We provide reliable expertise in buying, selling, and leasing both residential and commercial properties.</p>
 
         <div class="services-grid">
           <div class="service-item">
-            <h3>Commercial Brokerage</h3>
-            <p>Buy, sell, and lease commercial property with straightforward representation in the Tucson market.</p>
+            <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/06/img_6552-2.jpg?w=640" alt="Property buying services">
+            <h3>Buying</h3>
+            <p>Get expert advice and guidance for a successful property purchase.</p>
+          </div>
+          <div class="service-item">
+            <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/06/img_0233.jpg?w=640" alt="Property selling services">
+            <h3>Selling</h3>
+            <p>Receive professional support to effectively market and sell your property.</p>
+          </div>
+          <div class="service-item">
+            <h3>Leasing</h3>
+            <p>Navigate commercial and residential leasing with experienced broker-level guidance.</p>
           </div>
           <div class="service-item">
             <h3>Land &amp; Development</h3>
             <p>Land, pad sites, redevelopment, and investment-grade opportunities positioned for serious buyers.</p>
-          </div>
-          <div class="service-item">
-            <h3>Residential Representation</h3>
-            <p>Full-service residential brokerage backed by deep local market knowledge and direct communication.</p>
-          </div>
-          <div class="service-item">
-            <h3>Owner Strategy</h3>
-            <p>Marketing guidance, positioning advice, and honest market feedback before you commit to a listing.</p>
           </div>
         </div>
       </div>
@@ -830,7 +913,7 @@
           <div class="property-card">
             <div class="property-thumb">
               <span class="tag">New Listing</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+              <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/06/img_4119-1.jpg" alt="Kolb and Irvington development site">
             </div>
             <div class="property-info">
               <h3>Kolb Rd &amp; Irvington Rd — Development Site</h3>
@@ -847,7 +930,7 @@
 
           <div class="property-card">
             <div class="property-thumb">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+              <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/07/siterendering.png" alt="Cole Road development rendering">
             </div>
             <div class="property-info">
               <h3>Cole Road Development Site</h3>
@@ -918,6 +1001,16 @@
             <h3>Can I reach out if I'm not ready to list or buy yet?</h3>
             <p>Of course. Many of Jeff's best client relationships start with an early strategy conversation — no commitment required.</p>
           </div>
+        </div>
+      </div>
+
+      <!-- GALLERY -->
+      <div class="content-section" id="gallery">
+        <h2>Gallery</h2>
+        <div class="gallery-grid">
+          <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/06/img_4119-1.jpg" alt="Property view">
+          <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/07/siterendering.png" alt="Site rendering">
+          <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/06/block-7-2.jpg" alt="Development overview">
         </div>
       </div>
 
@@ -999,10 +1092,10 @@
         <h2>About</h2>
         <div class="bottom-block-content">
           <div class="thumb">
-            <img src="assets/logo-primary.jpg" alt="Jeff Cesare Realty">
+            <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/10/site_logo.png" alt="Jeff Cesare Realty, LLC">
           </div>
           <div class="entry">
-            Jeff Cesare Realty LLC is a Tucson-based brokerage specializing in commercial, residential, and development real estate.
+            Jeff Cesare Realty, LLC is a Tucson-based brokerage specializing in commercial, residential, and development real estate.
             <a href="#about">Learn More</a>
           </div>
         </div>
@@ -1010,8 +1103,8 @@
       <div class="bottom-block">
         <h2>Properties</h2>
         <div class="bottom-block-content">
-          <div class="thumb" style="background: linear-gradient(135deg, rgba(176,138,71,0.2), rgba(92,74,50,0.15)); display: flex; align-items: center; justify-content: center;">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(245,240,232,0.5)" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+          <div class="thumb">
+            <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/09/img_4280-1.jpg?w=300" alt="Featured property">
           </div>
           <div class="entry">
             View current development opportunities and featured listings in the Tucson area.
@@ -1022,8 +1115,8 @@
       <div class="bottom-block">
         <h2>Location</h2>
         <div class="bottom-block-content">
-          <div class="thumb" style="background: linear-gradient(135deg, rgba(176,138,71,0.2), rgba(92,74,50,0.15)); display: flex; align-items: center; justify-content: center;">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(245,240,232,0.5)" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <div class="thumb">
+            <img src="https://jeffcesare.wpenginepowered.com/wp-content/uploads/2025/06/block-7-2.jpg" alt="Tucson location">
           </div>
           <div class="entry">
             4574 N. First Ave, Suite #100<br>Tucson, AZ 85718
@@ -1044,7 +1137,7 @@
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
       </nav>
-      <div class="copyright">&copy; 2026 Jeff Cesare Realty LLC. All Rights Reserved.</div>
+      <div class="copyright">&copy; 2026 Jeff Cesare Realty, LLC. All Rights Reserved.</div>
     </div>
   </div>
 
