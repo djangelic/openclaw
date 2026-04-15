@@ -1,428 +1,1052 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jeff Cesare Realty | Commercial Brokerage, Residential Representation & Development in Tucson, AZ</title>
-  <meta name="description" content="Jeff Cesare Realty LLC — Tucson-area broker specializing in commercial brokerage, land and development opportunities, and residential representation. Direct access to an experienced local broker." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeff Cesare Realty LLC | Commercial Brokerage, Residential &amp; Development — Tucson, AZ</title>
+  <meta name="description" content="Jeff Cesare Realty LLC — Tucson-area broker specializing in commercial brokerage, land and development opportunities, and residential representation.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f5f0e8;
+      --cream-dark: #e8e0d0;
+      --brown: #5c4a32;
+      --brown-light: #7a6548;
+      --brown-dark: #3e3224;
+      --gold: #b08a47;
+      --gold-soft: #c9a95c;
+      --text: #333333;
+      --text-light: #666666;
+      --white: #ffffff;
+      --border: #d4c9b5;
+      --heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --body: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--body);
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--cream);
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(176,138,71,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(92,74,50,0.04) 0%, transparent 50%);
+    }
+
+    a { color: var(--brown); text-decoration: none; }
+    a:hover { color: var(--gold); }
+    img { display: block; max-width: 100%; }
+
+    /* ---- HEADER ---- */
+    #header {
+      background: var(--brown-dark);
+      background-image: linear-gradient(180deg, rgba(62,50,36,0.97) 0%, rgba(50,40,28,0.99) 100%);
+      border-bottom: 3px solid var(--gold);
+    }
+
+    #header .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 90px;
+    }
+
+    .site-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .site-logo img {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      border: 2px solid rgba(176,138,71,0.4);
+      object-fit: cover;
+      background: #fff;
+    }
+
+    .site-logo .logo-text strong {
+      display: block;
+      font-family: var(--heading);
+      font-size: 1.25rem;
+      color: var(--cream);
+      letter-spacing: 0.02em;
+    }
+
+    .site-logo .logo-text span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--gold-soft);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    #primary-menu {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      list-style: none;
+    }
+
+    #primary-menu li a {
+      display: block;
+      padding: 0.55rem 1rem;
+      color: rgba(245,240,232,0.8);
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+
+    #primary-menu li a:hover {
+      color: var(--gold-soft);
+    }
+
+    /* ---- TITLE BANNER ---- */
+    #title-area {
+      background: var(--brown);
+      background-image: linear-gradient(135deg, rgba(92,74,50,1) 0%, rgba(74,58,38,1) 100%);
+      padding: 2.5rem 0;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+    }
+
+    #title-area h1 {
+      font-family: var(--heading);
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--cream);
+      letter-spacing: 0.02em;
+    }
+
+    #title-area p {
+      color: rgba(245,240,232,0.75);
+      font-size: 1.05rem;
+      margin-top: 0.5rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ---- MAIN LAYOUT ---- */
+    #main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    #content {
+      min-width: 0;
+    }
+
+    /* ---- SECTION BLOCKS ---- */
+    .content-section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 2px 8px rgba(92,74,50,0.06);
+    }
+
+    .content-section h2 {
+      font-family: var(--heading);
+      font-size: 1.6rem;
+      color: var(--brown-dark);
+      margin-bottom: 1rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .content-section h3 {
+      font-family: var(--heading);
+      font-size: 1.15rem;
+      color: var(--brown);
+      margin-bottom: 0.4rem;
+      margin-top: 1.2rem;
+    }
+
+    .content-section h3:first-child {
+      margin-top: 0;
+    }
+
+    .content-section p {
+      color: var(--text);
+      line-height: 1.75;
+      margin-bottom: 0.75rem;
+    }
+
+    .content-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ---- SERVICES GRID ---- */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .service-item {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.25rem 1.35rem;
+    }
+
+    .service-item h3 {
+      font-family: var(--heading);
+      font-size: 1.05rem;
+      color: var(--brown-dark);
+      margin: 0 0 0.35rem;
+    }
+
+    .service-item p {
+      color: var(--text-light);
+      font-size: 0.93rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ---- PROPERTY CARDS ---- */
+    .property-list {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .property-card {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 1.25rem;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .property-card .property-thumb {
+      background: linear-gradient(135deg, rgba(92,74,50,0.15), rgba(176,138,71,0.12));
+      min-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .property-card .property-thumb .tag {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      background: var(--gold);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.3rem 0.6rem;
+      border-radius: 3px;
+    }
+
+    .property-card .property-thumb svg {
+      width: 48px;
+      height: 48px;
+      opacity: 0.2;
+    }
+
+    .property-card .property-info {
+      padding: 1.25rem 1.25rem 1.25rem 0;
+    }
+
+    .property-card .property-info h3 {
+      font-family: var(--heading);
+      font-size: 1.15rem;
+      color: var(--brown-dark);
+      margin: 0 0 0.15rem;
+    }
+
+    .property-card .property-info .location {
+      color: var(--gold);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .property-card .property-info p {
+      color: var(--text-light);
+      font-size: 0.93rem;
+      line-height: 1.65;
+      margin-bottom: 0.75rem;
+    }
+
+    .property-card .property-info .details {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.85rem;
+    }
+
+    .property-card .property-info .details span {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      border-radius: 3px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.55rem 1.15rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--brown);
+      color: var(--cream);
+    }
+
+    .btn-primary:hover {
+      background: var(--gold);
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--brown);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      background: var(--brown);
+      color: var(--cream);
+    }
+
+    /* ---- TESTIMONIALS ---- */
+    .testimonials {
+      margin-top: 1rem;
+    }
+
+    .testimonial {
+      background: var(--cream);
+      border-left: 3px solid var(--gold);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .testimonial p {
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+    }
+
+    .testimonial cite {
+      font-style: normal;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--brown);
+    }
+
+    /* ---- FAQ ---- */
+    .faq-list {
+      margin-top: 0.5rem;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .faq-item h3 {
+      font-family: var(--heading);
+      font-size: 1.02rem;
+      color: var(--brown-dark);
+      margin: 0 0 0.3rem;
+    }
+
+    .faq-item p {
+      color: var(--text-light);
+      font-size: 0.93rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ---- SIDEBAR ---- */
+    .sidebar {
+      min-width: 0;
+    }
+
+    .sidebar-widget {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(92,74,50,0.06);
+      overflow: hidden;
+    }
+
+    .sidebar-widget h3 {
+      font-family: var(--heading);
+      font-size: 1.05rem;
+      color: var(--cream);
+      background: var(--brown);
+      padding: 0.75rem 1.15rem;
+      margin: 0;
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .sidebar-widget .widget-content {
+      padding: 1.15rem;
+    }
+
+    .sidebar-widget .widget-content p {
+      font-size: 0.92rem;
+      color: var(--text-light);
+      line-height: 1.65;
+      margin-bottom: 0.65rem;
+    }
+
+    .sidebar-widget .widget-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .contact-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(212,201,181,0.5);
+    }
+
+    .contact-detail:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .contact-detail .label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gold);
+      min-width: 60px;
+    }
+
+    .contact-detail .value {
+      font-size: 0.92rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .contact-detail .value a {
+      color: var(--brown);
+      font-weight: 600;
+    }
+
+    .contact-detail .value a:hover {
+      color: var(--gold);
+    }
+
+    .sidebar-nav {
+      list-style: none;
+    }
+
+    .sidebar-nav li {
+      border-bottom: 1px solid rgba(212,201,181,0.5);
+    }
+
+    .sidebar-nav li:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar-nav li a {
+      display: block;
+      padding: 0.65rem 1.15rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--brown);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .sidebar-nav li a:hover,
+    .sidebar-nav li.active a {
+      background: var(--cream);
+      color: var(--gold);
+    }
+
+    /* ---- BOTTOM WIDGETS ---- */
+    #bottom-widget {
+      background: var(--brown);
+      background-image: linear-gradient(180deg, rgba(92,74,50,1), rgba(62,50,36,1));
+      border-top: 3px solid var(--gold);
+      padding: 2.25rem 0;
+    }
+
+    #bottom-widget .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .bottom-block h2 {
+      font-family: var(--heading);
+      font-size: 1.25rem;
+      color: var(--gold-soft);
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.45rem;
+      border-bottom: 1px solid rgba(176,138,71,0.3);
+    }
+
+    .bottom-block-content {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .bottom-block-content .thumb {
+      width: 100px;
+      min-width: 100px;
+      height: 75px;
+      border-radius: 4px;
+      border: 1px solid rgba(176,138,71,0.3);
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .bottom-block-content .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bottom-block-content .entry {
+      color: rgba(245,240,232,0.75);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .bottom-block-content .entry a {
+      display: inline-block;
+      margin-top: 0.4rem;
+      color: var(--gold-soft);
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .bottom-block-content .entry a:hover {
+      color: #fff;
+    }
+
+    /* ---- FOOTER ---- */
+    #footer {
+      background: var(--brown-dark);
+      padding: 1.15rem 0;
+      text-align: center;
+    }
+
+    #footer .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    #footer nav a {
+      color: rgba(245,240,232,0.6);
+      font-size: 0.85rem;
+      margin: 0 0.75rem;
+      transition: color 0.2s;
+    }
+
+    #footer nav a:hover {
+      color: var(--gold-soft);
+    }
+
+    #footer .copyright {
+      color: rgba(245,240,232,0.45);
+      font-size: 0.82rem;
+    }
+
+    /* ---- PROCESS STEPS ---- */
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .step {
+      text-align: center;
+      padding: 1rem 0.75rem;
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--brown);
+      color: var(--cream);
+      font-family: var(--heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.65rem;
+    }
+
+    .step h3 {
+      font-family: var(--heading);
+      font-size: 0.95rem;
+      color: var(--brown-dark);
+      margin: 0 0 0.3rem;
+    }
+
+    .step p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ---- INSIGHTS ---- */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .insight-item {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.15rem;
+    }
+
+    .insight-item .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      margin-bottom: 0.35rem;
+    }
+
+    .insight-item h3 {
+      font-family: var(--heading);
+      font-size: 0.98rem;
+      color: var(--brown-dark);
+      margin: 0 0 0.3rem;
+      line-height: 1.4;
+    }
+
+    .insight-item p {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 900px) {
+      #main {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        order: -1;
+      }
+      .services-grid,
+      .process-steps {
+        grid-template-columns: 1fr 1fr;
+      }
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+      #bottom-widget .inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #header .wrap {
+        flex-direction: column;
+        height: auto;
+        padding: 1rem 1.5rem;
+        gap: 0.75rem;
+      }
+      #primary-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      #primary-menu li a {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.85rem;
+      }
+      #title-area h1 {
+        font-size: 1.7rem;
+      }
+      .services-grid,
+      .process-steps {
+        grid-template-columns: 1fr;
+      }
+      .property-card {
+        grid-template-columns: 1fr;
+      }
+      .property-card .property-info {
+        padding: 1.25rem;
+      }
+      #footer .inner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="topbar">
-    <div class="container nav">
-      <a class="brand" href="index.html">
-        <img src="assets/logo-primary.jpg" alt="Jeff Cesare Realty LLC" />
-        <div class="brand-copy">
+
+  <!-- HEADER -->
+  <div id="header">
+    <div class="wrap">
+      <a class="site-logo" href="index.html">
+        <img src="assets/logo-primary.jpg" alt="Jeff Cesare Realty LLC">
+        <div class="logo-text">
           <strong>Jeff Cesare Realty LLC</strong>
           <span>Broker &bull; Commercial &bull; Residential &bull; Development</span>
         </div>
       </a>
-      <div class="nav-links">
-        <a href="#services">Services</a>
-        <a href="#about">About</a>
-        <a href="#process">How It Works</a>
-        <a href="#properties">Properties</a>
-        <a href="#faq">FAQ</a>
-        <a href="#insights">Insights</a>
-      </div>
-      <a class="button" href="#contact">Schedule a Conversation</a>
+      <ul id="primary-menu">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#properties">Properties</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#process">How It Works</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </div>
   </div>
 
-  <main>
-    <section class="hero hero-home">
-      <div class="container hero-grid hero-grid-home">
-        <div>
-          <div class="eyebrow">Southern Arizona Brokerage &amp; Development</div>
-          <h1>Experienced representation for commercial, residential, and development opportunities.</h1>
-          <p>
-            Jeff Cesare Realty provides direct, broker-level guidance for owners, investors, buyers, and tenants across the Tucson metro area. Whether you're evaluating a commercial lease, marketing a development site, or buying your next property — you work directly with Jeff.
-          </p>
-          <div class="hero-actions">
-            <a class="button" href="#properties">View Properties</a>
-            <a class="button-secondary" href="#contact">Contact Jeff</a>
+  <!-- TITLE BANNER -->
+  <div id="title-area">
+    <h1>Tucson Commercial Brokerage &amp; Development</h1>
+    <p>Experienced representation for owners, investors, buyers, and tenants across Southern Arizona.</p>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="main">
+
+    <div id="content">
+
+      <!-- ABOUT -->
+      <div class="content-section" id="about">
+        <h2>About Jeff Cesare Realty</h2>
+        <p>Jeff Cesare Realty LLC is a Tucson-based brokerage firm specializing in commercial real estate, residential transactions, and development-minded land opportunities across Southern Arizona.</p>
+        <p>Jeff Cesare is a licensed broker and managing member with years of hands-on experience in the Tucson market. Clients work directly with Jeff — from initial consultation through closing — with a focus on honest guidance, local market knowledge, and practical strategy.</p>
+
+        <div class="testimonials">
+          <div class="testimonial">
+            <p>"He is passionate about his work, loyal and dedicated to his clients and focused on success on behalf of his clients."</p>
+            <cite>— Keri Lazarus Silvyn, Esq.</cite>
           </div>
-          <div class="stats stats-hero">
-            <div class="stat">
-              <strong>Direct Broker Access</strong>
-              <span>No handoff maze. You work directly with Jeff from day one through closing.</span>
-            </div>
-            <div class="stat">
-              <strong>Local Market Knowledge</strong>
-              <span>Deep experience across Tucson and Southern Arizona commercial and residential markets.</span>
-            </div>
-            <div class="stat">
-              <strong>Development Expertise</strong>
-              <span>Land, pad sites, and development-minded opportunities positioned for the right buyers.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel panel-hero">
-          <div class="panel-window">
-            <div class="window-bar">
-              <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
-            </div>
-            <div class="panel-content panel-stack">
-              <div class="mock-card">
-                <div class="kicker">Featured Listing</div>
-                <h3 class="display-card-title">Kolb Rd &amp; Irvington Rd Development Site</h3>
-                <p>
-                  High-visibility corner lot at a signalized intersection surrounded by national retailers. Ideal for retail, medical, restaurant, or mixed-use development.
-                </p>
-                <div class="badges">
-                  <span class="badge">Development opportunity</span>
-                  <span class="badge">High traffic counts</span>
-                  <span class="badge">Call for pricing</span>
-                </div>
-              </div>
-
-              <div class="grid-2 compact-grid">
-                <div class="card soft-card">
-                  <div class="kicker">Also Available</div>
-                  <h3>Cole Road Development Site</h3>
-                  <p>Development land with strong visibility and flexible use potential in a growing Tucson corridor.</p>
-                </div>
-                <div class="card soft-card">
-                  <div class="kicker">Coming Soon</div>
-                  <h3>More Listings</h3>
-                  <p>Additional commercial and development properties are being prepared. Contact Jeff for early access.</p>
-                </div>
-              </div>
-
-              <div class="mini-checklist">
-                <div><strong>Looking for something specific?</strong></div>
-                <ul class="list tight-list">
-                  <li>commercial lease or purchase opportunities</li>
-                  <li>development land and pad sites</li>
-                  <li>investment properties in the Tucson area</li>
-                </ul>
-              </div>
-            </div>
+          <div class="testimonial">
+            <p>"He has always strived to create the best projects possible for his clients and the Tucson community."</p>
+            <cite>— Marty Magelli, P.E.</cite>
           </div>
         </div>
       </div>
-    </section>
 
-    <section class="section section-tight">
-      <div class="container trust-strip">
-        <div class="trust-item">
-          <span>Approach</span>
-          <strong>Direct conversations with Jeff</strong>
-        </div>
-        <div class="trust-item">
-          <span>Clients</span>
-          <strong>Owners, investors, tenants, buyers</strong>
-        </div>
-        <div class="trust-item">
-          <span>Specialties</span>
-          <strong>Commercial, residential, development</strong>
-        </div>
-        <div class="trust-item">
-          <span>Coverage</span>
-          <strong>Tucson &amp; Southern Arizona</strong>
+      <!-- SERVICES -->
+      <div class="content-section" id="services">
+        <h2>Services</h2>
+        <p>Jeff Cesare Realty provides focused representation across four core areas:</p>
+
+        <div class="services-grid">
+          <div class="service-item">
+            <h3>Commercial Brokerage</h3>
+            <p>Buy, sell, and lease commercial property with straightforward representation in the Tucson market.</p>
+          </div>
+          <div class="service-item">
+            <h3>Land &amp; Development</h3>
+            <p>Land, pad sites, redevelopment, and investment-grade opportunities positioned for serious buyers.</p>
+          </div>
+          <div class="service-item">
+            <h3>Residential Representation</h3>
+            <p>Full-service residential brokerage backed by deep local market knowledge and direct communication.</p>
+          </div>
+          <div class="service-item">
+            <h3>Owner Strategy</h3>
+            <p>Marketing guidance, positioning advice, and honest market feedback before you commit to a listing.</p>
+          </div>
         </div>
       </div>
-    </section>
 
-    <section class="section" id="services">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Services</div>
-            <h2>How Jeff Cesare Realty can help</h2>
-          </div>
-          <p>
-            From commercial transactions and land deals to residential representation and owner strategy, Jeff brings focused, experienced guidance to every engagement.
-          </p>
-        </div>
+      <!-- PROPERTIES -->
+      <div class="content-section" id="properties">
+        <h2>Featured Properties</h2>
+        <p>Current listings and development opportunities available through Jeff Cesare Realty.</p>
 
-        <div class="grid-4 service-grid">
-          <article class="card service-card feature-outline">
-            <div class="service-number">01</div>
-            <div class="kicker">Commercial Brokerage</div>
-            <h3>Buy, sell, and lease commercial property</h3>
-            <p>Straightforward representation for owners, tenants, and buyers navigating commercial transactions in the Tucson market.</p>
-          </article>
-          <article class="card service-card">
-            <div class="service-number">02</div>
-            <div class="kicker">Land &amp; Development</div>
-            <h3>Position and market development opportunities</h3>
-            <p>Land, pad sites, redevelopment, and investment-grade opportunities presented with the context serious buyers need.</p>
-          </article>
-          <article class="card service-card">
-            <div class="service-number">03</div>
-            <div class="kicker">Residential Representation</div>
-            <h3>Experienced guidance for home buyers and sellers</h3>
-            <p>Full-service residential brokerage backed by the same market knowledge and direct communication Jeff brings to every deal.</p>
-          </article>
-          <article class="card service-card">
-            <div class="service-number">04</div>
-            <div class="kicker">Owner Strategy</div>
-            <h3>Marketing guidance before you go public</h3>
-            <p>For owners who want positioning advice, honest market feedback, and a clear plan before committing to a listing.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="about">
-      <div class="container split-section">
-        <div class="section-copy">
-          <div class="eyebrow">About Jeff</div>
-          <h2>Boutique access, local knowledge, and practical representation</h2>
-          <p>
-            Jeff Cesare is a licensed broker and managing member of Jeff Cesare Realty LLC, based in Tucson, Arizona. He brings years of hands-on experience across commercial, residential, and development real estate — with a focus on direct communication and honest guidance.
-          </p>
-          <div class="check-grid">
-            <div class="check-item">
-              <strong>Direct access</strong>
-              <span>When you reach out, you're talking to Jeff — not a junior associate or a generic inbox.</span>
+        <div class="property-list">
+          <div class="property-card">
+            <div class="property-thumb">
+              <span class="tag">New Listing</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
             </div>
-            <div class="check-item">
-              <strong>Local expertise</strong>
-              <span>Deep knowledge of Tucson and Southern Arizona markets, neighborhoods, and development trends.</span>
-            </div>
-            <div class="check-item">
-              <strong>Development perspective</strong>
-              <span>Jeff understands land potential, future use, and how to frame opportunities for the right audience.</span>
-            </div>
-            <div class="check-item">
-              <strong>Qualified conversations</strong>
-              <span>Jeff's approach focuses on real opportunity assessment — not wasting your time or his.</span>
-            </div>
-          </div>
-        </div>
-
-        <aside class="callout why-callout">
-          <div class="kicker">What clients say</div>
-          <h3>Trusted by clients and colleagues across Southern Arizona</h3>
-          <p>
-            Jeff has built a reputation for integrity, dedication, and results-oriented representation.
-          </p>
-          <div class="quote-stack">
-            <div class="quote-card">
-              <p>"He is passionate about his work, loyal and dedicated to his clients and focused on success on behalf of his clients."</p>
-              <span>— Keri Lazarus Silvyn, Esq.</span>
-            </div>
-            <div class="quote-card">
-              <p>"He has always strived to create the best projects possible for his clients and the Tucson community."</p>
-              <span>— Marty Magelli, P.E.</span>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="section" id="process">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">How It Works</div>
-            <h2>A straightforward path from inquiry to results</h2>
-          </div>
-          <p>
-            Whether you're buying, selling, leasing, or exploring a development opportunity, here's how working with Jeff typically looks.
-          </p>
-        </div>
-
-        <div class="process-grid">
-          <article class="process-card">
-            <span class="process-step">01</span>
-            <h3>Initial conversation</h3>
-            <p>Share what you're looking for — whether you're an owner, investor, buyer, or tenant — and Jeff will assess the opportunity.</p>
-          </article>
-          <article class="process-card">
-            <span class="process-step">02</span>
-            <h3>Property &amp; market review</h3>
-            <p>Jeff reviews the property or need in detail, identifies the right comparables, and evaluates whether the opportunity is a good fit.</p>
-          </article>
-          <article class="process-card">
-            <span class="process-step">03</span>
-            <h3>Strategy &amp; positioning</h3>
-            <p>Together, you'll discuss timing, pricing, marketing approach, and the best path forward based on current market conditions.</p>
-          </article>
-          <article class="process-card">
-            <span class="process-step">04</span>
-            <h3>Representation &amp; execution</h3>
-            <p>Jeff guides the transaction from negotiation through closing, keeping communication clear and the process on track.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="properties">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Properties</div>
-            <h2>Current listings and development opportunities</h2>
-          </div>
-          <p>
-            Each property page provides key details, location context, and a direct line to Jeff for serious inquiries.
-          </p>
-        </div>
-
-        <div class="feature-layout">
-          <article class="property-card property-card-large">
-            <div class="media">
-              <span class="media-tag">New Listing</span>
-            </div>
-            <div class="property-content property-content-rich">
-              <div>
-                <div class="kicker">Kolb Rd &amp; Irvington Rd — Development Site</div>
-                <h3>High-visibility corner lot at one of Tucson's busiest intersections</h3>
-                <p>
-                  A prime development opportunity at the signalized intersection of Kolb and Irvington, surrounded by national retailers and high daily traffic counts. Ideal for retail, medical, restaurant, or mixed-use development.
-                </p>
-              </div>
-              <div class="meta">
-                <span>Tucson, Arizona</span>
+            <div class="property-info">
+              <h3>Kolb Rd &amp; Irvington Rd — Development Site</h3>
+              <div class="location">Tucson, Arizona</div>
+              <p>High-visibility corner lot at the signalized intersection of Kolb and Irvington, surrounded by national retailers and high daily traffic counts.</p>
+              <div class="details">
                 <span>Development opportunity</span>
-                <span>Call for pricing</span>
                 <span>High-traffic corner</span>
+                <span>Call for pricing</span>
               </div>
-              <div class="feature-bullets">
-                <div class="feature-bullet">Signalized intersection with strong daily traffic counts</div>
-                <div class="feature-bullet">Surrounded by Walmart, Fry's, and national anchors</div>
-                <div class="feature-bullet">Multiple viable use cases — retail, medical, restaurant, mixed-use</div>
-              </div>
-              <div class="hero-actions">
-                <a class="button" href="property-kolb-irvington.html">View Property Details</a>
-                <a class="button-secondary" href="#contact">Contact Jeff About This Site</a>
-              </div>
+              <a class="btn btn-primary" href="property-kolb-irvington.html">View Property Details</a>
             </div>
-          </article>
+          </div>
 
-          <aside class="stack">
-            <section class="card">
-              <div class="kicker">Also Available</div>
+          <div class="property-card">
+            <div class="property-thumb">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+            </div>
+            <div class="property-info">
               <h3>Cole Road Development Site</h3>
-              <p>Development land with strong road visibility and flexible use potential in a growing Tucson corridor. Teaser-level details available — contact Jeff for full information.</p>
-              <div class="hero-actions" style="margin-top: 1rem;">
-                <a class="button-secondary" href="property-cole-road.html">View Cole Road Property</a>
+              <div class="location">Tucson, Arizona</div>
+              <p>Development land with strong road visibility and flexible use potential in a growing Tucson corridor.</p>
+              <div class="details">
+                <span>Development land</span>
+                <span>For sale or lease</span>
+                <span>Call for pricing</span>
               </div>
-            </section>
-            <section class="card">
-              <div class="kicker">Have a Property?</div>
-              <h3>List with Jeff Cesare Realty</h3>
-              <p>If you're an owner looking to sell, lease, or explore your options, Jeff can help you position your property and reach the right audience.</p>
-              <div class="hero-actions" style="margin-top: 1rem;">
-                <a class="button-secondary" href="#contact">Discuss Your Property</a>
-              </div>
-            </section>
-          </aside>
+              <a class="btn btn-primary" href="property-cole-road.html">View Property Details</a>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
 
-    <section class="section" id="faq">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">FAQ</div>
-            <h2>Common questions about working with Jeff</h2>
+      <!-- PROCESS -->
+      <div class="content-section" id="process">
+        <h2>How It Works</h2>
+        <p>Whether you're buying, selling, leasing, or exploring a development opportunity, here's how working with Jeff typically looks.</p>
+
+        <div class="process-steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h3>Initial Conversation</h3>
+            <p>Share what you're looking for and Jeff will assess the opportunity.</p>
           </div>
-          <p>
-            Answers to the questions clients and prospects ask most often.
-          </p>
+          <div class="step">
+            <div class="step-number">2</div>
+            <h3>Market Review</h3>
+            <p>Jeff evaluates the property, identifies comparables, and assesses fit.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <h3>Strategy</h3>
+            <p>Together, discuss timing, pricing, and the best path forward.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <h3>Execution</h3>
+            <p>Jeff guides the transaction from negotiation through closing.</p>
+          </div>
         </div>
+      </div>
 
-        <div class="faq-grid">
-          <article class="faq-item">
+      <!-- FAQ -->
+      <div class="content-section" id="faq">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-list">
+          <div class="faq-item">
             <h3>What types of properties do you handle?</h3>
             <p>Jeff works across commercial brokerage, residential sales, land and development opportunities, and investment properties throughout Tucson and Southern Arizona.</p>
-          </article>
-          <article class="faq-item">
+          </div>
+          <div class="faq-item">
             <h3>Do you only handle commercial real estate?</h3>
             <p>No. While commercial and development work is a core focus, Jeff also provides full residential representation for buyers and sellers.</p>
-          </article>
-          <article class="faq-item">
+          </div>
+          <div class="faq-item">
             <h3>Can you help evaluate development land or investment opportunities?</h3>
-            <p>Absolutely. Jeff regularly works with buyers and investors evaluating land, pad sites, and redevelopment opportunities — helping assess market positioning, use potential, and timing.</p>
-          </article>
-          <article class="faq-item">
+            <p>Absolutely. Jeff regularly works with buyers and investors evaluating land, pad sites, and redevelopment opportunities — helping assess positioning, use potential, and timing.</p>
+          </div>
+          <div class="faq-item">
             <h3>What should I prepare before reaching out?</h3>
-            <p>The most helpful starting points are your intended use, general timeline, whether you're looking to buy or lease, and any specific location requirements or constraints.</p>
-          </article>
-          <article class="faq-item">
-            <h3>Do you work with businesses looking for retail, office, or industrial space?</h3>
-            <p>Yes. Jeff works with business owners, operators, and tenants looking for the right commercial space — whether it's retail, office, industrial, or specialty use.</p>
-          </article>
-          <article class="faq-item">
+            <p>The most helpful starting points are your intended use, general timeline, whether you're looking to buy or lease, and any specific location requirements.</p>
+          </div>
+          <div class="faq-item">
             <h3>Can I reach out if I'm not ready to list or buy yet?</h3>
-            <p>Of course. Many of Jeff's best client relationships start with an early strategy conversation — no commitment required. If you want to understand your options, that's a great time to call.</p>
-          </article>
+            <p>Of course. Many of Jeff's best client relationships start with an early strategy conversation — no commitment required.</p>
+          </div>
         </div>
       </div>
-    </section>
 
-    <section class="section" id="insights">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Insights</div>
-            <h2>Resources for owners, investors, and buyers</h2>
+      <!-- INSIGHTS -->
+      <div class="content-section" id="insights">
+        <h2>Insights &amp; Resources</h2>
+        <p>Practical guidance for owners, investors, and buyers in the Tucson market.</p>
+
+        <div class="insights-grid">
+          <div class="insight-item">
+            <div class="tag">Owners</div>
+            <h3>How to Prepare a Commercial Property for Sale</h3>
+            <p>Key steps for positioning your property and creating stronger conversations with qualified buyers.</p>
           </div>
-          <p>
-            Practical guidance to help you make smarter real estate decisions in the Tucson market.
-          </p>
-        </div>
-
-        <div class="grid-3 insight-grid">
-          <article class="card insight-card">
-            <div class="insight-tag">Owners</div>
-            <h3>How to prepare a commercial property for sale</h3>
-            <p>Key steps for positioning your property, understanding timing, and creating stronger first conversations with qualified buyers.</p>
-          </article>
-          <article class="card insight-card">
-            <div class="insight-tag">Business Owners</div>
-            <h3>What to know before leasing commercial space in Southern Arizona</h3>
-            <p>A practical overview for business owners comparing locations, evaluating lease terms, and deciding when to bring in a broker.</p>
-          </article>
-          <article class="card insight-card">
-            <div class="insight-tag">Investors</div>
-            <h3>Evaluating Tucson-area development opportunities</h3>
-            <p>What to look for in land and development deals — from traffic and access to zoning, use potential, and surrounding market context.</p>
-          </article>
+          <div class="insight-item">
+            <div class="tag">Business Owners</div>
+            <h3>What to Know Before Leasing Commercial Space</h3>
+            <p>A practical overview for business owners comparing locations and evaluating lease terms.</p>
+          </div>
+          <div class="insight-item">
+            <div class="tag">Investors</div>
+            <h3>Evaluating Tucson-Area Development Opportunities</h3>
+            <p>What to look for in land and development deals — from traffic and zoning to use potential.</p>
+          </div>
         </div>
       </div>
-    </section>
 
-    <section class="section" id="contact">
-      <div class="container">
-        <div class="callout callout-large">
-          <div class="section-head section-head-tight">
-            <div>
-              <div class="eyebrow">Get in Touch</div>
-              <h2>Ready to talk about a property or opportunity?</h2>
-            </div>
-            <p>
-              Whether you're looking to buy, sell, lease, invest, or explore development options in the Tucson area, Jeff is available for a direct conversation.
-            </p>
+    </div><!-- #content -->
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="contact">
+
+      <div class="sidebar-widget">
+        <h3>Contact Jeff</h3>
+        <div class="widget-content">
+          <div class="contact-detail">
+            <div class="label">Phone</div>
+            <div class="value"><a href="tel:+15209061012">(520) 906-1012</a></div>
           </div>
-          <div class="hero-actions">
-            <a class="button" href="tel:+15209061012">Call (520) 906-1012</a>
-            <a class="button-secondary" href="mailto:jeffcesarerealty@gmail.com">Email Jeff</a>
+          <div class="contact-detail">
+            <div class="label">Email</div>
+            <div class="value"><a href="mailto:jeffcesarerealty@gmail.com">jeffcesarerealty@gmail.com</a></div>
           </div>
-          <p class="small" style="margin-top: 1rem; color: var(--muted);">
-            Jeff Cesare Realty LLC &bull; 4574 N. First Ave, Suite #100 &bull; Tucson, AZ 85718
-          </p>
+          <div class="contact-detail">
+            <div class="label">Office</div>
+            <div class="value">4574 N. First Ave, Suite #100<br>Tucson, AZ 85718</div>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="small">&copy; 2026 Jeff Cesare Realty LLC. All rights reserved.</div>
-      <div class="small">4574 N. First Ave, Suite #100 &bull; Tucson, AZ 85718 &bull; (520) 906-1012</div>
+      <div class="sidebar-widget">
+        <h3>Quick Links</h3>
+        <ul class="sidebar-nav">
+          <li class="active"><a href="#properties">Featured Properties</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About Jeff</a></li>
+          <li><a href="#process">How It Works</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#insights">Insights</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-widget">
+        <h3>Have a Property?</h3>
+        <div class="widget-content">
+          <p>If you're an owner looking to sell, lease, or explore your options, Jeff can help you position your property and reach the right audience.</p>
+          <a class="btn btn-primary" href="tel:+15209061012" style="margin-top: 0.5rem;">Call Jeff Today</a>
+        </div>
+      </div>
+
+    </div><!-- .sidebar -->
+
+  </div><!-- #main -->
+
+  <!-- BOTTOM WIDGETS -->
+  <div id="bottom-widget">
+    <div class="inner">
+      <div class="bottom-block">
+        <h2>About</h2>
+        <div class="bottom-block-content">
+          <div class="thumb">
+            <img src="assets/logo-primary.jpg" alt="Jeff Cesare Realty">
+          </div>
+          <div class="entry">
+            Jeff Cesare Realty LLC is a Tucson-based brokerage specializing in commercial, residential, and development real estate.
+            <a href="#about">Learn More</a>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-block">
+        <h2>Properties</h2>
+        <div class="bottom-block-content">
+          <div class="thumb" style="background: linear-gradient(135deg, rgba(176,138,71,0.2), rgba(92,74,50,0.15)); display: flex; align-items: center; justify-content: center;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(245,240,232,0.5)" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+          </div>
+          <div class="entry">
+            View current development opportunities and featured listings in the Tucson area.
+            <a href="#properties">Learn More</a>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-block">
+        <h2>Location</h2>
+        <div class="bottom-block-content">
+          <div class="thumb" style="background: linear-gradient(135deg, rgba(176,138,71,0.2), rgba(92,74,50,0.15)); display: flex; align-items: center; justify-content: center;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(245,240,232,0.5)" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          </div>
+          <div class="entry">
+            4574 N. First Ave, Suite #100<br>Tucson, AZ 85718
+            <a href="https://maps.google.com/?q=4574+N+First+Ave+Suite+100+Tucson+AZ+85718" target="_blank" rel="noopener">Get Directions</a>
+          </div>
+        </div>
+      </div>
     </div>
-  </footer>
+  </div>
+
+  <!-- FOOTER -->
+  <div id="footer">
+    <div class="inner">
+      <nav>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#properties">Properties</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="copyright">&copy; 2026 Jeff Cesare Realty LLC. All Rights Reserved.</div>
+    </div>
+  </div>
+
 </body>
 </html>
