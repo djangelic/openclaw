@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SlackéMon — How It Works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --red: #ee1515; --red-dark: #b0060f; --yellow: #ffcb05; --blue: #3d7dca;
+    --ink: #14161a; --paper: #fff; --slack-bg: #f8f8f8; --slack-line: #e2e2e6;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; font-family: "Nunito", system-ui, sans-serif; color: var(--ink);
+    background: #0b1020;
+    background-image:
+      radial-gradient(1200px 500px at 20% -10%, rgba(61,125,202,.35), transparent),
+      radial-gradient(1000px 500px at 100% 0%, rgba(238,21,21,.28), transparent),
+      linear-gradient(#0b1020, #0b1020);
+    line-height: 1.6;
+  }
+  .pixel { font-family: "Press Start 2P", monospace; line-height: 1.5; }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- HERO ---------- */
+  header.hero {
+    text-align: center; padding: 56px 16px 40px; position: relative; overflow: hidden;
+  }
+  .badge {
+    display:inline-block; font-family:"Press Start 2P"; font-size:11px; letter-spacing:1px;
+    color:#0b1020; background:var(--yellow); padding:8px 12px; border-radius:6px; margin-bottom:22px;
+    box-shadow:0 4px 0 #c89e00;
+  }
+  .hero h1 {
+    font-family:"Press Start 2P"; color:#fff; font-size: clamp(26px, 6vw, 52px);
+    margin: 6px 0 4px; text-shadow: 3px 3px 0 var(--red-dark), 6px 6px 0 rgba(0,0,0,.25);
+  }
+  .hero h1 .acc { color: var(--yellow); }
+  .hero p.tag { color:#cdd7ea; font-size: clamp(16px,2.4vw,21px); font-weight:700; max-width:640px; margin:14px auto 26px; }
+  .bus {
+    width: min(680px, 92%); border-radius:14px; image-rendering: pixelated;
+    box-shadow: 0 18px 50px rgba(0,0,0,.5); border:3px solid rgba(255,255,255,.15);
+  }
+  .cta-row { margin-top: 30px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .btn {
+    font-family:"Press Start 2P"; font-size:12px; text-decoration:none; display:inline-block;
+    padding:16px 22px; border-radius:10px; transition: transform .08s ease, box-shadow .08s ease;
+  }
+  .btn-primary { background:var(--red); color:#fff; box-shadow:0 6px 0 var(--red-dark); }
+  .btn-primary:hover { transform: translateY(2px); box-shadow:0 4px 0 var(--red-dark); }
+  .btn-ghost { background:rgba(255,255,255,.08); color:#fff; border:2px solid rgba(255,255,255,.25); box-shadow:0 6px 0 rgba(0,0,0,.3); }
+  .btn-ghost:hover { transform: translateY(2px); box-shadow:0 4px 0 rgba(0,0,0,.3); }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding: 40px 0; }
+  .card {
+    background: var(--paper); border-radius: 18px; padding: 30px clamp(20px,4vw,40px);
+    box-shadow: 0 14px 40px rgba(0,0,0,.35); margin-bottom: 28px;
+  }
+  .card.dark { background: #121829; color:#e8eefc; box-shadow:0 14px 40px rgba(0,0,0,.5); }
+  h2.sec {
+    font-family:"Press Start 2P"; font-size: clamp(16px,3vw,22px); color:var(--red);
+    margin:0 0 6px; display:flex; align-items:center; gap:12px;
+  }
+  .card.dark h2.sec { color: var(--yellow); }
+  h2.sec .n {
+    font-size:14px; background:var(--yellow); color:#0b1020; width:34px; height:34px; flex:0 0 34px;
+    display:grid; place-items:center; border-radius:8px; box-shadow:0 3px 0 #c89e00;
+  }
+  .lead { font-size:18px; color:#41485a; }
+  .card.dark .lead { color:#c4cee4; }
+
+  .grid { display:grid; gap:20px; }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width:760px){ .g2,.g3{ grid-template-columns:1fr; } }
+  .media { width:100%; border-radius:12px; image-rendering:pixelated; border:2px solid var(--slack-line); }
+  .cap { font-size:14px; color:#737a8c; text-align:center; margin-top:8px; }
+
+  /* feature tiles */
+  .tile { background:#fbfbfd; border:1px solid var(--slack-line); border-radius:14px; padding:20px; }
+  .card.dark .tile { background:#1a2236; border-color:#2a3550; }
+  .tile .emoji { font-size:30px; }
+  .tile h3 { margin:8px 0 6px; font-size:18px; }
+  .tile p { margin:0; font-size:15px; color:#5a6175; }
+  .card.dark .tile p { color:#b3bdd6; }
+
+  /* loop steps */
+  .loop { display:grid; grid-template-columns: repeat(4,1fr); gap:14px; margin-top:18px; }
+  @media (max-width:760px){ .loop{ grid-template-columns:1fr 1fr; } }
+  .step { text-align:center; background:#fbfbfd; border:1px solid var(--slack-line); border-radius:14px; padding:18px 12px; position:relative; }
+  .step .big { font-size:34px; }
+  .step b { display:block; margin-top:6px; font-size:15px; }
+  .step span { font-size:13px; color:#737a8c; }
+
+  /* ---------- SLACK CARD MOCKUP ---------- */
+  .slackcard {
+    background:#fff; border:1px solid var(--slack-line); border-left:4px solid var(--red);
+    border-radius:10px; padding:16px 18px; max-width:560px; margin:0 auto;
+    box-shadow:0 8px 24px rgba(0,0,0,.12); font-size:15px;
+  }
+  .slackcard .hdr { font-weight:900; font-size:18px; margin-bottom:10px; }
+  .slackcard .ambiance { width:100%; border-radius:8px; margin-bottom:10px; image-rendering:pixelated; }
+  .tbl { width:100%; border-collapse:collapse; margin:8px 0 12px; }
+  .tbl td { padding:7px 8px; border-top:1px solid #eef0f4; vertical-align:top; }
+  .tbl td.k { white-space:nowrap; font-weight:700; color:#3a4150; width:140px; }
+  .tbl td.v { color:#222; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+  .chip { background:#f1f1f4; border:1px solid var(--slack-line); border-radius:8px; padding:6px 10px; font-size:13px; font-weight:700; }
+  .chip.go { background:#e7f6ec; border-color:#bfe6cc; }
+  .rost { display:flex; align-items:center; gap:10px; padding:8px; border:1px solid var(--slack-line); border-radius:10px; margin-top:8px; }
+  .rost img { width:38px; height:38px; border-radius:8px; }
+  .rost .who b{ display:block; } .rost .who span{ font-size:13px; color:#737a8c; }
+  .rost .fight { margin-left:auto; background:var(--red); color:#fff; border:none; border-radius:8px; padding:8px 12px; font-weight:800; font-size:13px; }
+  .mono { font-family: ui-monospace, Menlo, monospace; }
+
+  /* ---------- FINAL CTA ---------- */
+  .finalcta { text-align:center; }
+  .finalcta .card { background: linear-gradient(135deg, #ee1515, #b0060f); color:#fff; }
+  .finalcta h2.sec { color:#fff; justify-content:center; }
+  .finalcta .lead { color:#ffe9e9; max-width:620px; margin:10px auto 24px; }
+  .finalcta .btn-primary { background:var(--yellow); color:#0b1020; box-shadow:0 6px 0 #c89e00; }
+  footer { text-align:center; color:#8b96b0; font-size:14px; padding:30px 16px 60px; }
+  footer a { color:#cdd7ea; }
+  .small { font-size:13px; color:#9aa3bb; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge">⚡ A Slack-native adventure</div>
+    <h1>Slack<span class="acc">é</span>Mon</h1>
+    <p class="tag">Your whole workspace boards one bus and rides through a living region together — catching, battling, and voting where to go next, right inside Slack.</p>
+    <img class="bus" src="https://slackemon-v2.djangelic.workers.dev/assets/pokebus.gif" alt="The Poké Bus rolling down the road" />
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#how">See how it works ↓</a>
+      <a class="btn btn-ghost" href="#build">Want one for your team?</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- WHAT IS IT -->
+  <section>
+    <div class="card">
+      <h2 class="sec"><span class="n">?</span> What is SlackéMon?</h2>
+      <p class="lead">It's a <b>shared, co-op creature-collecting journey that lives in a Slack channel.</b> There's no app to install and no game to launch — the adventure just <i>happens</i> in your workspace. One world clock moves the whole team from town to town on a tireless little Poké Bus. Hop in whenever you've got a minute: catch something in the grass, gang up on a wild on the road, challenge a teammate, then vote on where the bus rolls next.</p>
+      <div class="grid g3" style="margin-top:18px">
+        <div class="tile"><div class="emoji">🚌</div><h3>One shared world</h3><p>Everyone rides together on a single live timeline through the region.</p></div>
+        <div class="tile"><div class="emoji">🤝</div><h3>Co-op by design</h3><p>Tag-team wild battles, trade, and rally the crew to vote the route.</p></div>
+        <div class="tile"><div class="emoji">⏱️</div><h3>Bite-sized</h3><p>Drop in for 30 seconds between meetings. It waits for nobody and needs nothing.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE LOOP -->
+  <section id="how">
+    <div class="card">
+      <h2 class="sec"><span class="n">1</span> The journey loop</h2>
+      <p class="lead">The bus repeats one simple, satisfying cycle. A live progress bar (and a per-viewer local-time clock) keeps everyone on the same page.</p>
+      <div class="loop">
+        <div class="step"><div class="big">🎉</div><b>Arrive</b><span>The bus pulls into a town. An arrival card shows what's here.</span></div>
+        <div class="step"><div class="big">🌿</div><b>Explore</b><span>Walk the grass, heal up, hit the gym, battle a friend.</span></div>
+        <div class="step"><div class="big">🗳️</div><b>Vote</b><span>Multiple roads out? The crew votes the next stop.</span></div>
+        <div class="step"><div class="big">🛣️</div><b>Travel</b><span>⛽ Gassing up… then off! Wilds appear on the road.</span></div>
+      </div>
+      <div class="grid g2" style="margin-top:24px">
+        <div>
+          <img class="media" src="https://slackemon-v2.djangelic.workers.dev/assets/map-loc-pallet-town.gif?v=3" alt="You-are-here map" />
+          <div class="cap">📍 A live “you are here” map at every stop</div>
+        </div>
+        <div>
+          <img class="media" src="https://slackemon-v2.djangelic.workers.dev/assets/map-vote-cerulean-city.gif?v=3" alt="Voting map with arrows" />
+          <div class="cap">🗳️ Branching roads — the team votes the route</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE ARRIVAL CARD MOCKUP -->
+  <section>
+    <div class="card">
+      <h2 class="sec"><span class="n">2</span> Everything happens on the card</h2>
+      <p class="lead">No clutter, no commands to memorize. Each stop posts one interactive card — progress, wild Pokémon, the vote, and who's riding with you, all tappable:</p>
+      <div class="slackcard">
+        <div class="hdr">🎉 The party has arrived at Cerulean City!</div>
+        <img class="ambiance" src="https://slackemon-v2.djangelic.workers.dev/assets/region-pallet-town.png" alt="Region ambiance art" />
+        <div>🌊 🕗 <b>Departs at 3:45 PM</b><br /><span class="small">(your local time)</span></div>
+        <table class="tbl">
+          <tr><td class="k">⛽ Gassing up</td><td class="v">🟩🟩🟩🟩⬜️⏳</td></tr>
+          <tr><td class="k">🌿 Wild Pokémon</td><td class="v">Psyduck · Staryu · Goldeen</td></tr>
+          <tr><td class="k">🗳️ Vote</td><td class="v mono">Saffron ███ 3<br />Vermilion █ 1<br />Lavender ██ 2</td></tr>
+        </table>
+        <div class="chips">
+          <span class="chip go">🗺️ Open the voting map</span>
+          <span class="chip">🌿 Walk in the grass</span>
+          <span class="chip">🏥 Poké Center</span>
+          <span class="chip">🛒 PokéMart</span>
+          <span class="chip">⚔️ Challenge a Trainer</span>
+        </div>
+        <div style="font-weight:900; margin:14px 0 6px;">🚌 On the bus</div>
+        <div class="rost">
+          <img src="https://www.gravatar.com/avatar/1?d=identicon&s=76" alt="" />
+          <div class="who"><b>Angel</b><span>Lead: Charizard · Lv.36 · ⚔️ 5–1</span></div>
+          <button class="fight">⚔️ Battle</button>
+        </div>
+        <div class="rost">
+          <img src="https://www.gravatar.com/avatar/2?d=identicon&s=76" alt="" />
+          <div class="who"><b>Misty</b><span>Lead: Starmie · Lv.30 · ⚔️ 3–2</span></div>
+          <button class="fight">⚔️ Battle</button>
+        </div>
+      </div>
+      <div class="cap">A real arrival card — the table de-clutters the details, and the roster lets you battle whoever's aboard.</div>
+    </div>
+  </section>
+
+  <!-- MECHANICS -->
+  <section>
+    <div class="card dark">
+      <h2 class="sec"><span class="n">3</span> What you can do</h2>
+      <div class="grid g3">
+        <div class="tile"><div class="emoji">🌿</div><h3>Catch 'em</h3><p>Wilds rustle the grass in town (just for you) and roam the road (for everyone). Weaken, then throw a ball.</p></div>
+        <div class="tile"><div class="emoji">⚔️</div><h3>Battle</h3><p>A private, Gen-1-style turn loop — Fight / Switch / Item / Run — with type hints and rising catch odds.</p></div>
+        <div class="tile"><div class="emoji">🤜</div><h3>Co-op the road</h3><p>Wild HP is shared, so the whole crew can tag-team one tough Pokémon together.</p></div>
+        <div class="tile"><div class="emoji">🏟️</div><h3>Gyms &amp; badges</h3><p>Every gym town is “always open” — refight leaders for XP and chase all 8 badges.</p></div>
+        <div class="tile"><div class="emoji">🚌</div><h3>Hop on the bus</h3><p>Make yourself battle-available for an hour or three — teammates can challenge you anytime.</p></div>
+        <div class="tile"><div class="emoji">🔁</div><h3>Trade</h3><p>Swap Pokémon with a teammate through a safe, both-confirm trade window.</p></div>
+        <div class="tile"><div class="emoji">📘</div><h3>Pokédex</h3><p>Every species you see or catch fills your dex — seen vs caught, shinies and all.</p></div>
+        <div class="tile"><div class="emoji">🏆</div><h3>Trophy Case</h3><p>Badges, dex count, catch streak and your PvP record — the path is ephemeral, the achievements are forever.</p></div>
+        <div class="tile"><div class="emoji">🛣️</div><h3>The open road</h3><p>Travel legs are where the action is — roamers appear that you can only catch on the move.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ON THE ROAD -->
+  <section>
+    <div class="card">
+      <h2 class="sec"><span class="n">4</span> All aboard the Poké Bus</h2>
+      <div class="grid g2">
+        <div>
+          <p class="lead">When the timer's up, the bus rolls out. The travel card tracks your trip with a little bus driving toward the destination flag:</p>
+          <p class="mono" style="font-size:20px; background:#f1f1f4; padding:12px 14px; border-radius:10px;">🛣️ Rolling along&nbsp;&nbsp;▰▰🚌▱▱▱🏁</p>
+          <p>Wild Pokémon appear on the road for everyone to jump on, and the whole roster rides along — so you can battle a teammate between stops.</p>
+        </div>
+        <div>
+          <img class="media" src="https://slackemon-v2.djangelic.workers.dev/assets/map-travel-pallet-town--route-1.gif?v=3" alt="Travel animation" />
+          <div class="cap">🚌 The bus slides toward the glowing next stop</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILD CTA -->
+  <section id="build" class="finalcta">
+    <div class="card">
+      <h2 class="sec">⚡ Want a Slack experience like this?</h2>
+      <p class="lead">SlackéMon was built by <b>AZ Technology Solutions</b> on Slack's Block Kit, Cloudflare Workers, and a lot of love for retro games. We build custom Slack apps, games, and automations that make teams actually <i>want</i> to open Slack. Tell us what you're imagining — we'll take it from there.</p>
+      <a class="btn btn-primary" href="https://n8n.aztechsol.com/form/69db595f-c680-4c04-9a81-05e4867d792a" target="_blank" rel="noopener">🚀 Start the conversation →</a>
+      <p class="small" style="color:#ffd9d9; margin-top:18px;">Takes 60 seconds. We'll follow up with a few ways we could build it.</p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Built with ⚡ by <a href="https://aztechsol.com" target="_blank" rel="noopener">AZ Technology Solutions</a> · SlackéMon is a fan-made tribute, not affiliated with Nintendo or The Pokémon Company.
+</footer>
+
+</body>
+</html>
