@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SlackéMon — How It Works</title>
+<title>Pokébus — How It Works</title>
+<link rel="icon" type="image/png" href="pokebus-favicon.png" />
+<link rel="apple-touch-icon" href="pokebus-favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
@@ -40,6 +42,7 @@
     margin: 6px 0 4px; text-shadow: 3px 3px 0 var(--red-dark), 6px 6px 0 rgba(0,0,0,.25);
   }
   .hero h1 .acc { color: var(--yellow); }
+  .logo { width: min(360px, 78%); height: auto; margin: 0 auto 4px; display:block; image-rendering: pixelated; filter: drop-shadow(0 8px 24px rgba(0,0,0,.55)); }
   .hero p.tag { color:#cdd7ea; font-size: clamp(16px,2.4vw,21px); font-weight:700; max-width:640px; margin:14px auto 26px; }
   .bus {
     width: min(680px, 92%); border-radius:14px; image-rendering: pixelated;
@@ -134,7 +137,7 @@
 <header class="hero">
   <div class="wrap">
     <div class="badge">⚡ A Slack-native adventure</div>
-    <h1>Slack<span class="acc">é</span>Mon</h1>
+    <img class="logo" src="pokebus-logo.png" alt="Pokébus" />
     <p class="tag">Your whole workspace boards one bus and rides through a living region together — catching, battling, and voting where to go next, right inside Slack.</p>
     <img class="bus" src="https://slackemon-v2.djangelic.workers.dev/assets/pokebus.gif" alt="The Poké Bus rolling down the road" />
     <div class="cta-row">
@@ -148,7 +151,7 @@
   <!-- WHAT IS IT -->
   <section>
     <div class="card">
-      <h2 class="sec"><span class="n">?</span> What is SlackéMon?</h2>
+      <h2 class="sec"><span class="n">?</span> What is Pokébus?</h2>
       <p class="lead">It's a <b>shared, co-op creature-collecting journey that lives in a Slack channel.</b> There's no app to install and no game to launch — the adventure just <i>happens</i> in your workspace. One world clock moves the whole team from town to town on a tireless little Poké Bus. Hop in whenever you've got a minute: catch something in the grass, gang up on a wild on the road, challenge a teammate, then vote on where the bus rolls next.</p>
       <div class="grid g3" style="margin-top:18px">
         <div class="tile"><div class="emoji">🚌</div><h3>One shared world</h3><p>Everyone rides together on a single live timeline through the region.</p></div>
@@ -268,7 +271,7 @@
 </div>
 
 <footer>
-  Built with ⚡ by <a href="https://aztechsol.com" target="_blank" rel="noopener">AZ Technology Solutions</a> · SlackéMon is a fan-made tribute, not affiliated with Nintendo or The Pokémon Company.
+  Built with ⚡ by <a href="https://aztechsol.com" target="_blank" rel="noopener">AZ Technology Solutions</a> · Pokébus is a fan-made tribute, not affiliated with Nintendo or The Pokémon Company.
 </footer>
 
 </body>
